@@ -48,7 +48,7 @@ Discuss what you need to develop this project. This includes background informat
     </td>
     <td align="center">
         <a href="https://github.com/WJ2K">
-            <img src="" width="100;" alt="leighflagg"/>
+            <img src="" width="100;" alt="Jacky"/>
             <br />
             <sub><b>WenJie (Jacky) Ke</b></sub>
         </a>
