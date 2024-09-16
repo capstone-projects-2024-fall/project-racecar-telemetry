@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Features and Requirements
 
-Functional Requirements 
+## Functional Requirements 
 
 Racecar Telemetry will require using a socket for wireless communication between the device and the monitors in the pit crew. The driver can also have a computer they can use to connect to the device. 
 
@@ -38,7 +38,7 @@ Data is automatically sent to a database to be saved.
 
  
 
-Nonfunctional Requirements 
+## Nonfunctional Requirements 
 
 Racecar Telemetry will have an intuitive user-friendly interface. 
 
