@@ -4,4 +4,4 @@ sidebar_position: 2
 
 # System Block Diagram
 
-testnig again
+![system diagram] (/img/diagram.png)
