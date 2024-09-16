@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Use-case descriptions
 
-Use Case 1 
+##Use Case 1 
 
 A race crew is testing their vehicle with their driver to make sure the car is performing well. 
 
@@ -36,7 +36,7 @@ Driver and crew retest.
 
  
 
-Use Case 2 
+##Use Case 2 
 
 A car enthusiast wants to tune their car to increase horsepower. 
 
@@ -60,7 +60,7 @@ Driver tests and repeats.
 
  
 
-Use Case 3 
+##Use Case 3 
 
 A commuter wants to save some gas for their daily driver. 
 
@@ -82,7 +82,7 @@ Driver tests and repeats.
 
  
 
-Use Case 4 
+##Use Case 4 
 
 You are Takumi, a teenager in Japan who delivers tofu for your father. To keep your customers satisfied, you must drift through the winding mountain roads at break neck speeds. Yes, this is “Initial D”. Or maybe you are already a professional drifter. 
 
@@ -100,29 +100,7 @@ Takumi is reincarnated as the immortal Drift King.
 
  
 
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-Use Case 5 
+##Use Case 5 
 
  
 
