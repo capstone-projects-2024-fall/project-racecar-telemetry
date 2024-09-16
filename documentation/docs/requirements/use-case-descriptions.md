@@ -6,18 +6,18 @@ sidebar_position: 5
 
 ## Use Case 1 
 
-1 .A race crew is testing their vehicle with their driver to make sure the car is performing well. 
-2. Crew connects device to the electrical control unit (ECU). 
-3. Driver gets into vehicle and ensure the device is turned on. 
-4. Crew ensures data is being updated to monitors. 
-5. Driver drives. 
-6. Engine temperature starts to climb above normal operating range. 
-7. Device relays temperature data to the crew. 
-8. Device sends alert to driver and crew. 
-9. Crew determines temperature is climbing too fast, tells driver to come into pit. 
-10. Crew discovers a crack in the radiator/coolant leak. 
-11. Crew replaces the radiator. 
-12. Driver and crew retest. 
+1 .A race crew is testing their vehicle with their driver to make sure the car is performing well.     
+2. Crew connects device to the electrical control unit (ECU).    
+3. Driver gets into vehicle and ensure the device is turned on.    
+4. Crew ensures data is being updated to monitors.    
+5. Driver drives.    
+6. Engine temperature starts to climb above normal operating range.   
+7. Device relays temperature data to the crew.   
+8. Device sends alert to driver and crew.   
+9. Crew determines temperature is climbing too fast, tells driver to come into pit.    
+10. Crew discovers a crack in the radiator/coolant leak.   
+11. Crew replaces the radiator.   
+12. Driver and crew retest.   
 
  
 
