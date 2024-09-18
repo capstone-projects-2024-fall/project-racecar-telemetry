@@ -12,19 +12,28 @@
 
 ## Keywords
 
-Section #, as well as any words that quickly give your peers insights into the application like programming language, development platform, type of application, etc.
+Racecar telemetry, embedded systems (ESP32), wireless networks, server-client programming, web application development
 
 ## Project Abstract
 
-This document proposes a novel application of a text message (SMS or Email) read-out and hands-free call interacted between an Android Smartphone and an infotainment platform (headunit) in a car environment. When a phone receives an SMS or Email, the text message is transferred from the phone to the headunit through a Bluetooth connection. On the headunit, user can control which and when the received SMS or E-mail to be read out through the in-vehicle audio system. The user may press one button on the headunit to activate the hands-free feature to call back the SMS sender.
+This document proposes a wireless vehicle telemetry system to transmit real-time data from a Formula-style racecar to devices off the track. The system will allow racing teams to view important sensor and diagnostic information - e.g., RPM, lap times, engine temperature - on their devices while up to 500 meters away. Having live data will help to facilitate assessment of driver and vehicle performance on dynamic testing days, preserve engine health through live diagnostics, and promote a deeper team-wide understanding of the vehicle.
+
+One side of the proposed system is the mobile component, consisting of the hardware embedded into the vehicle’s wiring (primarily a microcontroller and wireless internet service provider) and the software to run the server side of the system. The client side consists of devices that connect to the vehicle’s network to display data in a webpage. The final product is a web page that enables users to view live racecar data in the form of customizable widgets for graphs, gauges, and warnings. 
+
+This project is intended for use in Temple Formula Racing’s (TFR) vehicle, which competes in the Formula Society of Automotive Engineers (FSAE) competition. In this competition, university teams are challenged to design, fabricate, and race formula-style vehicles.
 
 ## High Level Requirement
 
-Describe the requirements – i.e., what the product does and how it does it from a user point of view – at a high level.
+Users (spectators or team members at a TFR event) will use laptops or phones to connect to the vehicle telemetry system’s wireless network. They will navigate to a web page which will automatically populate with data sent from the vehicle and update in real time. The user can select which data channels are shown and in what format through the use of widgets (for example, a vehicle speed vs. time graph). This web page should feel like a customizable vehicle dashboard. Additionally, the user will be able to select values for which a warning will appear (e.g., a popup if engine temperature exceeds 220° F).
 
 ## Conceptual Design
+![system diagram](/documentation/static/img/diagram.png)
 
-Describe the initial design concept: Hardware/software architecture, programming language, operating system, etc.
+System architecture (see system diagram for details):
+1. CAN (Controller Area Network) transceiver - converts vehicle communication bus signal into something readable by the microprocessor
+2. Microprocessor - responsible for processing vehicle data, running web server, transmitting server data to wireless gateway via Ethernet. Will use Arduino IDE with C-like programming language to program server back end. 
+3. Wireless gateway - transmits server data to base over the desired range
+4. Power over Ethernet injector - converts vehicle’s DC power supply to something usable by Wireless Gateway
 
 ## Background
 
@@ -32,7 +41,22 @@ The background will contain a more detailed description of the product and a com
 
 ## Required Resources
 
-Discuss what you need to develop this project. This includes background information you will need to acquire, hardware resources, and software resources. If these are not part of the standard Computer Science Department lab resources, these must be identified early and discussed with the instructor.
+Hardware requirements (subject to change based on instructor review):
+- CAN Transceiver (2x): SN65HVD23x ($2)
+- Microprocessor: ESP32-ETHERNET-KIT-VE ($55)
+= Wireless Transmitter: Ubiquity UniFi Access Point AC Mesh ($99)
+- POE (Power over Ethernet) Injector: Tycon Gigabit HP PoE Inserter/Splitter ($14.25)
+- Second microprocessor (for test bench): ESP32 ($10)
+- Additional electrical hardware, such as connectors, jumper wires, ethernet cables (<$50)
+
+Total proposed cost: <$230.25
+
+Knowledge Requirements
+- The software architecture, specifically server-client interaction, requires elaboration before the project can proceed. 
+- We will consult Temple Electrical Engineering faculty throughout the semester for advice and theoretical background. 
+- For additional background, members of the Capstone team can contact other FSAE teams who have successfully implemented telemetry systems.
+
+The system will be bench tested using simulated vehicle serial communication. This is how the final product will be presented.
 
 ## Collaborators
 
@@ -51,6 +75,13 @@ Discuss what you need to develop this project. This includes background informat
             <img src="" width="100;" alt="Jacky"/>
             <br />
             <sub><b>WenJie (Jacky) Ke</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/ajreisc">
+            <img src="" width="100;" alt="Arianna"/>
+            <br />
+            <sub><b>Arianna Reischer</b></sub>
         </a>
     </td></tr>
 </table>
