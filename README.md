@@ -1,4 +1,5 @@
 [![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=15801646)
+
 <div align="center">
 
 # Racecar Telemetry
@@ -27,9 +28,9 @@ This project is intended for use in Temple Formula Racing’s (TFR) vehicle, whi
 Users (spectators or team members at a TFR event) will use laptops or phones to connect to the vehicle telemetry system’s wireless network. They will navigate to a web page which will automatically populate with data sent from the vehicle and update in real time. The user can select which data channels are shown and in what format through the use of widgets (for example, a vehicle speed vs. time graph). This web page should feel like a customizable vehicle dashboard. Additionally, the user will be able to select values for which a warning will appear (e.g., a popup if engine temperature exceeds 220° F).
 
 ## Conceptual Design
-![system diagram](/documentation/static/img/diagram.png)
 
 System architecture (see system diagram for details):
+
 1. CAN (Controller Area Network) transceiver - converts vehicle communication bus signal into something readable by the microprocessor
 2. Microprocessor - responsible for processing vehicle data, running web server, transmitting server data to wireless gateway via Ethernet. Will use Arduino IDE with C-like programming language to program server back end. 
 3. Wireless gateway - transmits server data to base over the desired range
@@ -44,12 +45,12 @@ The background will contain a more detailed description of the product and a com
 Hardware requirements (subject to change based on instructor review):
 - CAN Transceiver (2x): SN65HVD23x ($2)
 - Microprocessor: ESP32-ETHERNET-KIT-VE ($55)
-= Wireless Transmitter: Ubiquity UniFi Access Point AC Mesh ($99)
+- Wireless Transmitter: Ubiquity UniFi Access Point AC Mesh ($99)
 - POE (Power over Ethernet) Injector: Tycon Gigabit HP PoE Inserter/Splitter ($14.25)
 - Second microprocessor (for test bench): ESP32 ($10)
-- Additional electrical hardware, such as connectors, jumper wires, ethernet cables (<$50)
+- Additional electrical hardware, such as connectors, jumper wires, ethernet cables (\<$50)
 
-Total proposed cost: <$230.25
+Total proposed cost: \<$230.25
 
 Knowledge Requirements
 - The software architecture, specifically server-client interaction, requires elaboration before the project can proceed. 
