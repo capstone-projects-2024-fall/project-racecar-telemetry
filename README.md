@@ -13,7 +13,7 @@
 
 ## Keywords
 
-Racecar telemetry, embedded systems (ESP32), wireless networks, server-client programming, web application development
+Section 002, Racecar telemetry, embedded systems (ESP32), wireless networks, server-client programming, web application development
 
 ## Project Abstract
 
@@ -72,6 +72,13 @@ The system will be bench tested using simulated vehicle serial communication. Th
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/NasierF">
+            <img src="" width="100;" alt="Nasier"/>
+            <br />
+            <sub><b>Nasier Fowlkes</b></sub>
+        </a>
+    </td>
+    <td align="center">
         <a href="https://github.com/WJ2K">
             <img src="" width="100;" alt="Jacky"/>
             <br />
@@ -79,10 +86,31 @@ The system will be bench tested using simulated vehicle serial communication. Th
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/arjunpatel5">
+            <img src="" width="100;" alt="Arjun"/>
+            <br />
+            <sub><b>Arjun Patel</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/nick-pell">
+            <img src="" width="100;" alt="Nick"/>
+            <br />
+            <sub><b>Nick Pell</b></sub>
+        </a>
+    </td>
+    <td align="center">
         <a href="https://github.com/ajreisc">
             <img src="" width="100;" alt="Arianna"/>
             <br />
             <sub><b>Arianna Reischer</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/dennis-yeom">
+            <img src="" width="100;" alt="Dennis"/>
+            <br />
+            <sub><b>Dennis Yeom</b></sub>
         </a>
     </td></tr>
 </table>
