@@ -25,3 +25,5 @@ sidebar_position: 4
 - Socket.io:            For handling real-time data streaming if needed.
 ### Database
 Firebase: for storing telemetry data. 
+### Testing    
+Postman: API testing.    
