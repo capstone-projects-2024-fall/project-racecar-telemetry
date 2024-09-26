@@ -12,3 +12,5 @@ sidebar_position: 4
 - POE (Power over Ethernet) Injector: Tycon Gigabit HP PoE Inserter/Splitter 
 - Second microprocessor (for test bench): ESP32 ($10)
 - Additional electrical hardware, such as connectors, jumper wires, ethernet cables
+
+## Software Requirements
