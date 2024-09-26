@@ -14,3 +14,7 @@ sidebar_position: 4
 - Additional electrical hardware, such as connectors, jumper wires, ethernet cables
 
 ## Software Requirements
+### IDE
+- Visual Studio Code  
+- Github Codespaces  
+- Arduino IDE    
