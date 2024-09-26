@@ -18,3 +18,8 @@ sidebar_position: 4
 - Visual Studio Code  
 - Github Codespaces  
 - Arduino IDE    
+### Programming Languages & Libraries    
+- Next.js/Node.js:      Main frameworks for developing the web application.  
+- Firebase SDK:         For data storage and real-time database connectivity.  
+- Chart.js or Recharts: For creating graphs and charts.  
+- Socket.io:            For handling real-time data streaming if needed.
