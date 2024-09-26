@@ -23,3 +23,5 @@ sidebar_position: 4
 - Firebase SDK:         For data storage and real-time database connectivity.  
 - Chart.js or Recharts: For creating graphs and charts.  
 - Socket.io:            For handling real-time data streaming if needed.
+### Database
+Firebase: for storing telemetry data. 
