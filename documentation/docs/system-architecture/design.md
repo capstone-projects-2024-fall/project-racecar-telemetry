@@ -25,3 +25,210 @@ Entity-relation diagram.
 Table design.
 
 A check list for architecture design is attached here [architecture\_design\_checklist.pdf](https://templeu.instructure.com/courses/106563/files/16928870/download?wrap=1 "architecture_design_checklist.pdf")  and should be used as a guidance.
+
+# Sequence Diagrams
+### Use Case 1:
+
+```mermaid
+sequenceDiagram
+participant Driver
+participant Crew
+
+Driver -) Car: Driver starts car
+
+activate Car
+activate Temperature Sensor
+activate ECU
+activate Transceiver
+
+Car -) Temperature Sensor: Engine oil temperature sensor turned on
+Temperature Sensor -) ECU: Temperature data sent
+ECU -) Transceiver: ECU sends data through CAN bus to Transceiver
+Driver -) MCU: Driver attaches MCU to Transceiver
+
+activate MCU
+
+Transceiver -) MCU: Temperature data sent
+MCU -) Cloud: Data sent to cloud database and website processing
+Cloud -) Crew: Crew reads live data from website
+MCU -) Cloud: Temperature warning sent
+MCU -) Driver: Temperature warning sent
+MCU -) Crew: Temperature warning sent
+Crew -) Driver: Crew communicates with driver
+
+
+
+deactivate Car
+deactivate Temperature Sensor
+deactivate ECU
+deactivate Transceiver
+deactivate MCU
+```
+
+### Use Case 2:
+
+```mermaid
+sequenceDiagram
+participant d as driver
+participant cr as crew
+participant c as Car
+participant s as Sensors
+participant m as MCU
+participant cl as Cloud
+
+d -) c: Driver starts car
+activate c
+
+c -) s: Sensored powered on
+activate s
+
+d -) m: Driver installed MCU
+activate m
+
+s -) m: Sensors send data to MCU
+
+m -) cl: MCU sends data wirelessly to the cloud
+
+cl -) cr: Crew pulls data from cloud database and website
+
+deactivate m
+deactivate s
+deactivate c
+
+```
+
+### Use Case 3:
+
+```mermaid
+sequenceDiagram
+participant d as driver
+participant cr as crew
+participant c as Car
+participant s as Voltage Sensor
+participant m as MCU
+participant cl as Cloud
+
+d -) c: Driver starts car
+activate c
+
+c -) s: Sensor is turned on
+activate s
+
+d -) m: Driver installed MCU
+activate m
+
+s -) m: Sensors send data to MCU
+
+m -) cl: MCU sends data wirelessly to the cloud
+
+cl -) cr: Crew pulls data from cloud database and website
+
+cr -) c: Crew replaces battery
+
+deactivate m
+deactivate s
+deactivate c
+
+```
+
+### Use Case 4:
+
+```mermaid
+sequenceDiagram
+participant i as Ian
+participant c as Car
+participant s as Crankshaft Position Sensor
+participant m as MCU
+participant cl as Cloud
+
+i -) c: Ian starts the car
+activate c
+
+c -) s: Sensor is activated
+activate s
+
+i -) m: Ian installs MCU
+activate m
+
+cl -) i: Ian downloads previously stored sensor data/settings
+
+i -) m: Ian replaces current settings with previous settings
+
+i -) c: Ian test drives car
+
+deactivate m
+deactivate s
+deactivate c
+```
+
+### Use Case 5:
+
+```mermaid
+sequenceDiagram
+participant d as Driver
+participant c as Car
+participant f as Fuel Sensor
+participant m as MCU
+participant cl as Cloud
+
+d -) c: Driver starts car
+activate c
+
+c -) f: Fuel sensor powered on
+activate f
+
+d -) m: Driver installs device
+activate m
+
+f -) m: Sensor sends data to device
+
+m -) cl: Device sends data to cloud database/website
+
+cl -) c: Crew reads fuel levels using website
+
+c -) d: Crew relays info to driver
+
+deactivate m
+deactivate c
+deactivate f
+```
+
+### Use Case 6:
+
+```mermaid
+sequenceDiagram
+participant d as Driver
+participant c as Car
+participant t as Tire Temp Sensor
+participant m as MCU
+participant cl as Cloud
+
+d -) c: Driver starts car
+activate c
+
+c -) t: Tire Temp Sensor powered on
+activate t
+
+d -) m: Driver installs device
+activate m
+
+t -) m: Sensor sends data to device
+
+m -) cl: Device sends data to cloud database/website
+
+cl -) c: Crew reads tire temperature using website
+
+c -) d: Crew relays info to driver
+
+deactivate m
+deactivate c
+deactivate t
+
+```
+
+### Use Case 7:
+
+```mermaid
+sequenceDiagram
+
+```
