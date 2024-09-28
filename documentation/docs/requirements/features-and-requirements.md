@@ -5,37 +5,47 @@ sidebar_position: 4
 # Features and Requirements 
 
 ## Functional Requirements <!--high level-->
-* Live readings of different data points from the ECU will be displayed on graphs.
+<b>1.  Data collection & transmission</b>
+    1.  A device plugs into the vehicles communication area network (CAN) bus to receive sensor & diagnostic information from the engine control unit (ECU).
+        1.  The device contains a microcontroller, CAN transceiver, and hardware to plug into a standard automotive connector on the vehicle.
+    2.  A smartphone with hotspot capability is placed in the vehicle to provide a WiFi access point to the device.
+    3.  A microcontroller within the device parses CAN frames and uploads formatted data to a cloud database.
+        1.  Note: Every piece of data transmitted over CAN has its own CAN ID but not a label, so the data in the webpage will have to be associated with meanings at a later stage.
 
-* Users will be able to adjust values within the ECU and other computers in the vehicle.  
-
-* Racecar Telemetry will have an intuitive user-friendly interface. 
-
-* When opening the app on a monitor, the user should have a UI that allows them to read live data. 
-
-* Home page contains profiles such as Eco-Mode and performance boost. 
-
-* Home page contains option to look at live readings from ECU. 
-
-* Home screen is mainly made up of options. 
-
-* The graphs for the live readings should show performance over the last 5 minutes.  
-
-* A general overview is available where you can see performance over a whole “test drive”. 
-
-* Alarms can be set if values fall out of a specified range. 
-
-* Users will be able to move the graphs to customize their screen. That way they can see the ones they want easily. 
-
-* Users can create a custom HUD where only graphs they select are shown 
-
-* Users can save profiles for monitoring different graphs. 
-
-* Data is automatically sent to a database to be saved. 
-
-* To increase user friendliness, preset profiles for performance or fuel-saving can be made.
+<b>2.  Data storage</b>
+    1.  Data is stored in a cloud database. 
+        
+<b>3.  Data Visualization</b>
+    1.  Users navigate to the webpage and enter a password to view data.
+    2.  A default dashboard page containing various widgets (e.g., graphs, gauges, number displays) appears when users first open the page.
+    3.  A text box says “Connected” if data is currently streaming to the database, and “Not Connected” otherwise.
+    4.  If “<ins>Connected</ins>”:
+        1.  Widgets automatically populate with live data.
+        2.  If there are any new CAN IDs from the database (meaning that the ECU settings have been changed to transmit different data), a data assignment window appears where the user can specify what data the new CAN ID’s correspond to. This will require the TFR team to look at the ECU software, especially the first time the webpage is used.
+        3.  A progress bar allows users to scrub to previous timestamps to see past data within a session.
+    5.  If “<ins>Not Connected</ins>”:
+        1.  A pop-up gives the user a list of reasons data is not streaming. It has a “Do not show this message again” checkbox.
+        2.  Widgets still appear but indicate that data is unavailable (through text or color).
+    6.  Widgets are customizable.
+        1.  Each has a button to open a component editor with options to change:
+            1.  Data channel displayed
+            2.  Data label
+            3.  Display component type (e.g., change from a linear to radial gauge)
+            4.  Unit of measurement (e.g., mph to kph)                
+            5.  Minimum & maximum values (for non-numerical components)                
+            6.  Color (for certain components, like line graphs)
+        2.  There is an “insert new display” button which adds a component onto the screen and opens the component editor.            
+        3.  Widgets can be dragged and dropped to different locations on the screen.            
+        4.  Widgets can be resized.            
+        5.  Widgets can be deleted.            
+    7.  There is a menu for various layout/data related options.        
+        1.  Save recent data - users can download data from a specified timeline for later viewing.             
+        2.  Open data file - prompts the user to browse for a downloaded data file to view/            
+        3.  Save layout - saves dashboard layout             
+        4.  Open layout - prompts user to browse for a saved layout
 
 ## Nonfunctional Requirements <!--low level-->
+
 * The graphs have an option to click-drag a threshold or manually entered threshould for an alarm. 
 
 * Initially, work on public network for proof of concept. 
@@ -54,4 +64,4 @@ sidebar_position: 4
 
 * Wireless communication will be used to transmit data to the crew for easy reading. 
 
-* Data processing can be done using Flask (tentative)
+* Data processing can be done using Flask (tentative) 
