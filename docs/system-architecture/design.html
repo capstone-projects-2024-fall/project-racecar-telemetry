@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.3.2">
 <title data-rh="true">design | Project Racecar Telemetry</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/docs/system-architecture/design"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="design | Project Racecar Telemetry"><meta data-rh="true" name="description" content="Purpose"><meta data-rh="true" property="og:description" content="Purpose"><link data-rh="true" rel="icon" href="/project-racecar-telemetry/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/docs/system-architecture/design"><link data-rh="true" rel="alternate" href="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/docs/system-architecture/design" hreflang="en"><link data-rh="true" rel="alternate" href="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/docs/system-architecture/design" hreflang="x-default"><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script><link rel="stylesheet" href="/project-racecar-telemetry/assets/css/styles.e4cc120d.css">
-<script src="/project-racecar-telemetry/assets/js/runtime~main.dbd366d0.js" defer="defer"></script>
+<script src="/project-racecar-telemetry/assets/js/runtime~main.6998bc4c.js" defer="defer"></script>
 <script src="/project-racecar-telemetry/assets/js/main.a49df825.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -20,6 +20,16 @@
 <p>Entity-relation diagram.</p>
 <p>Table design.</p>
 <p>A check list for architecture design is attached here <a href="https://templeu.instructure.com/courses/106563/files/16928870/download?wrap=1" target="_blank" rel="noopener noreferrer" title="architecture_design_checklist.pdf">architecture_design_checklist.pdf</a>  and should be used as a guidance.</p>
+<h1>Telemetry Device Electrical Schematic</h1>
+<p><img decoding="async" loading="lazy" alt="system diagram" src="/project-racecar-telemetry/assets/images/Schematic_RCT-Wiring-Diagram_2024-09-28-c89db0f00916d22755361296072f647c.svg" width="600" height="401" class="img_ev3q"></p>
+<p>This is the schematic for the telemetry device that will be plugged directly into the racecar&#x27;s wiring harness via a standard automotive connector. The device is powered off of 12V and 5V lines from the vehicle&#x27;s power distribution system. The device uses CAN High and Low wires to connect to the vehicle&#x27;s CAN bus.</p>
+<p>Components:</p>
+<ul>
+<li>ESP-WROOM-32 DEVKITV1: ESP microcontroller (includes CAN controller but not a CAN transceiver)</li>
+<li>TJA1050: CAN transceiver</li>
+<li>120 ohm resistor: terminal resistor to enable CAN communication</li>
+<li>DTM04-6S: 6 pin automotive connector (Deutsch connector to comply with TFR wiring harness)</li>
+</ul>
 <h1>Sequence Diagrams</h1>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="use-case-1">Use Case 1:<a href="#use-case-1" class="hash-link" aria-label="Direct link to Use Case 1:" title="Direct link to Use Case 1:">​</a></h3>
 <!-- -->
