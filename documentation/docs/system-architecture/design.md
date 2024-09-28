@@ -26,6 +26,18 @@ Table design.
 
 A check list for architecture design is attached here [architecture\_design\_checklist.pdf](https://templeu.instructure.com/courses/106563/files/16928870/download?wrap=1 "architecture_design_checklist.pdf")  and should be used as a guidance.
 
+# Telemetry Device Electrical Schematic
+
+![system diagram](/img/Schematic_RCT-Wiring-Diagram_2024-09-28.svg) 
+
+This is the schematic for the telemetry device that will be plugged directly into the racecar's wiring harness via a standard automotive connector. The device is powered off of 12V and 5V lines from the vehicle's power distribution system. The device uses CAN High and Low wires to connect to the vehicle's CAN bus. 
+
+Components:
+* ESP-WROOM-32 DEVKITV1: ESP microcontroller (includes CAN controller but not a CAN transceiver)
+* TJA1050: CAN transceiver
+* 120 ohm resistor: terminal resistor to enable CAN communication
+* DTM04-6S: 6 pin automotive connector (Deutsch connector to comply with TFR wiring harness)
+
 # Sequence Diagrams
 ### Use Case 1:
 
