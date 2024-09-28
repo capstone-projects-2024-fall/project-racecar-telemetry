@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.3.2">
 <title data-rh="true">Hello from Project Racecar Telemetry | Project Racecar Telemetry</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Hello from Project Racecar Telemetry | Project Racecar Telemetry"><meta data-rh="true" name="description" content="Description will go into a meta tag in &lt;head /&gt;"><meta data-rh="true" property="og:description" content="Description will go into a meta tag in &lt;head /&gt;"><link data-rh="true" rel="icon" href="/project-racecar-telemetry/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/"><link data-rh="true" rel="alternate" href="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/" hreflang="en"><link data-rh="true" rel="alternate" href="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/" hreflang="x-default"><script data-rh="true">function insertBanner(){var e=document.createElement("div");e.id="__docusaurus-base-url-issue-banner-container";e.innerHTML='\n<div id="__docusaurus-base-url-issue-banner" style="border: thick solid red; background-color: rgb(255, 230, 179); margin: 20px; padding: 20px; font-size: 20px;">\n   <p style="font-weight: bold; font-size: 30px;">Your Docusaurus site did not load properly.</p>\n   <p>A very common reason is a wrong site <a href="https://docusaurus.io/docs/docusaurus.config.js/#baseUrl" style="font-weight: bold;">baseUrl configuration</a>.</p>\n   <p>Current configured baseUrl = <span style="font-weight: bold; color: red;">/project-racecar-telemetry/</span> </p>\n   <p>We suggest trying baseUrl = <span id="__docusaurus-base-url-issue-banner-suggestion-container" style="font-weight: bold; color: green;"></span></p>\n</div>\n',document.body.prepend(e);var n=document.getElementById("__docusaurus-base-url-issue-banner-suggestion-container"),r=window.location.pathname,s="/"===r.substr(-1)?r:r+"/";n.innerHTML=s}document.addEventListener("DOMContentLoaded",(function(){void 0===window.docusaurus&&insertBanner()}))</script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script><link rel="stylesheet" href="/project-racecar-telemetry/assets/css/styles.e4cc120d.css">
-<script src="/project-racecar-telemetry/assets/js/runtime~main.43b079d3.js" defer="defer"></script>
+<script src="/project-racecar-telemetry/assets/js/runtime~main.dbd366d0.js" defer="defer"></script>
 <script src="/project-racecar-telemetry/assets/js/main.a49df825.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -16,7 +16,7 @@
 <p>Section 002, Racecar telemetry, embedded systems (ESP32), wireless networks, server-client programming, web application development</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="project-abstract">Project Abstract<a href="#project-abstract" class="hash-link" aria-label="Direct link to Project Abstract" title="Direct link to Project Abstract">​</a></h2>
 <p>This document proposes a wireless vehicle telemetry system to transmit real-time data from a Formula-style racecar to devices off the track. The system will allow racing teams to view important sensor and diagnostic information - e.g., RPM, lap times, engine temperature - on their devices while up to 500 meters away. Having live data will help to facilitate assessment of driver and vehicle performance on dynamic testing days, preserve engine health through live diagnostics, and promote a deeper team-wide understanding of the vehicle.</p>
-<p>One side of the proposed system is the mobile component, consisting of the hardware embedded into the vehicle’s wiring (primarily a microcontroller and wireless internet service provider) and the software to run the server side of the system. The client side consists of devices that connect to the vehicle’s network to display data in a webpage. The final product is a web page that enables users to view live racecar data in the form of customizable widgets for graphs, gauges, and warnings.</p>
+<p>One side of the proposed system is the mobile component, consisting of the hardware embedded into the vehicle’s wiring and a smartphone that provides mobile hotspot, and the software to run the server side of the system. The client side consists of devices that connect to the vehicle’s network to display data in a webpage. The final product is a web page that enables users to view live racecar data in the form of customizable widgets for graphs, gauges, and warnings.</p>
 <p>This project is intended for use in Temple Formula Racing’s (TFR) vehicle, which competes in the Formula Society of Automotive Engineers (FSAE) competition. In this competition, university teams are challenged to design, fabricate, and race formula-style vehicles.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="high-level-requirement">High Level Requirement<a href="#high-level-requirement" class="hash-link" aria-label="Direct link to High Level Requirement" title="Direct link to High Level Requirement">​</a></h2>
 <p>Users (spectators or team members at a TFR event) will use laptops or phones to connect to the vehicle telemetry system’s wireless network. They will navigate to a web page which will automatically populate with data sent from the vehicle and update in real time. The user can select which data channels are shown and in what format through the use of widgets (for example, a vehicle speed vs. time graph). This web page should feel like a customizable vehicle dashboard. Additionally, the user will be able to select values for which a warning will appear (e.g., a popup if engine temperature exceeds 220° F).</p>
@@ -24,23 +24,15 @@
 <p>System architecture (see system diagram for details):</p>
 <ol>
 <li>CAN (Controller Area Network) transceiver - converts vehicle communication bus signal into something readable by the microprocessor</li>
-<li>Microprocessor - responsible for processing vehicle data, running web server, transmitting server data to wireless gateway via Ethernet. Will use Arduino IDE with C-like programming language to program server back end.</li>
-<li>Wireless gateway - transmits server data to base over the desired range</li>
-<li>Power over Ethernet injector - converts vehicle’s DC power supply to something usable by Wireless Gateway</li>
+<li>Microprocessor - responsible for processing vehicle data and uploading to database over WiFi.</li>
+<li>Mobile Hotspot - a cell phone with moblie hotspot is in the car to provide WiFi to the ESP32 while driving.</li>
+<li>Database - a Firebase database is used to store live data (CAN IDs and messages)</li>
+<li>Website - a website pulls data from the database to display live in a customizeable dashboard.</li>
 </ol>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="background">Background<a href="#background" class="hash-link" aria-label="Direct link to Background" title="Direct link to Background">​</a></h2>
 <p>The background will contain a more detailed description of the product and a comparison to existing similar projects/products. A literature search should be conducted and the results listed. Proper citation of sources is required. If there are similar open-source products, you should state whether existing source will be used and to what extent. If there are similar closed-source/proprietary products, you should state how the proposed product will be similar and different.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="required-resources">Required Resources<a href="#required-resources" class="hash-link" aria-label="Direct link to Required Resources" title="Direct link to Required Resources">​</a></h2>
-<p>Hardware requirements (subject to change based on instructor review):</p>
-<ul>
-<li>CAN Transceiver (2x): SN65HVD23x ($2)</li>
-<li>Microprocessor: ESP32-ETHERNET-KIT-VE ($55)</li>
-<li>Wireless Transmitter: Ubiquity UniFi Access Point AC Mesh ($99)</li>
-<li>POE (Power over Ethernet) Injector: Tycon Gigabit HP PoE Inserter/Splitter ($14.25)</li>
-<li>Second microprocessor (for test bench): ESP32 ($10)</li>
-<li>Additional electrical hardware, such as connectors, jumper wires, ethernet cables (&lt;$50)</li>
-</ul>
-<p>Total proposed cost: &lt;$230.25</p>
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRPmqrR1D0rSadeonzcJYDSI9_54YGbKhxfEFePVx_G_DNKT3bhswWF8M95XYecuXjWSqct2AxIOJHy/pubhtml?widget=true&amp;headers=false" frameborder="0" width="80%" height="500"></iframe>
 <p>Knowledge Requirements</p>
 <ul>
 <li>The software architecture, specifically server-client interaction, requires elaboration before the project can proceed.</li>
