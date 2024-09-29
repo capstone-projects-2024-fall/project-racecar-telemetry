@@ -238,9 +238,97 @@ deactivate t
 
 ```
 
-### Use Case 7:
-
+### Use Case 7
 ```mermaid
 sequenceDiagram
+actor e as Ergonomics Lead
+participant l as Login Page
+participant d as Database
+participant dash as Dashboard Home
+actor dr as Driver
+actor c as Racecar
+participant esp as MCU
+
+
+e -) l: Clicks Sign Up button
+activate e
+activate l
+
+l --) e: Show Sign Up form
+
+e -) l: Enter registration information
+
+
+l -) d: Create new user (username, password)
+activate d
+
+d -) d: Check if valid username
+    loop While user name is taken
+        d-->e: Enter new username
+    end
+deactivate d
+
+d --) l: Successful registration
+
+l -) dash: Redirect
+deactivate l
+
+dash --) e: Show Default Dashboard Homepage
+
+e -) dash: Click 'Insert New Display' (type: graph, sensors: [brake pressure front, brake pressure rear], unit: kPa)
+dash --) e: Show new display component
+
+
+dr -) c: Turn on car
+activate dr
+activate c
+
+c -) esp: Initialize
+activate esp
+
+loop While car is running
+
+    c -) esp: Transmit sensor data(CAN ID, data, timestamp)
+
+    esp -) d: Upload data to cloud database
+    activate d
+    d -) dash: Get CAN data (CAN ID, identifier, data, timestamp)
+    dash --) e: Show displays with live data
+end
+dr -) c: Turn off car
+deactivate c
+deactivate esp
+
+
+
+e -) dash: Scrub to previous data(timestamp)
+dash --) e: Display data at previous timestamp
+
+e -) dr: Explain data from acceleration run
+
+dr -) c: Turn on car
+activate c
+
+c -) esp: Initialize
+activate esp
+
+loop While car is running
+
+    c -) esp: Transmit sensor data(CAN ID, data, timestamp)
+
+    esp -) d: Upload data to cloud database
+    d -) dash: Get CAN data (CAN ID, identifier, data, timestamp)
+
+    dash --) e: Show displays with live data
+end
+dr -) c: Turn off car
+deactivate c
+deactivate esp
+
+
+deactivate d
+deactivate dr
+
+deactivate e
 
 ```
