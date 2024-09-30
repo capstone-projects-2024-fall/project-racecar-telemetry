@@ -54,7 +54,8 @@ sidebar_position: 4
     2.  Layouts and data are available to all team members who create accounts to facilitate sharing.
     3.  Sensor data is easily exportable to CSV file (separate from raw CAN data file).
 3.  <b>Integration with TFR car</b>
-    1.  Telemetry device connects to the vehicle wiring harness with a single standard automotive connector (for 12V power/gnd, 5V power, CAN high and low)
+    1.  Telemetry device connects to the vehicle wiring harness with a single standard automotive connector (Deutsch DTM connector)
+    2.  Connector will have wires for 12V power & ground, 5V power, CAN high and low
     2.  Deivce weighs under 1.5 lbs.
 4.  <b>Robustness</b>
     1.  Device casing is waterproof (can be run underwater without any leakage).
