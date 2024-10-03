@@ -1,7 +1,8 @@
-"use client"
-import { useState } from 'react';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+"use client";
+import { useState } from "react";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import ComponentEditor from "../components/ComponentEditor";
 
 export default function Home() {
   const [rickRoll, setRickRoll] = useState(false);
@@ -34,6 +35,8 @@ export default function Home() {
           ></iframe>
         </div>
       )}
+
+      <ComponentEditor />
     </div>
   );
 }
