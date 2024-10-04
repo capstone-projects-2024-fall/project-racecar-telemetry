@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar";
 import ComponentEditor from "../components/ComponentEditor";
 
 
