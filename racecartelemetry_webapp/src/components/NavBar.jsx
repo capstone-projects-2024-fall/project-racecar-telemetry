@@ -29,7 +29,10 @@ const Navbar = () => {
         <Link href="/profiles" passHref>
           <Button color="inherit">Profiles</Button>
         </Link>
-        <Button color="inherit" onClick={handleLogout}>
+        <Button
+          sx={{ color: "white", backgroundColor: "#e74c3c" }}
+          onClick={handleLogout}
+        >
           Logout
         </Button>
       </Toolbar>
