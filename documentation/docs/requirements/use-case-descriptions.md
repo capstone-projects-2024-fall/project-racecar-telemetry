@@ -93,3 +93,22 @@ _The new TFR ergonomics lead wants to view information relevant to vehicle handl
 10. A driver completes an acceleration run while the ergonomics lead monitors performance.
 11. When the driver finishes their run, the ergonomics lead immediately shows them the dashboard, using the progress bar at the bottom of the dashboard to scrub backwards and indicate where they shifted into third gear too early. 
 12. The driver completes another acceleration run, shifts later, and shaves 0.1 seconds off of their previous time.
+
+## Case 8
+_The TFR team members want to review the performance of a test run that was completed last week._
+1. User navigates to webpage. 
+2. Member logs into account.
+3. Member pulls up previous week's data.
+4. Member clicks on the graph to adjust scope of graph.
+5. Member enters time frame to analyze to get specific readings from certain time frame.
+6. Graph displays only data from time frame.
+
+## Case 9 
+_A TFR team member wants to add and delete graphs are being displayed to the dashboard._
+1. User navigates to webpage.
+2. User logs into account and goes into the dashboard.
+3. User clicks on the graph.
+4. User deletes graph.
+5. User adds new graph.
+6. User adjusts values to change which sensor is being graphed in graph settings.
+
