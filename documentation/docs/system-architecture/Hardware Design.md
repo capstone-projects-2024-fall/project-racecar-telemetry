@@ -34,6 +34,5 @@ The telemetry device will be tested using a small RC car to simulate the TFR veh
 ### Wiring/Breadboarding Diagram
 ![system diagram](/img/RC-Car-Breadboard.svg)
 
-
-
-
+## Complete Hardware Requirements
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRPmqrR1D0rSadeonzcJYDSI9_54YGbKhxfEFePVx_G_DNKT3bhswWF8M95XYecuXjWSqct2AxIOJHy/pubhtml?widget=true&headers=false" frameborder="0" width="100%" height="500"></iframe>
