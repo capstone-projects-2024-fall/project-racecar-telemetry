@@ -16,17 +16,16 @@ sidebar_position: 4
     1.  Data is stored in a cloud database. 
         
 <b>3.  Data Visualization</b>
-    1.  Users navigate to the webpage and enter a password to view data.
-    2.  A default dashboard page containing various widgets (e.g., graphs, gauges, number displays) appears when users first open the page.
-    3.  A text box says “Connected” if data is currently streaming to the database, and “Not Connected” otherwise.
-    4.  If “<ins>Connected</ins>”:
+    1.  A default dashboard page containing various widgets (e.g., graphs, gauges, number displays) appears when users first open the page.
+    2.  A text box says “Connected” if data is currently streaming to the database, and “Not Connected” otherwise.
+    3.  If “<ins>Connected</ins>”:
         1.  Widgets automatically populate with live data.
         2.  If there are any new CAN IDs from the database (meaning that the ECU settings have been changed to transmit different data), a data assignment window appears where the user can specify what data the new CAN ID’s correspond to. This will require the TFR team to look at the ECU software, especially the first time the webpage is used.
         3.  A progress bar allows users to scrub to previous timestamps to see past data within a session.
-    5.  If “<ins>Not Connected</ins>”:
+    4.  If “<ins>Not Connected</ins>”:
         1.  A pop-up gives the user a list of reasons data is not streaming. It has a “Do not show this message again” checkbox.
         2.  Widgets still appear but indicate that data is unavailable (through text or color).
-    6.  Widgets are customizable.
+    5.  Widgets are customizable.
         1.  Each has a button to open a component editor with options to change:
             1.  Data channel displayed
             2.  Data label
@@ -38,7 +37,7 @@ sidebar_position: 4
         3.  Widgets can be dragged and dropped to different locations on the screen.            
         4.  Widgets can be resized.            
         5.  Widgets can be deleted.            
-    7.  There is a menu for various layout/data related options.        
+    6.  There is a menu for various layout/data related options.        
         1.  Save recent data - users can download data from a specified timeline for later viewing.             
         2.  Open data file - prompts the user to browse for a downloaded data file to view/            
         3.  Save layout - saves dashboard layout             

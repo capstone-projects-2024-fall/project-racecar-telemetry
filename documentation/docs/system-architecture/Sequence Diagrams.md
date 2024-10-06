@@ -145,39 +145,15 @@ _The new TFR ergonomics lead wants to view information relevant to vehicle handl
 ```mermaid
 sequenceDiagram
 actor e as Ergonomics Lead
-participant l as Login Page
-participant d as Database
 participant dash as Dashboard Home
+participant d as Database
+
 actor dr as Driver
 actor c as Racecar
 participant esp as MCU
 
 
-e -) l: Clicks Sign Up button
 activate e
-activate l
-
-l --) e: Show Sign Up form
-
-e -) l: Enter registration information
-
-
-l -) d: Create new user (username, password)
-activate d
-
-d -) d: Check if valid username
-    loop While user name is taken
-        d-->e: Enter new username
-    end
-deactivate d
-
-d --) l: Successful registration
-
-l -) dash: Redirect
-deactivate l
-
-dash --) e: Show Default Dashboard Homepage
-
 e -) dash: Click 'Insert New Display' (type: graph, sensors: [brake pressure front, brake pressure rear], unit: kPa)
 dash --) e: Show new display component
 
