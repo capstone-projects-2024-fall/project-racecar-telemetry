@@ -1,9 +1,9 @@
 ---
 sidebar_position: 2
 ---
-# Telemetry Device
+## Telemetry Device
 
-The **telemetry device** consists of a microcontroller and CAN transceiver wired to a standard automotive connector that will be plugged directly into the vehicle's wiring harness. It requires the following wires to integrate with the vehicle's wiring harness:
+The telemetry device consists of a microcontroller and CAN transceiver wired to a standard automotive connector that will be plugged directly into the vehicle's wiring harness. It requires the following wires to integrate with the vehicle's wiring harness:
 | Color     |  Label    |  Meaning  |
 | --------- | -------   | -------   |
 | Red       | 12V_PWR   | 12V power supplied by the vehicle's power distribution module. |
@@ -17,12 +17,23 @@ Components:
 * TJA1050: CAN transceiver
 * DTM04-6P: 6 pin Deutsch connector
 
-## Wiring/Breadboarding Diagram
-//![system diagram](/img/Telemetry Device Breadboard.png) 
+### Wiring/Breadboarding Diagram
+![system diagram](/img/Telemetry-Device-Breadboard.png)
 
-## Electrical Schematic
+### Electrical Schematic
 ![system diagram](/img/Schematic_RCT-Wiring-Diagram_2024-09-28.svg) 
 
-# Proof of Concept & Testing
-The telemetry device will be tested using a small RC car to simulate the TFR vehicle. The telemetry device should be able to plug into the RC car setup exactly as it would the TFR car. This will require that a miniature 'wiring harness' is constructed on the RC car with the following components:
-* ESP32 microcontroller - acts as racecar's ECU, transmitting CAN messages to telemetry device
+## Proof of Concept & Testing
+The telemetry device will be tested using a small RC car to simulate the TFR vehicle. The telemetry device should be able to plug into the RC car setup exactly as it would the TFR car. This will require that a basic breadboard is constructed on the RC car, containing following components:
+* ESP-WROOM-32 DEVKITV1 - In addition to the microcontroller in the telemetry device, this microcontroller acts as the as racecar's ECU, transmitting CAN messages to telemetry device. 
+* TJA 1050 CAN transceiver - allows the ESP32 to transmit and receive CAN messages
+* 9V Battery - powers RC components and telemetry device
+* 3 axis accelerometer - wired to the ESP32 (the one acting as the ECU) to provide sensor measurements to transmit live
+* DTM04-6P: 6 pin Deutsch connector, for easy connection and removal of telemetry device
+
+### Wiring/Breadboarding Diagram
+![system diagram](/img/RC-Car-Breadboard.svg)
+
+
+
+
