@@ -23,8 +23,12 @@ const Navbar = () => {
           </Typography>
         </Box>
 
-        <Link href="/page" passHref>
+        <Link href="/" passHref>
           <Button color="white">Dashboard</Button>
+        </Link>
+
+        <Link href="/ComponentEditor" passHref>
+          <Button color="white">Component Editor</Button>
         </Link>
 
         <Link href="/CANDataAssignment" passHref>
