@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.3.2">
 <title data-rh="true">Features and Requirements | Project Racecar Telemetry</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/docs/requirements/features-and-requirements"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Features and Requirements | Project Racecar Telemetry"><meta data-rh="true" name="description" content="Functional Requirements"><meta data-rh="true" property="og:description" content="Functional Requirements"><link data-rh="true" rel="icon" href="/project-racecar-telemetry/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/docs/requirements/features-and-requirements"><link data-rh="true" rel="alternate" href="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/docs/requirements/features-and-requirements" hreflang="en"><link data-rh="true" rel="alternate" href="https://capstone-projects-2024-fall.github.io/project-racecar-telemetry/docs/requirements/features-and-requirements" hreflang="x-default"><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script><link rel="stylesheet" href="/project-racecar-telemetry/assets/css/styles.e4cc120d.css">
-<script src="/project-racecar-telemetry/assets/js/runtime~main.37398a32.js" defer="defer"></script>
+<script src="/project-racecar-telemetry/assets/js/runtime~main.1e3d152f.js" defer="defer"></script>
 <script src="/project-racecar-telemetry/assets/js/main.2f14feb8.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -52,10 +52,11 @@
 <ol>
 <li>Data channel displayed</li>
 <li>Data label</li>
-<li>Display component type (e.g., change from a linear to radial gauge)</li>
+<li>Display component type (linear gauge, radial gauge, time-series graph, numerical, warning)</li>
 <li>Unit of measurement (e.g., mph to kph)</li>
 <li>Minimum &amp; maximum values (for non-numerical components)</li>
 <li>Color (for certain components, like line graphs)</li>
+<li>Trigger threshold (for warnings)</li>
 </ol>
 </li>
 <li>There is an “insert new display” button which adds a component onto the screen and opens the component editor.</li>
@@ -74,37 +75,46 @@
 </li>
 </ol>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="nonfunctional-requirements-">Nonfunctional Requirements <a href="#nonfunctional-requirements-" class="hash-link" aria-label="Direct link to Nonfunctional Requirements " title="Direct link to Nonfunctional Requirements ">​</a></h2>
-<ul>
+<ol>
 <li>
-<p>The graphs have an option to click-drag a threshold or manually entered threshould for an alarm.</p>
+<b>Performance</b>
+<ol>
+<li>Telemetry data have no more than .500 ms latency.</li>
+<li>Data can transmit up to 500m away.</li>
+</ol>
 </li>
 <li>
-<p>Initially, work on public network for proof of concept.</p>
+<b>Usability of Website</b>
+<ol>
+<li>No contact required between Capstone team and TFR team - Any information required to use the website is included as written instructions on the webpage.</li>
+<li>Layouts and data are available to all team members who create accounts to facilitate sharing.</li>
+<li>Sensor data is easily exportable to CSV file (separate from raw CAN data file).</li>
+</ol>
 </li>
 <li>
-<p>Socket should be opened on a raspberry Pi on a local network. Using the internet may be a security risk as other teams may try to intercept information of vehicles that are not their own.</p>
+<b>Integration with TFR car</b>
+<ol>
+<li>Telemetry device connects to the vehicle wiring harness with a single standard automotive connector (Deutsch DTM connector)</li>
+<li>Connector will have wires for 12V power &amp; ground, 5V power, CAN high and low</li>
+<li>Deivce weighs under 1.5 lbs.</li>
+</ol>
 </li>
 <li>
-<p>Information from the ECU will be read by plugging the Pi into the ECU.</p>
+<b>Robustness</b>
+<ol>
+<li>Device casing is waterproof (can be run underwater without any leakage).</li>
+<li>Device casing is vibration proof (components are secured to case and device has padding).</li>
+</ol>
 </li>
 <li>
-<p>Delay of reading the data point and showing up to read is no more than 1 second.</p>
+<b>Testing/Proof of Concept</b>
+<ol>
+<li>System capability will be tested and demonstrated with an RC car.</li>
+<li>RC car will have an MCU, can transceiver, battery, and two basic sensors to simulate racecar communication and power.</li>
+<li>Telemetry device can plug directly into RC car as it would the real harness.</li>
+<li>RC car data transmission will be tested from 0-500 m away to measure latency.</li>
+</ol>
 </li>
-<li>
-<p>Racecar Telemetry will require using a socket for wireless communication between the device and the monitors in the pit crew. The driver can also have a computer they can use to connect to the device.</p>
-</li>
-<li>
-<p>The user may set alerts for certain readings if they go outside of custom set parameters, or the crew can monitor live data for the driver as they race.</p>
-</li>
-<li>
-<p>Data will be stored on cloud for easy access by crew.</p>
-</li>
-<li>
-<p>Wireless communication will be used to transmit data to the crew for easy reading.</p>
-</li>
-<li>
-<p>Data processing can be done using Flask (tentative)</p>
-</li>
-</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/capstone-projects-2024-fall/project-racecar-telemetry/edit/main/documentation/docs/requirements/features-and-requirements.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"><details><summary>Revision History</summary><table><thead><tr><th scope="row">Author</th><th scope="row">Revision</th><th scope="row">Date</th></tr></thead><tbody>nothing</tbody></table></details><span class="theme-last-updated">Last updated<!-- --> by <b>Arianna Reischer</b></span></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/project-racecar-telemetry/docs/requirements/general-requirements"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">General Requirements</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/project-racecar-telemetry/docs/requirements/use-case-descriptions"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Use-case descriptions</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#functional-requirements-" class="table-of-contents__link toc-highlight">Functional Requirements </a></li><li><a href="#nonfunctional-requirements-" class="table-of-contents__link toc-highlight">Nonfunctional Requirements </a></li></ul></div></div></div></div></main></div></div></div><footer class="footer"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/project-racecar-telemetry/docs/intro">Documentation</a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/capstone-projects-2024-fall/project-racecar-telemetry" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="margin-bottom--sm"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--light_NVdE"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--dark_xIcU"></div><div class="footer__copyright">Copyright © 2024 Project Racecar Telemetry, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</ol></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/capstone-projects-2024-fall/project-racecar-telemetry/edit/main/documentation/docs/requirements/features-and-requirements.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"><details><summary>Revision History</summary><table><thead><tr><th scope="row">Author</th><th scope="row">Revision</th><th scope="row">Date</th></tr></thead><tbody>nothing</tbody></table></details><span class="theme-last-updated">Last updated<!-- --> by <b>NasierF</b></span></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/project-racecar-telemetry/docs/requirements/general-requirements"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">General Requirements</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/project-racecar-telemetry/docs/requirements/use-case-descriptions"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Use-case descriptions</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#functional-requirements-" class="table-of-contents__link toc-highlight">Functional Requirements </a></li><li><a href="#nonfunctional-requirements-" class="table-of-contents__link toc-highlight">Nonfunctional Requirements </a></li></ul></div></div></div></div></main></div></div></div><footer class="footer"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/project-racecar-telemetry/docs/intro">Documentation</a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/capstone-projects-2024-fall/project-racecar-telemetry" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="margin-bottom--sm"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--light_NVdE"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--dark_xIcU"></div><div class="footer__copyright">Copyright © 2024 Project Racecar Telemetry, Inc. Built with Docusaurus.</div></div></div></footer></div>
 </body>
 </html>
