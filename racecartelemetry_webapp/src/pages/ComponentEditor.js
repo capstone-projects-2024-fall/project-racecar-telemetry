@@ -1,6 +1,5 @@
-import ComponentEditor from '../components/ComponentEditor';
+import ComponentEditor from "../components/ComponentEditor";
 
 export default function ComponentEditorPage() {
   return <ComponentEditor />;
 }
-

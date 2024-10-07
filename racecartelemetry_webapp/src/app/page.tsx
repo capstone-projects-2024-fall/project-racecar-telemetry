@@ -5,16 +5,11 @@ import Button from "@mui/material/Button";
 import NavBar from "../components/Navbar";
 import ComponentEditor from "../components/ComponentEditor";
 
-
 export default function Home() {
-
-
   return (
     <div className="flex flex-col justify-center min-h-screen">
-      
-
-      <NavBar/>
-
+      <NavBar />
+      homepage add stuff
     </div>
   );
 }

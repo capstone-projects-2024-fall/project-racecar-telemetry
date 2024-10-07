@@ -13,9 +13,9 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" >
+    <AppBar position="static" sx={{ marginBottom: 5 }}>
       <Toolbar
-        sx={{ background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)", marginBottom : 2 }}
+        sx={{ background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" }}
       >
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -42,7 +42,6 @@ const Navbar = () => {
         <Button sx={{ color: "white", border: 2 }} onClick={handleLogout}>
           Logout
         </Button>
-
       </Toolbar>
     </AppBar>
   );
