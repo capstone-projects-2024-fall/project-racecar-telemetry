@@ -99,3 +99,4 @@ export const CANInput = ({ index }) => {
     </>
   );
 };
+export default CANInput;

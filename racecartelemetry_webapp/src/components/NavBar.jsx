@@ -23,12 +23,16 @@ const Navbar = () => {
           </Typography>
         </Box>
 
-        <Link href="" passHref>
+        <Link href="/page" passHref>
           <Button color="white">Dashboard</Button>
         </Link>
 
         <Link href="/CANDataAssignment" passHref>
           <Button color="white">Data Assignment</Button>
+        </Link>
+
+        <Link href="/CANInput" passHref>
+          <Button color="white">CAN Input</Button>
         </Link>
 
         <Button sx={{ color: "white", border: 2 }} onClick={handleLogout}>
