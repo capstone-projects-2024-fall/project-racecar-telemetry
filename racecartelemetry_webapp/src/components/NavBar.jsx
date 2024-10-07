@@ -26,12 +26,15 @@ const Navbar = () => {
         <Link href="" passHref>
           <Button color="white">Dashboard</Button>
         </Link>
-        <Link href="/profiles" passHref>
-          <Button color="white">Profiles</Button>
+
+        <Link href="/CANDataAssignment" passHref>
+          <Button color="white">Data Assignment</Button>
         </Link>
+
         <Button sx={{ color: "white", border: 2 }} onClick={handleLogout}>
           Logout
         </Button>
+
       </Toolbar>
     </AppBar>
   );
