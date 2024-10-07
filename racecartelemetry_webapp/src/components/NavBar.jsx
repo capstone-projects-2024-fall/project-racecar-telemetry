@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <AppBar position="static" >
       <Toolbar
-        sx={{ background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)", marginBottom:2 }}
+        sx={{ background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)", marginBottom : 2 }}
       >
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -23,7 +23,7 @@ const Navbar = () => {
           </Typography>
         </Box>
 
-        <Link href="/" passHref>
+        <Link href="" passHref>
           <Button color="white">Dashboard</Button>
         </Link>
         <Link href="/profiles" passHref>
