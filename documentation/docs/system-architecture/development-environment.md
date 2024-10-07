@@ -4,15 +4,6 @@ sidebar_position: 4
 
 # Development Environment  
 
-## Hardware Requirements  
-### Main Telemetry Device Hardware Components
-- CAN Transceiver: TJA1050  
-- Microprocessor: ESP-WROOM32-DEVKITV1
-- Smartphone with mobile hotspot capability
-
-### Complete Hardware Requirements
-<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRPmqrR1D0rSadeonzcJYDSI9_54YGbKhxfEFePVx_G_DNKT3bhswWF8M95XYecuXjWSqct2AxIOJHy/pubhtml?widget=true&headers=false" frameborder="0" width="100%" height="500"></iframe>
-  
 ## Software Requirements  
 ### IDE     
 - Visual Studio Code  

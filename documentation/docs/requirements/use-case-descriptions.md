@@ -81,9 +81,7 @@ _A driver and his team decide that they must push their lead and floor it. This 
 
 ## Case 7
 _The new TFR ergonomics lead wants to view information relevant to vehicle handling and driver performance during a run._
-1. The ergonomics lead navigates to the TFR telemetry webpage, where she is prompted to log in or sign up for an account.
-2. She creates an account.
-3. She is redirected to the default dashboard page, which displays "Not Connected" (since the car is off), and several blank graphs and gauges.
+1. The ergonomics lead navigates to the TFR telemetry webpage, where she sees a default dashboard page. It displays "Not Connected" (since the car is off), and shows several blank graphs and gauges.
 4. She deletes all of the existing graphs.
 5. She clicks the "Insert New Display" button, which brings up a menu of options to create a new dashboard display component.
 6. She enters options to view time series plot of the front and rear brake pressure sensor readings, keeping default colors and changing the unit from PSI to kPa, and then clicks "Save". 
