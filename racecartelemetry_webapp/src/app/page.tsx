@@ -7,9 +7,9 @@ import NumericalData from "../components/NumericalData";
 
 export default function Home() {
   return (
-    <div className="flex flex-col justify-center min-h-screen">
+    <div className="flex flex-col justify-center">
       <NavBar />
-      <NumericalData/>
+      <NumericalData />
       homepage add stuff
     </div>
   );

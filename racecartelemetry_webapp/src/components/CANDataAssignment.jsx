@@ -98,18 +98,31 @@ const CANDataAssignment = () => {
         </Button>
       </Grid>
 
-      <Grid container spacing={2} sx={{ marginTop: 2 }}>
-        <Grid item xs={6}>
-          <Button variant="outlined" color="secondary" onClick={handleCancel}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          marginTop: 2,
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+        }}
+      >
+        <Grid item>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleCancel}
+            sx={{ width: 150, height: 50 }}
+          >
             Cancel
           </Button>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item>
           <Button
             variant="contained"
             color="primary"
             onClick={handleSubmit}
-            fullWidth
+            sx={{ width: 150, height: 50 }}
           >
             Save
           </Button>
