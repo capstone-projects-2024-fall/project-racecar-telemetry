@@ -1,25 +1,56 @@
 import React, { useState } from "react";
 import { CANInput } from "./CANInput";
-import {
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Box,
-  Typography,
-  Grid,
-} from "@mui/material";
+import { Button, Box, Typography, Grid } from "@mui/material";
 
 const CANDataAssignment = () => {
-  const [rows, setRows] = useState([1]);
-  const handleSubmit = () => {};
-
-  const handleCancel = () => {};
+  const [rows, setRows] = useState([
+    {
+      DataChannel: "",
+      CanID: "",
+      MessageLength: "",
+      OffsetBytes: "",
+      Adder: "",
+      Multiplier: "",
+      Unit: "",
+    },
+  ]);
 
   const handleAddRow = () => {
-    setRows([...rows, rows.length]);
+    setRows([
+      ...rows,
+      {
+        DataChannel: "",
+        CanID: "",
+        MessageLength: "",
+        OffsetBytes: "",
+        Adder: "",
+        Multiplier: "",
+        Unit: "",
+      },
+    ]);
+  };
+
+  const handleRowChange = (index, updatedRow) => {
+    const updatedRows = rows.map((row, i) => (i === index ? updatedRow : row));
+    setRows(updatedRows);
+  };
+
+  const handleSubmit = () => {
+    console.log("Submitted Data:", rows);
+  };
+
+  const handleCancel = () => {
+    setRows([
+      {
+        DataChannel: "",
+        CanID: "",
+        MessageLength: "",
+        OffsetBytes: "",
+        Adder: "",
+        Multiplier: "",
+        Unit: "",
+      },
+    ]);
   };
 
   return (
@@ -46,9 +77,13 @@ const CANDataAssignment = () => {
         CAN Data Assignment
       </Typography>
 
-      {rows.map((index) => (
+      {rows.map((row, index) => (
         <Grid item xs={12} key={index}>
-          <CANInput index={index} />
+          <CANInput
+            index={index}
+            row={row}
+            onRowChange={(updatedRow) => handleRowChange(index, updatedRow)}
+          />
         </Grid>
       ))}
 
@@ -63,15 +98,9 @@ const CANDataAssignment = () => {
         </Button>
       </Grid>
 
-      {/* Buttons: Submit and Cancel */}
       <Grid container spacing={2} sx={{ marginTop: 2 }}>
         <Grid item xs={6}>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={handleCancel}
-            fullWidth
-          >
+          <Button variant="outlined" color="secondary" onClick={handleCancel}>
             Cancel
           </Button>
         </Grid>
