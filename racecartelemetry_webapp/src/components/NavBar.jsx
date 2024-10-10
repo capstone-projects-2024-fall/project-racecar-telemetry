@@ -7,11 +7,12 @@ import Link from "next/link";
 import { red } from "@mui/material/colors";
 
 const Navbar = () => {
+/* uncomment whenever login part needs to be created
   const handleLogout = () => {
     alert("You have been logged out!");
     // replacee
   };
-
+*/
   return (
     <AppBar position="static" sx={{ marginBottom: 5 }}>
       <Toolbar
