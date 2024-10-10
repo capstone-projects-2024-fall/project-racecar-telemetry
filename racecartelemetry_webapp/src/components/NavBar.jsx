@@ -40,9 +40,9 @@ const Navbar = () => {
           <Button color="white">CAN Input</Button>
         </Link>
 
-        <Button sx={{ color: "white", border: 2 }} onClick={handleLogout}>
+        {/* <Button sx={{ color: "white", border: 2 }} onClick={handleLogout}>
           Logout
-        </Button>
+        </Button> */}
       </Toolbar>
     </AppBar>
   );

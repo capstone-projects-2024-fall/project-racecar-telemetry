@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --watchAll --coverage",
-    "eject": "react-scripts eject"
+    "start": "next start",
+    "build": "next build",
+    "test": "jest --watchAll --coverage",
+     "dev": "next dev"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
