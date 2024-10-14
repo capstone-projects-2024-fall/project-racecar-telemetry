@@ -1,39 +1,25 @@
-"use client"
-import { useState } from 'react';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+"use client";
+import { useState } from "react";
+import React from "react";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import NavBar from "../components/Navbar";
+import DataDisplay from "../components/DataDisplay";
 
 export default function Home() {
-  const [rickRoll, setRickRoll] = useState(false);
-
-  const handleClick = () => {
-    setRickRoll(true);
-  };
-
+  const telemetryData = [
+{ label: 'Speed (mph)', value: 120 },
+{ label: 'Engine Temperature (°F)', value: 200 },
+{ label: 'RPM', value: 6500 },
+{ label: 'Battery Voltage (V)', value: 12.5 },
+];
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <div>
-        <h1>Hey :)</h1>
-      </div>
-      <Stack spacing={2} direction="row">
-        <Button variant="contained" onClick={handleClick}>
-          Click to read data from esp
-        </Button>
-      </Stack>
+    <div className="flex flex-col justify-center">
+      <NavBar />
 
-      {rickRoll && (
-        <div className="mt-4">
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-            title="YouTube video"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
-      )}
+      <DataDisplay  data = {telemetryData}/>
+      
+      homepage add stuff
     </div>
   );
 }
