@@ -5,8 +5,8 @@
   "scripts": {
     "start": "next start",
     "build": "next build",
-    "test": "jest --watchAll --coverage",
-     "dev": "next dev"
+    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!racecartelemetry_webapp)/\" --env=jsdom",
+    "dev": "next dev"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
