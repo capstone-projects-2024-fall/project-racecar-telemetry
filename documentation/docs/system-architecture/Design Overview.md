@@ -19,12 +19,17 @@ This example will show how Throttle Position would be transmitted from the car t
             - Bit length: 16
             - Adder: 0
             - Multiplier: 0
-        - These settings result in the following CAN message. In reality, more of the 64 bits can be utilized. 
+        - These settings result in the CAN message below. In reality, more of the 64 bits can be utilized. 
+        - The ECU's internal circuitry converts this CAN message into a **differential voltage signal** and transmits that signal over the CAN bus.
+
 
 | Timestamp     | CAN ID    | Length    | Message    |
 | ------        | -------   | --------- | --------  |   
 | 13.45436      | 0x230     | 8         | 32 00 00 00 00 00 00 00 |
 
-    - The ECU's internal circuitry converts this CAN message into a **differential voltage signal** and transmits that signal over the CAN bus.
 
-3. In the telemetry device, the CAN transceiver is wired to 
+3. **CAN transceiver** - In the telemetry device, the CAN transceiver is wired to the CAN bus. It converts the differential voltage signal into frames of **serial data** containing the CAN messages.
+4. **Microcontroller** - Also in the telemetry device is the ESP32 microcontroller
+    - Receives all of the CAN bus messages coming through the transceiver
+    - filters by looking for CAN IDs between 0x200-0x300.
+    - Gathers data from 0.5 second intervals into JSON objects, where the key is the timestamp 
