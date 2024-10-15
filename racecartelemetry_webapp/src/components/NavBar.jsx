@@ -46,11 +46,11 @@ const Navbar = () => {
           <Button sx={{ color: "white" }}>Component Editor</Button>
         </Link>
 
-
-        <Link href="/CANInput" passHref>
-          <Button sx={{ color: "white" }}>CAN Input</Button>
+        <Link href="/CANDataAssignment" passHref>
+          <Button sx={{ color: "white" }}>Data Assignment</Button>
         </Link>
 
+    
         {/* Uncomment when adding the logout functionality
         <Button sx={{ color: "white", border: 2 }} onClick={handleLogout}>
           Logout
