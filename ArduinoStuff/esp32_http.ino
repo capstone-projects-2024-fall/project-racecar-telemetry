@@ -23,6 +23,12 @@ const long readInterval = 100;
 // CAN bus data variable to dynamically add to the JSON object as new data point
 String data_points = "";
 
+// accel pin
+int accelPins[3] = {34, 35, 32};
+int accelData[3];
+String accelDataLabels[] = {"Y-Acceleration", "X-Acceleration", "Z-Acceleration"};
+
+
 struct Can_message {
   float timestamp;
   String can_id;
@@ -84,7 +90,7 @@ Can_message message[] = {
   { 5.000, "2B3", "FF F8 00 02 7F FF 7F FF", 8 }
 };
 
-int i = 0;
+int i = 0; // what is i?
 void readNextMessage(){
   if (i < 50) {
     Can_message current_message = message[i];
@@ -131,7 +137,8 @@ void sendToDatabase(){
   data_points = "";
 }
 
-void setup(){
+
+void setup() {
   Serial.begin(115200);
 
   WiFi.begin(ssid, password);
@@ -142,11 +149,17 @@ void setup(){
   }
 
   Serial.println("Connected!");
-  // Serial.print("IP Address: ");
-  // Serial.println(WiFi.localIP());
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
 }
 
-void loop(){
+void loop() {
+  for (int i = 0; i < 3; i++)
+  {
+    accelData[i] = analogRead(accelPin[i]);
+    Serial.println(accelDataLabels[i] + accelData[i]);
+  }
+
   if (millis() - lastReadTime >= readInterval && i < 50) {
     readNextMessage();
     lastReadTime = millis();  // Reset the timer for next 0.1-second read
