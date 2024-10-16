@@ -17,8 +17,15 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages/*"],
+      //"@api/*":["src/pages/api/*"],
+      "@styles/*": ["src/styles/*"],
+      "@firebaseConfig": ["src/firebase/firebase.js"],
+      "@app/*": ["src/app/*"]
     },
     "forceConsistentCasingInFileNames": true
   },
