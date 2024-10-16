@@ -24,7 +24,7 @@
       "@pages/*": ["src/pages/*"],
       //"@api/*":["src/pages/api/*"],
       "@styles/*": ["src/styles/*"],
-      "@firebaseConfig": ["src/firebase/firebase.js"],
+      "@firebaseConfig": ["src/firebase/firebaseConfig.js"],
       "@app/*": ["src/app/*"]
     },
     "forceConsistentCasingInFileNames": true

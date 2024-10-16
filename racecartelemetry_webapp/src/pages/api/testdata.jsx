@@ -1,0 +1,31 @@
+// pages/api/testdata.js
+
+import { db } from '@firebaseConfig'; 
+import { ref, get } from "firebase/database"; 
+
+export default async function handler(req, res) {
+  if (req.method === 'GET') {
+    try {
+      // Create reference to the 'testdata' node
+      const dataRef = ref(db, 'testdata');
+      
+      // Fetch the data once using `get()`
+      const snapshot = await get(dataRef);
+      console.log("testing")
+      console.log("data retrieved: " + dataRef)
+      
+      if (snapshot.exists()) {
+        const data = snapshot.val(); //Get the JSON data
+        res.status(200).json({ data });
+      } else {
+        res.status(404).json({ error: "No data found" });
+      }
+    } catch (error) {
+      console.error('Error fetching test data:', error);
+      res.status(500).json({ error: 'Failed to retrieve data' });
+    }
+  } else {
+    res.setHeader('Allow', ['GET']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}
