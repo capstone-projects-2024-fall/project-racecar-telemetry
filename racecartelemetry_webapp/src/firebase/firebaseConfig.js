@@ -3,7 +3,7 @@ import { getDatabase } from "firebase/database";
 import { getAnalytics } from "firebase/analytics";
 
 let app;
-let database;
+let db;
 let analytics;
 
 if (typeof window !== "undefined") {
@@ -19,13 +19,13 @@ if (typeof window !== "undefined") {
     
 
   app = initializeApp(firebaseConfig);
-  database = getDatabase(app);
+  db = getDatabase(app);
 
   if (window.location.hostname !== "localhost") {
     analytics = getAnalytics(app);
   }
 }
 
-export { app, database, analytics };
+export { app, db, analytics };
 
 
