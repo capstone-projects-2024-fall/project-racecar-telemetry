@@ -1,28 +1,22 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "your-SSID";
+const char* password = "your-PASSWORD";
 
-// Firebase Database URL, API key if used
+// Firebase Database URL (replace <your-project-id> with your project ID)
 const char* firebaseHost = "https://<your-project-id>.firebaseio.com";
-// const char* firebaseAuth = "YOUR_FIREBASE_SECRET_KEY";
-
-// // python test server
-// const char* serverHost = "YOUR_SERVER_ENDPOINT";
 
 WiFiClient client;
 HTTPClient http;
 
 long lastSendTime = 0;
-const long sendInterval = 500;
+const long sendInterval = 500;  // Interval to send data
 
 long lastReadTime = 0;
-const long readInterval = 100;
+const long readInterval = 100;  // Interval to read CAN messages
 
-// CAN bus data variable to dynamically add to the JSON object as new data point
-String data_points = "";
-
+// CAN message struct
 struct Can_message {
   float timestamp;
   String can_id;
@@ -30,7 +24,6 @@ struct Can_message {
   int length;
 };
 
-// Sample CAN data over 5 seconds (total 50 messages)
 Can_message message[] = {
   { 0.100, "2B3", "00 00 03 F8 00 D3 00 06", 8 },
   { 0.200, "1A2", "FF 12 34 AB CD EF 56 78", 8 },
@@ -85,79 +78,69 @@ Can_message message[] = {
 };
 
 int i = 0;
+
 void readNextMessage(){
-  if (i < 50) {
+  if (i < sizeof(message) / sizeof(message[0])) {  // Check if we have more messages to send
     Can_message current_message = message[i];
-    data_points += "{ \"can_id\": \"" + current_message.can_id + "\", \"data\": \"" + current_message.data + "\", \"timestamp\": " + String(current_message.timestamp, 3) + " },";
+    
+    // Create a JSON string for this message
+    String jsonData = "{ \"timestamp\": " + String(current_message.timestamp, 3) + 
+                      ", \"data\": \"" + current_message.data + "\" }";
+    
+    // Send the data to the corresponding CAN ID node in Firebase
+    sendToDatabase(current_message.can_id, jsonData);
+    
     i++;
   }
 }
 
-void sendToDatabase(){
-  // Remove the trailing comma from the data_points string
-  if (data_points.endsWith(",")) {
-    data_points.remove(data_points.length() - 1);
-  }
-
-  // Build the JSON object
-  String jsonData = "{ \"data_points\": [" + data_points + "] }";
-
-  // Prepare the HTTP request w/ auth
-  // String url = String(firebaseHost) + "/canBusData.json?auth=" + firebaseAuth;
-  // WIthout Auth
-  String url = String(firebaseHost) + "/canBusData.json";
+void sendToDatabase(String canId, String jsonData) {
+  // Prepare the URL for the specific CAN ID
+  String url = String(firebaseHost) + "/canData/" + canId + ".json";  // Data will be sent under /canData/{canId}/
 
   if (WiFi.status() == WL_CONNECTED) {
+    http.begin(client, url);  // Specify the Firebase URL
+    http.addHeader("Content-Type", "application/json");  // Set the content type to JSON
 
-    http.begin(client, serverHost);
-    http.addHeader("Content-Type", "application/json");
-
-    // Send the POST request
-    int httpResponseCode = http.POST(jsonData);
+    // Send the POST request to append data
+    int httpResponseCode = http.PATCH(jsonData);  // Use PATCH to append data under the same node
 
     if (httpResponseCode > 0) {
-      Serial.println("Data sent to successfully.");
-      String response = http.getString();
+      Serial.println("Data sent successfully to " + canId);
+      String response = http.getString();  // Get the response from the server
       Serial.println(response);
     } else {
       Serial.print("Error sending data: ");
       Serial.println(httpResponseCode);
     }
 
-    http.end();  
+    http.end();  // End the HTTP connection
   }
-
-  // Clear the data points for the next aggregation
-  data_points = "";
 }
 
-void setup(){
+void setup() {
   Serial.begin(115200);
 
+  // Connect to Wi-Fi
   WiFi.begin(ssid, password);
-
-  while(WiFi.status() != WL_CONNECTED){
+  while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println("Attempting to connect to Wifi...");
+    Serial.println("Attempting to connect to Wi-Fi...");
   }
-
-  Serial.println("Connected!");
-  // Serial.print("IP Address: ");
-  // Serial.println(WiFi.localIP());
+  Serial.println("Connected to Wi-Fi");
 }
 
-void loop(){
+void loop() {
+  // Check if it's time to read the next message
   if (millis() - lastReadTime >= readInterval && i < 50) {
-    readNextMessage();
-    lastReadTime = millis();  // Reset the timer for next 0.1-second read
+    readNextMessage();  // Read and send the next CAN message
+    lastReadTime = millis();  // Reset the timer for the next message
   }
 
-  // Send accumulated data every 0.5 seconds, even if there are fewer than 50 messages collected
+  // Send accumulated data every 0.5 seconds
   if (millis() - lastSendTime >= sendInterval) {
-    if (data_points.length() > 0) {  // Only send if there's data to send
-      sendToDatabase();
-    }
-    lastSendTime = millis();  // Reset the timer for the next 0.5-second send
+    lastSendTime = millis();  // Reset the timer for the next send
   }
 }
+
 
