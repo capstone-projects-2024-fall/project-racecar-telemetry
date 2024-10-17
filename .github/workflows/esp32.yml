@@ -23,7 +23,7 @@ jobs:
         run: |
           for ino_file in $(find ESP32 -name '*.ino'); do
             echo "Compiling $ino_file"
-            arduino-cli compile --fqbn esp32:esp32 $ino_file
+            arduino-cli compile --fqbn esp32:esp32:esp32 $ino_file
           done
       - name: compile-cpp-unit-test
         run: |
