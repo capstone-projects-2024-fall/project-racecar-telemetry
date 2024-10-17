@@ -1,0 +1,35 @@
+name: CI for ESP32
+
+on:
+  push:
+    branches:
+      - esp32-send-to-firebase
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout-code
+        uses: actions/checkout@v3
+      - name: install-arduino-cli
+        run: | 
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+          sudo mv bin/arduino-cli /usr/local/bin/
+      - name: install-esp32-core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32
+      - name: compile-all-.ino-files
+        run: |
+          for ino_file in $(find ESP32 -name '*.ino'); do
+            echo "Compiling $ino_file"
+            arduino-cli compile --fqbn esp32:esp32:esp32 $ino_file
+          done
+      - name: compile-cpp-unit-test
+        run: |
+          g++ -o unit_test ESP32/unit_test/unit_test.cpp
+          echo "Unit tests compiled successfully!"
+      - name: run-cpp-unit-test
+        run: ./unit_test
+          
+      
