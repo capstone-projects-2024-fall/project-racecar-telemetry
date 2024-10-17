@@ -6,23 +6,26 @@ import { ref, get } from "firebase/database";
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
+
+        console.log('Firebase Database instance:', db);
       // Create reference to the 'testdata' node
-      const dataRef = ref(db, 'testdata');
+        const dataRef = ref(db, 'testadata');
       
-      // Fetch the data once using `get()`
-      const snapshot = await get(dataRef);
-      console.log("testing")
-      console.log("data retrieved: " + dataRef)
+      //Fetch the data once using get
+        const snapshot = await get(dataRef);
+        console.log("testing")
+        console.log("data retrieved: " + dataRef)
       
       if (snapshot.exists()) {
-        const data = snapshot.val(); //Get the JSON data
+        const data = snapshot.val(); //grab JSON data
         res.status(200).json({ data });
       } else {
         res.status(404).json({ error: "No data found" });
       }
     } catch (error) {
       console.error('Error fetching test data:', error);
-      res.status(500).json({ error: 'Failed to retrieve data' });
+      console.error('Firebase Database instance:', db);
+      res.status(500).json({ error: 'Failed to retrieve data', details: error.message });
     }
   } else {
     res.setHeader('Allow', ['GET']);
