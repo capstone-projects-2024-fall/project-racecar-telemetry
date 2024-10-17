@@ -23,10 +23,16 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
       - name: compile-all-.ino-files
-          run: |
-            for ino_file in $(find . -name '*.ino'); do
-              echo "Compiling $ino_file"
-              arduino-cli compile --fqbn esp32:esp32:esp32 $ino_file
-            done
+        run: |
+          for ino_file in $(find . -name '*.ino'); do
+            echo "Compiling $ino_file"
+            arduino-cli compile --fqbn esp32:esp32:esp32 $ino_file
+          done
+      - name: compile-cpp-unit-test
+        run: |
+          g++ -o unit_test ESP32/unit_tests/unit_test.cpp
+          echo "Unit tests compiled successfully!"
+      - name: run-cpp-unit-test
+        run: ./unit_test
           
       
