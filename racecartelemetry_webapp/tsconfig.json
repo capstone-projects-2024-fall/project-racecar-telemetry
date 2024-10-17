@@ -22,10 +22,12 @@
       "@/*": ["./src/*"],
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
-      //"@api/*":["src/pages/api/*"],
+      "@api/*":["src/pages/api/*"],
       "@styles/*": ["src/styles/*"],
       "@firebaseConfig": ["src/firebase/firebaseConfig.js"],
-      "@app/*": ["src/app/*"]
+      "@app/*": ["src/app/*"],
+      "@global.css": ["src/app/global.css"],
+      "@hooks/*": ["src/hooks/*"],
     },
     "forceConsistentCasingInFileNames": true
   },
