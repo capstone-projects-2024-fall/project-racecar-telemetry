@@ -1,6 +1,6 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include <CAN.h>
+// #include <CAN.h>
 
 // Hotspot details
 const char* ssid = "SSID";

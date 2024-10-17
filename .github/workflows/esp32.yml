@@ -1,9 +1,9 @@
 name: CI for ESP32
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - esp32-send-to-firebase
 
 jobs:
   build:
