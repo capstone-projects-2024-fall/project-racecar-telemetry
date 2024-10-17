@@ -30,7 +30,7 @@ jobs:
           done
       - name: compile-cpp-unit-test
         run: |
-          g++ -o unit_test ESP32/unit_tests/unit_test.cpp
+          g++ -o unit_test ESP32/unit_test/unit_test.cpp
           echo "Unit tests compiled successfully!"
       - name: run-cpp-unit-test
         run: ./unit_test
