@@ -7,14 +7,12 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
 
-        console.log('Firebase Database instance:', db);
+        
       // Create reference to the 'testdata' node
         const dataRef = ref(db, 'testadata');
       
       //Fetch the data once using get
         const snapshot = await get(dataRef);
-        console.log("testing")
-        console.log("data retrieved: " + dataRef)
       
       if (snapshot.exists()) {
         const data = snapshot.val(); //grab JSON data
