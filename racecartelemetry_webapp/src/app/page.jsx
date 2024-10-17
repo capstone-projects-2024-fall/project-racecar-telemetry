@@ -5,6 +5,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import NavBar from "../components/NavBar";
 import DataDisplay from "../components/DataDisplay";
+import TimeSeriesGraph from "../components/TimeSeriesGraph";
 
 export default function Home() {
   const telemetryData = [
@@ -18,6 +19,7 @@ export default function Home() {
       <NavBar />
       <DataDisplay data={telemetryData} />
       homepage add stuff
+      <TimeSeriesGraph />
     </div>
   );
 }
