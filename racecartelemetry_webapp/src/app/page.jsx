@@ -3,8 +3,9 @@ import { useState } from "react";
 import React from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import NavBar from "@components/Navbar";
-import DataDisplay from "@components/DataDisplay";
+import NavBar from "../components/NavBar";
+import DataDisplay from "../components/DataDisplay";
+import TimeSeriesGraph from "../components/TimeSeriesGraph";
 import TestData from "@components/testData"
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
       <NavBar />
       <DataDisplay data={telemetryData} />
       homepage add stuff
+      <TimeSeriesGraph />
       <TestData/>
     </div>
   );
