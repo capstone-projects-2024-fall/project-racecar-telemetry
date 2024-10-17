@@ -1,9 +1,6 @@
 name: CI for ESP32
 
 on:
-  push:
-    branches:
-      - feature-esp32-branch  # Replace with your ESP32-related branches
   pull_request:
     branches:
       - main
@@ -13,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout-code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: install-arduino-cli
         run: | 
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
