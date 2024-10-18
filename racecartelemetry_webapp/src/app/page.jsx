@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import NavBar from "@components/Navbar";
 import DataDisplay from "@components/DataDisplay";
 import TestData from "@components/testData"
+import CANDataLiveReading from "@components/CANDataLiveReading"
 
 export default function Home() {
   const telemetryData = [
@@ -20,6 +21,7 @@ export default function Home() {
       <DataDisplay data={telemetryData} />
       homepage add stuff
       <TestData/>
+      <CANDataLiveReading canID={'001'}/>
     </div>
   );
 }
