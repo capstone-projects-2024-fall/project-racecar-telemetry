@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
         
       // Create reference to the 'testdata' node
-        const dataRef = ref(db, 'testadata');
+        const dataRef = ref(db, 'CANdata/001');
       
       //Fetch the data once using get
         const snapshot = await get(dataRef);

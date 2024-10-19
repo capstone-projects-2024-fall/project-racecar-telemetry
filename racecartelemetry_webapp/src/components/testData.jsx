@@ -26,13 +26,12 @@ export default function TestData() {
 
   return (
     <div>
-      <h2>Test Data</h2>
+      <h2>Query data from API route</h2>
       {testData ? (
         <ul>
-          <li>CAN ID: {testData.canId}</li>
-          <li>Data: {testData.data}</li>
-          <li>Length: {testData.length}</li>
-          <li>Timestamp: {testData.timestamp}</li>
+          <li>Beginning Accelerometer X: {testData.X}</li>
+          <li>Beginning Accelerometer Y: {testData.Y}</li>
+          <li>Beginning Accelerometer Z: {testData.Z}</li>
         </ul>
       ) : (
         <p>No data available</p>
