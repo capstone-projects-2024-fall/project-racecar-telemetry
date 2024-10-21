@@ -10,7 +10,7 @@
 
 </div>
 
-## runnigng the web app
+## running the web app
  - cd into `racecartelemetry_webapp`
  - run `npm i` and wait for installation to complete
  - run `npm run dev` to run the website on localhost
