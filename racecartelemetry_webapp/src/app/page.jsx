@@ -6,8 +6,9 @@ import Button from "@mui/material/Button";
 import NavBar from "@components/Navbar";
 import DataDisplay from "@components/DataDisplay";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
-import TestData from "@components/testData"
-import CANDataLiveReading from "@components/CANDataLiveReading"
+import TestData from "@components/testData";
+import CANDataLiveReading from "@components/CANDataLiveReading";
+import GaugeGraph from "@components/GaugeGraph";
 
 export default function Home() {
   const telemetryData = [
@@ -22,8 +23,9 @@ export default function Home() {
       <DataDisplay data={telemetryData} />
       homepage add stuff
       <TimeSeriesGraph />
-      <TestData/>
-      <CANDataLiveReading canID={'001'}/>
+      <GaugeGraph />
+      <TestData />
+      <CANDataLiveReading canID={"001"} />
     </div>
   );
 }
