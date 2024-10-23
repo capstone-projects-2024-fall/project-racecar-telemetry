@@ -2,26 +2,47 @@
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
 
-const char *ssid = "SSID";
-const char *password = "PASSWD";
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_LIS3DH.h>
 
-const char *firebaseHost = "https://<your-project-id>.firebaseio.com";
+const char *ssid = "";
+const char *password = "";
+
+const char *firebaseHost = "";
+
+int accelPins[3] = {34, 35, 32};
 int accelData[3];
 
 WiFiClientSecure client;
 HTTPClient http;
 
+// struct dataObj
+// {
+//   int data;
+//   String name;
+//   int pin;
+// };
+
+//struct dataObj accelData[3];
+
+
 void generateAccelerometerData()
 {
-    accelData[0] = random(400, 800);
-    accelData[1] = random(200, 600);
-    accelData[2] = random(100, 500);
+
+
+  //get the current time in millis
+  unsigned long currentTime = millis();
+  for (int i = 0; i < 3; i++)
+  {
+    accelData[i] = analogRead(accelPins[i]);
+  }
 
     // // Debugging output
-    // Serial.println("Simulated Accelerometer Data:");
-    // Serial.println("X: " + String(accelData[0]));
-    // Serial.println("Y: " + String(accelData[1]));
-    // Serial.println("Z: " + String(accelData[2]));
+    Serial.println("Simulated Accelerometer Data:");
+    Serial.println("X: " + String(accelData[0]));
+    Serial.println("Y: " + String(accelData[1]));
+    Serial.println("Z: " + String(accelData[2]));
 }
 
 void sendToFirebase(String timestamp)
@@ -33,7 +54,7 @@ void sendToFirebase(String timestamp)
     jsonData += "\"Z\": " + String(accelData[2]);
     jsonData += "}";
 
-    String url = String(firebaseHost) + "/CANdata/001/" + timestamp + ".json";
+    String url = String(firebaseHost) + "/CANdata/001/.json";
 
     if (WiFi.status() == WL_CONNECTED)
     {
@@ -68,8 +89,12 @@ void sendToFirebase(String timestamp)
 
 void setup()
 {
-    // Initialize Serial Monitor
-    Serial.begin(115200);
+  // Initialize Serial Monitor
+  Serial.begin(115200);
+
+  accelData[0] = 34;
+  accelData[1] = 35;
+  accelData[2] = 32;
 
     // Connect to Wi-Fi
     WiFi.begin(ssid, password);
@@ -83,7 +108,7 @@ void setup()
 
 void loop()
 {
-    // Generate simulated accelerometer data
+      // Generate simulated accelerometer data
     generateAccelerometerData();
 
     String timestamp = String(millis());
