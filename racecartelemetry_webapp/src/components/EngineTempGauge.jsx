@@ -54,12 +54,12 @@ const EngineTempGauge = ({ canID }) => {
             value: displayedTemp,  // Dynamically set the gauge value based on the selected unit
             gauge: {
               axis: {
-                range: isFahrenheit ? [32, 400] : [0, 250],  // Adjust range for Fahrenheit or Celsius
+                range: isFahrenheit ? [0, 700] : [0, 550],  // Adjust range for Fahrenheit or Celsius
               },
               bar: { color: "red" },
               steps: [
-                { range: isFahrenheit ? [32, 200] : [0, 100], color: "lightgray" },
-                { range: isFahrenheit ? [200, 400] : [100, 250], color: "gray" },
+                { range: isFahrenheit ? [233, 466] : [183, 366], color: "lightgray" },
+                { range: isFahrenheit ? [466, 700] : [366, 550], color: "gray" },
               ],
             },
           },
