@@ -4,7 +4,8 @@ import { db } from "@firebaseConfig";  // Import Firebase config
 import { ref, onValue } from "firebase/database";  // Firebase Realtime Database functions
 
 const EngineTempGauge = ({ canID }) => {
-  const [engineTemp, setEngineTemp] = useState(0);  // State to store the X value
+  const [engineTemp, setEngineTemp] = useState(0);  // State to store the temperature in Celsius
+  const [isFahrenheit, setIsFahrenheit] = useState(false);  // State to toggle between Celsius and Fahrenheit
 
   useEffect(() => {
     if (!canID) return;
@@ -16,7 +17,7 @@ const EngineTempGauge = ({ canID }) => {
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const canData = snapshot.val();
-        setEngineTemp(canData.X);  // Use the 'X' value from the database for the gauge
+        setEngineTemp(canData.Temp);  // Assume the value from Firebase is in Celsius
       }
     });
 
@@ -24,25 +25,50 @@ const EngineTempGauge = ({ canID }) => {
     return () => unsubscribe();
   }, [canID]);
 
+  // Function to convert Celsius to Fahrenheit
+  const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
+
+  // Determine the displayed temperature based on the toggle state
+  const displayedTemp = isFahrenheit ? convertToFahrenheit(engineTemp) : engineTemp;
+
+  // Toggle between Celsius and Fahrenheit
+  const toggleTemperatureUnit = () => {
+    setIsFahrenheit(!isFahrenheit);
+  };
+
   return (
-    <Plot
-      data={[
-        {
-          type: "indicator",
-          mode: "gauge+number",
-          value: engineTemp,  // Dynamically set the gauge value to engineTemp (X value)
-          gauge: {
-            axis: { range: [0, 100] },
-            bar: { color: "red" },
-            steps: [
-              { range: [0, 50], color: "lightgray" },
-              { range: [50, 100], color: "gray" },
-            ],
+    <div>
+      {/* Button to toggle between Celsius and Fahrenheit */}
+      <button onClick={toggleTemperatureUnit}>
+        Show in {isFahrenheit ? "Celsius" : "Fahrenheit"}
+      </button>
+
+      {/* Display the gauge with the selected temperature unit */}
+      <Plot
+        data={[
+          {
+            type: "indicator",
+            mode: "gauge+number",
+            value: displayedTemp,  // Dynamically set the gauge value based on the selected unit
+            gauge: {
+              axis: {
+                range: isFahrenheit ? [32, 212] : [0, 100],  // Adjust range for Fahrenheit or Celsius
+              },
+              bar: { color: "red" },
+              steps: [
+                { range: isFahrenheit ? [32, 122] : [0, 50], color: "lightgray" },
+                { range: isFahrenheit ? [122, 212] : [50, 100], color: "gray" },
+              ],
+            },
           },
-        },
-      ]}
-      layout={{ width: 600, height: 400, title: "Engine Temperature" }}
-    />
+        ]}
+        layout={{
+          width: 600,
+          height: 400,
+          title: `Engine Temperature (${isFahrenheit ? "F" : "C"})`,
+        }}
+      />
+    </div>
   );
 };
 
