@@ -37,11 +37,13 @@ const EngineTempGauge = ({ canID }) => {
   };
 
   return (
-    <div>
-      {/* Button to toggle between Celsius and Fahrenheit */}
-      <button onClick={toggleTemperatureUnit}>
-        Show in {isFahrenheit ? "Celsius" : "Fahrenheit"}
-      </button>
+    <div style={{ padding: 10, width: 600, margin: '0 auto' }}>
+      {/* Container to center the button within the component */}
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <button onClick={toggleTemperatureUnit} style={{ padding: "10px 20px", fontSize: "16px" }}>
+          Show in {isFahrenheit ? "Celsius" : "Fahrenheit"}
+        </button>
+      </div>
 
       {/* Display the gauge with the selected temperature unit */}
       <Plot
@@ -52,12 +54,12 @@ const EngineTempGauge = ({ canID }) => {
             value: displayedTemp,  // Dynamically set the gauge value based on the selected unit
             gauge: {
               axis: {
-                range: isFahrenheit ? [32, 212] : [0, 100],  // Adjust range for Fahrenheit or Celsius
+                range: isFahrenheit ? [32, 400] : [0, 250],  // Adjust range for Fahrenheit or Celsius
               },
               bar: { color: "red" },
               steps: [
-                { range: isFahrenheit ? [32, 122] : [0, 50], color: "lightgray" },
-                { range: isFahrenheit ? [122, 212] : [50, 100], color: "gray" },
+                { range: isFahrenheit ? [32, 200] : [0, 100], color: "lightgray" },
+                { range: isFahrenheit ? [200, 400] : [100, 250], color: "gray" },
               ],
             },
           },
