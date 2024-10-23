@@ -8,7 +8,7 @@ import DataDisplay from "@components/DataDisplay";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import TestData from "@components/testData";
 import CANDataLiveReading from "@components/CANDataLiveReading";
-import GaugeGraph from "@components/GaugeGraph";
+import EngineTempGauge from "@components/EngineTempGauge";
 
 export default function Home() {
   const telemetryData = [
@@ -23,7 +23,7 @@ export default function Home() {
       <DataDisplay data={telemetryData} />
       homepage add stuff
       <TimeSeriesGraph />
-      <GaugeGraph />
+      <EngineTempGauge canID={"001"}/>
       <TestData />
       <CANDataLiveReading canID={"001"} />
     </div>
