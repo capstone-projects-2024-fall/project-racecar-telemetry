@@ -40,7 +40,7 @@ This example will show how Throttle Position would be transmitted from the car t
 7. **Firebase hosting** - Hosts the TFR telemetry website.
 8. **Telemetry webapp** - Retreives JSON data from firebase.
     - Since the Firebase JSON data is only timestamps, CAN IDs, and the message, the webpage needs the user to specify how the data was transmitted from the ECU so that it can translate the CAN messages into meaningful data.
-    - The CAN ID Assignment page allows the user to enter the following information so that the webapp can 'decode' CAN messages (this example is for Throttle Position):
+    - The CAN Configuration page allows the user to enter the following information so that the webapp can 'decode' CAN messages (this example is for Throttle Position):
         - Data Channel (String): "Throttle Position"
         - CAN ID (Hex number): 0x230
         - Message Length (bits): 16
