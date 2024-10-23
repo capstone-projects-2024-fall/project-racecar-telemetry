@@ -2,7 +2,68 @@
 sidebar_position: 5
 ---
 
-# Use-case descriptions
+# Use-Case Descriptions
+
+### Case 0
+_User sets up telemetry device for the first time._
+1. User plugs the telemetry device into a connector on the car’s wiring harness (the connector contains pins for 12 power and ground, 5V power, CAN high and low).
+
+### Case 1
+_User edits ECU and webapp CAN configurations to transmit/receive data channels._
+1. User configures the vehicle's ECU to transmit relevant data over CAN IDs between 0x200-0x300. First time setup should include:
+    - Engine coolant temperature
+    - Engine speed (RPM)
+    - Battery voltage
+    - Throttle position
+2. User opens the telemetry webapp and opens the CAN ID configuration page from the navbar.
+3. For every data channel transmitted from the ECU, the user adds a new row to the CAN configuration table and enters how it is being transmitted (including CAN ID, offset, length in bytes, adder, multiplier, and unit).
+
+Note: All other use cases assume that case 0 and 1 (first time setup) has occurred.
+
+### Case 2
+_User views live data on default dashboard page._
+1. User opens the telemetry webapp, where they see a default dashboard page. It displays "Not Connected", and shows the following default displays (which are visible but empty, as no data is transmitting):
+    - A time-series graph of engine coolant temperature
+    - A time-series graph of engine speed (RPM)
+    - A number for battery voltage
+    - A linear gauge for throttle position
+2. A driver turns on the car, beginning data transmission, which causes the display to change to “Connected.” The display components populate with live numbers.
+3. After the car has been on for thirty seconds, the live graphs start to automatically scroll to display the new data.
+4. After the car has been on for a few minutes, the user scrubs back in time to view data from earlier in the run.
+5. The driver turns the car off. A pop-up window appears, titled “Lost Connection!,” asking the user if they want to continue viewing the data from that run or clear the displays. 
+6. User clicks “continue viewing,” and is able to scrub back in time throughout the run.
+7. The user clicks “clear displays” to clear the data from the past run. 
+
+### Case 3
+_User inserts new display components on default dashboard page._
+1. User configures the ECU and webapp to transmit/receive two additional data channels - Manifold Air Pressure (MAP) and Vehicle Speed - to the telemetry device over CAN.
+2. User opens the telemetry webapp to the default dashboard page (Not Connected).
+3. User clicks the "Insert New Display" button, which brings up a menu of options to create a new dashboard display component (component editor).
+4. User chooses options to create a radial gauge for the channel MAP, and clicks “Save”.
+5. The new gauge appears on the dashboard.
+6. User clicks the "Insert New Display" button again.
+7. User chooses options to create a time-series graph of vehicle speed. They change the options to make the color of the line graph orange, and edit the vertical scale to the range 0 to 100 mph.
+8. The new time-series graph appears on the dashboard.
+9. When the page says “Connected,” the new graphs also populate with live data.
+
+### Case 4
+_User edits existing components on the dashboard._
+1. User configures the ECU and webapp to transmit/receive an additional data channel, Fuel Pressure.
+2. User opens the telemetry webapp to default dashboard page (Not Connected).
+3. User clicks the settings button on the default battery voltage display, bringing up the component editor.
+4. User changes the data channel from battery voltage to fuel pressure, and the type of graph from a number to a linear gauge. 
+5. User deletes the throttle position display.
+
+### Case 5
+_Two users view website at the same time._
+1. User 1 opens the telemetry webapp to the default dashboard (Not Connected because the car is off).
+2. A driver turns the car on, causing User 1’s page to switch to Connected.
+3. User 2 opens the telemetry webapp to the default dashboard, and sees Connected since the car is on.
+4. User 2 sees the same display as user 1 - live data as well as historical data from earlier in the run.
+
+
+<!-- 
+OLD USE CASES
 
 ## Case 1
 _A race crew is testing their vehicle with their driver to make sure the car is performing well._     
@@ -79,7 +140,7 @@ _A driver and his team decide that they must push their lead and floor it. This 
 6. Crew installs fresh tires.
 7. Driver continues race. -->
 
-## Case 7
+<!-- ## Case 7
 _The new TFR ergonomics lead wants to view information relevant to vehicle handling and driver performance during a run._
 1. The ergonomics lead navigates to the TFR telemetry webpage, where she sees a default dashboard page. It displays "Not Connected" (since the car is off), and shows several blank graphs and gauges.
 4. She deletes all of the existing graphs.
@@ -108,5 +169,4 @@ _A TFR team member wants to add and delete graphs are being displayed to the das
 3. User clicks on the graph.
 4. User deletes graph.
 5. User adds new graph.
-6. User adjusts values to change which sensor is being graphed in graph settings.
-
+6. User adjusts values to change which sensor is being graphed in graph settings. -->
