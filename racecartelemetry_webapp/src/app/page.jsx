@@ -8,6 +8,8 @@ import DataDisplay from "@components/DataDisplay";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import TestData from "@components/testData"
 import CANDataLiveReading from "@components/CANDataLiveReading"
+import MovingSphere from "@components/MovingSphere";
+import MovingSphereRand from "@components/MovingSphereRand";
 
 export default function Home() {
   const telemetryData = [
@@ -24,6 +26,7 @@ export default function Home() {
       <TimeSeriesGraph />
       <TestData/>
       <CANDataLiveReading canID={'001'}/>
+      <MovingSphere canID={'001'}/>
     </div>
   );
 }
