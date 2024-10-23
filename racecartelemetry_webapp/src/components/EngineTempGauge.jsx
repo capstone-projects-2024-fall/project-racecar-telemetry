@@ -39,8 +39,8 @@ const EngineTempGauge = ({ canID }) => {
   return (
     <div style={{ padding: 10, width: 600, margin: '0 auto' }}>
       {/* Container to center the button within the component */}
-      <div style={{ textAlign: "center", marginBottom: 20 }}>
-        <button onClick={toggleTemperatureUnit} style={{ padding: "10px 20px", fontSize: "16px" }}>
+      <div style={{ textAlign: "center"}}>
+        <button onClick={toggleTemperatureUnit} style={{ fontSize: "16px" }}>
           Show in {isFahrenheit ? "Celsius" : "Fahrenheit"}
         </button>
       </div>
