@@ -22,15 +22,15 @@ Section 002, Racecar telemetry, embedded systems (ESP32), wireless networks, ser
 
 ## Project Abstract
 
-This document proposes a wireless vehicle telemetry system to transmit real-time data from a Formula-style racecar to devices off the track. The system will allow racing teams to view important sensor and diagnostic information - e.g., RPM, lap times, engine temperature - on their devices while up to 500 meters away. Having live data will help to facilitate assessment of driver and vehicle performance on dynamic testing days, preserve engine health through live diagnostics, and promote a deeper team-wide understanding of the vehicle.
+This document proposes a wireless vehicle telemetry system to transmit real-time data from a Formula-style racecar to a website for devices off the track to view. The system will allow racing teams to view important sensor and diagnostic information - e.g., RPM, lap times, engine temperature - on their devices, no matter where they are. Having live data will help to facilitate assessment of driver and vehicle performance on dynamic testing days, preserve engine health through live diagnostics, and promote a deeper team-wide understanding of the vehicle.
 
-One side of the proposed system is the mobile component, consisting of the hardware embedded into the vehicle’s wiring and a smartphone that provides mobile hotspot, and the software to run the server side of the system. The client side consists of devices that connect to the vehicle’s network to display data in a webpage. The final product is a web page that enables users to view live racecar data in the form of customizable widgets for graphs, gauges, and warnings. 
+One side of the proposed system is the mobile hardware component, consisting of the hardware embedded into the vehicle’s wiring and a smartphone that provides mobile hotspot, and the software to run the server side of the system. On the other side is the software component, consisting of a hosted website and database. The final product is a web page that enables users to view live racecar data in the form of customizable widgets for graphs, gauges, and configuration for different CAN messages setups.
 
 This project is intended for use in Temple Formula Racing’s (TFR) vehicle, which competes in the Formula Society of Automotive Engineers (FSAE) competition. In this competition, university teams are challenged to design, fabricate, and race formula-style vehicles.
 
 ## High Level Requirement
 
-Users (spectators or team members at a TFR event) will use laptops or phones to connect to the vehicle telemetry system’s wireless network. They will navigate to a web page which will automatically populate with data sent from the vehicle and update in real time. The user can select which data channels are shown and in what format through the use of widgets (for example, a vehicle speed vs. time graph). This web page should feel like a customizable vehicle dashboard. Additionally, the user will be able to select values for which a warning will appear (e.g., a popup if engine temperature exceeds 220° F).
+Users (spectators or team members at a TFR event) will use laptops or phones to visit the website. The web page which will automatically populate with data sent from the vehicle and update in real time. The user can select which data channels are shown and in what format through the use of widgets (for example, a vehicle speed vs. time graph). This web page should feel like a customizable vehicle dashboard. Additionally, the user can remotely match how their CAN system encodes CAN messages to make sure that the decoded CAN Message is accurate. 
 
 ## Conceptual Design
 
@@ -44,7 +44,7 @@ System architecture (see system diagram for details):
 
 ## Background
 
-The background will contain a more detailed description of the product and a comparison to existing similar projects/products. A literature search should be conducted and the results listed. Proper citation of sources is required. If there are similar open-source products, you should state whether existing source will be used and to what extent. If there are similar closed-source/proprietary products, you should state how the proposed product will be similar and different.
+Commercially available wireless motorsport telemetry exists (for example, MoTeC T2 or Bosch Telemetry System FM 40), but the price tag makes it inaccessible to many FSAE teams. This project’s custom framework and relatively low cost make it ideal for implementation in a student-run racing team. This project architecture is based heavily on the systems outlined in articles by other university teams, including the Swiss Federal Institute of Technology Zurich and California Polytechnic Institute. Additionally, documentation for ESP32 server-side events was consulted. 
 
 ## Required Resources
 
@@ -56,6 +56,18 @@ Knowledge Requirements
 - For additional background, members of the Capstone team can contact other FSAE teams who have successfully implemented telemetry systems.
 
 The system will be bench tested using simulated vehicle serial communication. This is how the final product will be presented.
+
+Useful links:
+
+Braune, Nils. Telemetry Unit for a Formula Student Race Car. 2014.
+
+Rounds, Matt. Formula SAE Telemetry System. 
+
+Random Nerd Tutorials. ESP32 Web Server using Server-Sent Events (Update Sensor Readings Automatically). 
+
+Rua Copeto, David. Automotive data acquisition system - FST. 2009.
+
+Yi Tan, Frank. Development of Electric Formula SAE Real-time Telemetry Software. 
 
 ## Collaborators
 
