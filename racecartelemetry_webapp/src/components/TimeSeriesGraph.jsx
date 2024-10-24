@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
+import { db } from "@firebaseConfig"; // Firebase config file
+
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const TimeSeriesGraph = ({ canID, yAxis, title }) => {
@@ -25,17 +28,17 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
   }, [canID]); // Re-run effect when canID changes
 
   let axisToPlot;
-  if (yAxis == "X") {
+  if (canData && yAxis == "X") {
     axisToPlot = canData.X;
-  } else if (yAxis == "Y") {
+  } else if (canData && yAxis == "Y") {
     axisToPlot = canData.Y;
-  } else if (yAxis == "Z") {
+  } else if (canData && yAxis == "Z") {
     axisToPlot = canData.Z;
   }
 
   const data = [
     {
-      x: canData.timestamp,
+      x: canData ? canData.timestamp : 0,
       y: axisToPlot,
       type: "scatter",
       mode: "lines+markers",
