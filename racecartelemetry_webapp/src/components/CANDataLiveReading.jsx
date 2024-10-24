@@ -1,44 +1,120 @@
-import { useEffect, useState } from 'react';
-import { db } from '@firebaseConfig';  // Firebase config file
-import { ref, onValue } from "firebase/database";  // Firebase Realtime Database functions
+// DataDisplay.js
+import React, { useState, useEffect } from 'react';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import { db } from '@firebaseConfig';  // Adjust the import path if necessary
+import { ref, onValue, query, limitToLast } from 'firebase/database';
 
-const CANDataLiveReading = ({ canID }) => {  // Accept canID as a prop
-  const [canData, setCanData] = useState(null);  // State to store CAN data
+const DataDisplay = ({ canID }) => {
+  const [canData, setCanData] = useState(null);
 
   useEffect(() => {
-    if (!canID) return;  // If no canID is provided, do nothing
+    if (!canID) return;
 
-    // Create a reference to the 'CANdata/canID' node in the database
-    const dataRef = ref(db, `CANdata/${canID}`);  // Use dynamic canID to reference the correct node
+    // Reference to the 'CANdata/canID' node in the database
+    const dataRef = ref(db, `CANdata/${canID}`);
+
+    // If your data is nested under unique keys (e.g., timestamps), fetch the last entry
+    const dataQuery = query(dataRef, limitToLast(1));
 
     // Set up the real-time listener using `onValue`
-    const unsubscribe = onValue(dataRef, (snapshot) => {
+    const unsubscribe = onValue(dataQuery, (snapshot) => {
       if (snapshot.exists()) {
-        setCanData(snapshot.val());  // Update the state with real-time data
+        const dataObj = snapshot.val();
+        const latestData = Object.values(dataObj)[0];  // Get the latest data entry
+
+        setCanData(latestData);
       } else {
-        setCanData(null);  // Handle case when no data exists
+        setCanData(null);
       }
     });
 
     // Clean up the listener when the component unmounts or canID changes
     return () => unsubscribe();
-  }, [canID]);  // Re-run effect when canID changes
+  }, [canID]);
+
+  // Prepare the data for rendering
+  const data = canData
+    ? [
+        { label: 'Acceleration X', value: canData.X || 0 },
+        { label: 'Acceleration Y', value: canData.Y || 0 },
+        { label: 'Acceleration Z', value: canData.Z || 0 },
+        { label: 'Temperature', value: canData.Temp || 0 },
+      ]
+    : [
+        { label: 'Acceleration X', value: 0 },
+        { label: 'Acceleration Y', value: 0 },
+        { label: 'Acceleration Z', value: 0 },
+        { label: 'Temperature', value: 0 },
+      ];
 
   return (
-    <div>
-      <h2>Live CAN Data for CAN ID: {canID}</h2>
-      {canData ? (
-        <ul>
-          <li>Acceleration X: {canData.X}</li>
-          <li>Acceleration Y: {canData.Y}</li>
-          <li>Acceleration Z: {canData.Z}</li>
-          <li>Timestamp: {canData.timestamp}</li>
-        </ul>
-      ) : (
-        <p>No data available for CAN ID: {canID}</p>
-      )}
-    </div>
+    <TableContainer
+      component={Paper}
+      sx={{
+        maxWidth: 500,
+        margin: '20px auto',
+        borderRadius: 2,
+        boxShadow: 3,
+        padding: 2,
+      }}
+    >
+      <Typography variant="h6" align="center" gutterBottom>
+        Car Telemetry Data
+      </Typography>
+      <Table aria-label="car telemetry data">
+        <TableHead>
+          <TableRow>
+            <TableCell
+              sx={{
+                fontWeight: 'bold',
+                color: 'primary.main',
+                borderBottom: '2px solid',
+                borderColor: 'primary.main',
+              }}
+            >
+              Metric
+            </TableCell>
+            <TableCell
+              align="right"
+              sx={{
+                fontWeight: 'bold',
+                color: 'primary.main',
+                borderBottom: '2px solid',
+                borderColor: 'primary.main',
+              }}
+            >
+              Value
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((item, index) => (
+            <TableRow
+              key={index}
+              sx={{
+                '&:nth-of-type(odd)': { backgroundColor: 'grey.100' },
+                '&:hover': { backgroundColor: 'grey.200' },
+              }}
+            >
+              <TableCell component="th" scope="row" sx={{ fontSize: '1rem' }}>
+                {item.label}
+              </TableCell>
+              <TableCell align="right" sx={{ fontSize: '1rem', fontWeight: 500 }}>
+                {item.value}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
-export default CANDataLiveReading;
+export default DataDisplay;
