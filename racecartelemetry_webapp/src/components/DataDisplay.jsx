@@ -23,7 +23,7 @@ const DataDisplay = ({ data }) => {
         }}
       >
         <Typography variant="h6" align="center" gutterBottom>
-          Car Telemetry Data
+          Live Telemetry Data
         </Typography>
         <Table aria-label="car telemetry data">
           <TableHead>

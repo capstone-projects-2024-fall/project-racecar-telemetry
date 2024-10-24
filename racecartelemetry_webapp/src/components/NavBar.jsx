@@ -45,15 +45,42 @@ const Navbar = () => {
         </Box>
 
         <Link href="/" passHref>
-          <Button sx={{ color: "white" }}>Dashboard</Button>
+          <Button  sx={{ 
+            color: "white",
+            transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+            "&:hover":{
+                transform: "scale(1.2) translateX(-10px)",
+                color: "#e61b3d",
+            },
+            }}>
+              Dashboard
+            </Button>
         </Link>
 
         <Link href="/ComponentEditor" passHref>
-          <Button sx={{ color: "white" }}>Component Editor</Button>
+          <Button  sx={{
+             color: "white",
+             transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+             "&:hover":{
+                 transform: "scale(1.1)",
+                 color: "#e61b3d",
+             },
+              }}>
+                Component Editor
+              </Button>
         </Link>
 
         <Link href="/CANDataAssignment" passHref>
-          <Button sx={{ color: "white" }}>Data Assignment</Button>
+          <Button  sx={{
+             color: "white",
+             transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+            "&:hover":{
+                transform: "scale(1.1)",
+                color: "#e61b3d",
+            },
+             }}>
+              Data Assignment
+            </Button>
         </Link>
 
     
