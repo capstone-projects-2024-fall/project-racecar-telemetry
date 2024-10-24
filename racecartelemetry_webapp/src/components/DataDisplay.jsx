@@ -1,4 +1,5 @@
-import React from 'react';
+// DataDisplay.js
+import React, { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,8 +8,42 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { db } from '@firebaseConfig';  // Adjust the import path if necessary
+import { ref, onValue } from 'firebase/database';
 
-const DataDisplay = ({ datas }) => {
+const DataDisplay = ({ canID }) => {
+  const [data, setData] = useState([
+    { label: 'Acceleration X', value: 0 },
+    { label: 'Acceleration Y', value: 0 },
+    { label: 'Acceleration Z', value: 0 },
+    { label: 'Temperature', value: 0 },
+  ]);
+
+  useEffect(() => {
+    if (!canID) return;
+
+    // Reference to the 'CANdata/canID' node in the database
+    const dataRef = ref(db, `CANdata/${canID}`);
+
+    // Set up the real-time listener using `onValue`
+    const unsubscribe = onValue(dataRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const canData = snapshot.val();
+
+        // Update the data array with new values from Firebase
+        setData([
+          { label: 'Acceleration X', value: canData.X || 0 },
+          { label: 'Acceleration Y', value: canData.Y || 0 },
+          { label: 'Acceleration Z', value: canData.Z || 0 },
+          { label: 'Temperature', value: canData.Temp || 0 },
+        ]);
+      }
+    });
+
+    // Clean up the listener when the component unmounts or canID changes
+    return () => unsubscribe();
+  }, [canID]);
+
   return (
     <TableContainer
       component={Paper}

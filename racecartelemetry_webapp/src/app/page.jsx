@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <div className="flex flex-col justify-center">
       <NavBar />
-      <DataDisplay data={telemetryData} />
+      <DataDisplay canID={"001"} />
       homepage add stuff
       <TimeSeriesGraph />
       <EngineTempGauge canID={"001"}/>
