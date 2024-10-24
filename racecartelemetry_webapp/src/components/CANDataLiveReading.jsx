@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { db } from '@firebaseConfig';  // Firebase config file
 import { ref, onValue } from "firebase/database";  // Firebase Realtime Database functions
+import DataDisplay from '@components/DataDisplay';
 
 const CANDataLiveReading = ({ canID }) => {  // Accept canID as a prop
   const [canData, setCanData] = useState(null);  // State to store CAN data
@@ -24,17 +25,21 @@ const CANDataLiveReading = ({ canID }) => {  // Accept canID as a prop
     return () => unsubscribe();
   }, [canID]);  // Re-run effect when canID changes
 
+  const telemetryData = canData
+    ? [
+        { label: "Longitude", value: canData.X || 'N/A' },
+        { label: "Latitude", value: canData.Y || 'N/A' },
+        { label: "Vertical", value: canData.Z || 'N/A' },
+        { label: "Timestamp", value: canData.Time || 'N/A' },
+        { label: "Temperature", value: canData.Temp || 'N/A' },
+      ]
+    : [];
+
   return (
     <div>
       <h2>Live CAN Data for CAN ID: {canID}</h2>
       {canData ? (
-        <ul>
-          <li>Longitude: {canData.X}</li>
-          <li>Latitude: {canData.Y}</li>
-          <li>Vertical: {canData.Z}</li>
-          <li>Timestamp: {canData.Time}</li>
-          <li>Temperature: {canData.Temp}</li>
-        </ul>
+        <DataDisplay data={telemetryData} />  
       ) : (
         <p>No data available for CAN ID: {canID}</p>
       )}

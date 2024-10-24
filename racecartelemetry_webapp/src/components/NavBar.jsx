@@ -6,11 +6,14 @@ import Box from "@mui/material/Box";
 import Link from "next/link";
 import { green, red } from "@mui/material/colors";
 import dbConnectionStatus from "@hooks/dbConnectionStatus"; 
+import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
+import theme from "@app/theme";
 
 const Navbar = () => {
   const isConnected = dbConnectionStatus();
 
   return (
+  <ThemeProvider theme={theme}>
     <AppBar position="sticky" sx={{ marginBottom: 5 }}>
       <Toolbar sx={{ background: "linear-gradient(45deg, #A32036 40%, #010000fa 60%)",
         backdropFilter: "blur(50px)",         
@@ -61,6 +64,7 @@ const Navbar = () => {
         */}
       </Toolbar>
     </AppBar>
+    </ThemeProvider>
   );
 };
 

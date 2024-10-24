@@ -6,8 +6,10 @@ import Button from "@mui/material/Button";
 import NavBar from "@components/Navbar";
 import DataDisplay from "@components/DataDisplay";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
-import TestData from "@components/testData"
-import CANDataLiveReading from "@components/CANDataLiveReading"
+import TestData from "@components/testData";
+import CANDataLiveReading from "@components/CANDataLiveReading";
+import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
+import theme from "@app/theme";
 
 export default function Home() {
   const telemetryData = [
@@ -17,13 +19,14 @@ export default function Home() {
     { label: "Battery Voltage (V)", value: 12.5 },
   ];
   return (
-    <div className="flex flex-col justify-center">
-      <NavBar/>
-      <DataDisplay data={telemetryData} />
-      homepage add stuff
-      <TimeSeriesGraph />
-      <TestData/>
-      <CANDataLiveReading canID={'001'}/>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="flex flex-col justify-center">
+        <NavBar/>
+        {/* <DataDisplay data={telemetryData} /> 
+        {/* <TimeSeriesGraph /> */}
+        {/* <TestData/> */}
+        <CANDataLiveReading canID={'001'}/> 
+      </div>
+    </ThemeProvider>
   );
 }
