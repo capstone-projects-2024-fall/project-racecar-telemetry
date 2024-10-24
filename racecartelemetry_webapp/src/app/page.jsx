@@ -18,7 +18,7 @@ export default function Home() {
   ];
   return (
     <div className="flex flex-col justify-center">
-      <NavBar />
+      <NavBar/>
       <DataDisplay data={telemetryData} />
       homepage add stuff
       <TimeSeriesGraph />

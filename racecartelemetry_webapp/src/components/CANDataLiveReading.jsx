@@ -29,10 +29,11 @@ const CANDataLiveReading = ({ canID }) => {  // Accept canID as a prop
       <h2>Live CAN Data for CAN ID: {canID}</h2>
       {canData ? (
         <ul>
-          <li>Acceleration X: {canData.X}</li>
-          <li>Acceleration Y: {canData.Y}</li>
-          <li>Acceleration Z: {canData.Z}</li>
-          <li>Timestamp: {canData.timestamp}</li>
+          <li>Longitude: {canData.X}</li>
+          <li>Latitude: {canData.Y}</li>
+          <li>Vertical: {canData.Z}</li>
+          <li>Timestamp: {canData.Time}</li>
+          <li>Temperature: {canData.Temp}</li>
         </ul>
       ) : (
         <p>No data available for CAN ID: {canID}</p>

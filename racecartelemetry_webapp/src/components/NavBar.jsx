@@ -11,8 +11,11 @@ const Navbar = () => {
   const isConnected = dbConnectionStatus();
 
   return (
-    <AppBar position="static" sx={{ marginBottom: 5 }}>
-      <Toolbar sx={{ background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" }}>
+    <AppBar position="sticky" sx={{ marginBottom: 5 }}>
+      <Toolbar sx={{ background: "linear-gradient(45deg, #A32036 40%, #010000fa 60%)",
+        backdropFilter: "blur(50px)",         
+        WebkitBackdropFilter: "blur(50px)",
+       }}>
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Temple Formula Racing
