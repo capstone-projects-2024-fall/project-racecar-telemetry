@@ -3,35 +3,28 @@ import { db } from '@firebaseConfig';  // Firebase config file
 import { ref, onValue } from "firebase/database";  // Firebase Realtime Database functions
 import DataDisplay from '@components/DataDisplay';
 
-const DataDisplay = ({ canID }) => {
-  const [canData, setCanData] = useState(null);
+const CANDataLiveReading = ({ canID }) => {  // Accept canID as a prop
+  const [canData, setCanData] = useState(null);  // State to store CAN data
 
   useEffect(() => {
-    if (!canID) return;
+    if (!canID) return;  // If no canID is provided, do nothing
 
-    // Reference to the 'CANdata/canID' node in the database
-    const dataRef = ref(db, `CANdata/${canID}`);
-
-    // If your data is nested under unique keys (e.g., timestamps), fetch the last entry
-    const dataQuery = query(dataRef, limitToLast(1));
+    // Create a reference to the 'CANdata/canID' node in the database
+    const dataRef = ref(db, `CANdata/${canID}`);  // Use dynamic canID to reference the correct node
 
     // Set up the real-time listener using `onValue`
-    const unsubscribe = onValue(dataQuery, (snapshot) => {
+    const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
-        const dataObj = snapshot.val();
-        const latestData = Object.values(dataObj)[0];  // Get the latest data entry
-
-        setCanData(latestData);
+        setCanData(snapshot.val());  // Update the state with real-time data
       } else {
-        setCanData(null);
+        setCanData(null);  // Handle case when no data exists
       }
     });
 
     // Clean up the listener when the component unmounts or canID changes
     return () => unsubscribe();
-  }, [canID]);
+  }, [canID]);  // Re-run effect when canID changes
 
-  // Prepare the data for rendering
   const telemetryData = canData
     ? [
         { label: "Longitude", value: canData.X || 'N/A' },
@@ -54,4 +47,4 @@ const DataDisplay = ({ canID }) => {
   );
 };
 
-export default DataDisplay;
+export default CANDataLiveReading;
