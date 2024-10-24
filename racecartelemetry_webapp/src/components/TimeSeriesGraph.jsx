@@ -2,39 +2,41 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const TimeSeriesGraph = () => {
-  const [xValues, setXValues] = useState([
-    "2024-01-01",
-    "2024-02-01",
-    "2024-03-01",
-    "2024-04-01",
-  ]);
-  const [yValues, setYValues] = useState([10, 15, 13, 17]);
-  const [run, setRun] = useState(false);
+const TimeSeriesGraph = ({ canID, yAxis, title }) => {
+  const [canData, setCanData] = useState(null); // State to store CAN data
 
   useEffect(() => {
-    let interval;
-    if (run) {
-      interval = setInterval(() => {
-        const timeStamp = Date.now();
-        const val = Math.floor(Math.random() * 100) + 1;
+    if (!canID) return; // If no canID is provided, do nothing
 
-        setXValues((prevXValues) => [...prevXValues, timeStamp]);
-        setYValues((prevYValues) => [...prevYValues, val]);
-      }, 100);
-    }
+    // Create a reference to the 'CANdata/canID' node in the database
+    const dataRef = ref(db, `CANdata/${canID}`); // Use dynamic canID to reference the correct node
 
-    return () => {
-      if (interval) {
-        clearInterval(interval);
+    // Set up the real-time listener using `onValue`
+    const unsubscribe = onValue(dataRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setCanData(snapshot.val()); // Update the state with real-time data
+      } else {
+        setCanData(null); // Handle case when no data exists
       }
-    };
-  }, [run]);
+    });
+
+    // Clean up the listener when the component unmounts or canID changes
+    return () => unsubscribe();
+  }, [canID]); // Re-run effect when canID changes
+
+  let axisToPlot;
+  if (yAxis == "X") {
+    axisToPlot = canData.X;
+  } else if (yAxis == "Y") {
+    axisToPlot = canData.Y;
+  } else if (yAxis == "Z") {
+    axisToPlot = canData.Z;
+  }
 
   const data = [
     {
-      x: xValues,
-      y: yValues,
+      x: canData.timestamp,
+      y: axisToPlot,
       type: "scatter",
       mode: "lines+markers",
       marker: { color: "blue" },
@@ -43,7 +45,7 @@ const TimeSeriesGraph = () => {
 
   const layout = {
     title: {
-      text: "Speed", // Chart title
+      text: title, // Chart title
       font: {
         size: 24,
       },
@@ -60,13 +62,8 @@ const TimeSeriesGraph = () => {
     },
   };
 
-  const handleClick = () => {
-    setRun((prevRun) => !prevRun);
-  };
-
   return (
     <>
-      <button onClick={handleClick}>{run ? "Stop" : "Start"}</button>
       <Plot data={data} layout={layout} />
     </>
   );
