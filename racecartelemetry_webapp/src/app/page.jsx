@@ -10,6 +10,7 @@ import TestData from "@components/testData";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
 import theme from "@app/theme";
+import EngineTempGauge from "@components/EngineTempGauge";
 
 export default function Home() {
   const telemetryData = [
