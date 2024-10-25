@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import NavBar from "@components/Navbar";
 import DataDisplay from "@components/DataDisplay";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
+import GGDiagram from "@components/GGDiagram";
 import TestData from "@components/testData";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 import { ThemeProvider, CssBaseline, GlobalStyles } from "@mui/material";
@@ -30,6 +31,8 @@ export default function Home() {
         {/* <TestData/> */}
         <CANDataLiveReading canID={"001"} />
         <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Acceleration"} />
+        <GGDiagram canID={"001"} title={"GG Diagram"} />
+
       </div>
     </ThemeProvider>
   );
