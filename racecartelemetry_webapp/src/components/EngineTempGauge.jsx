@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { db } from "@firebaseConfig";  // Import Firebase config
 import { ref, onValue } from "firebase/database";  // Firebase Realtime Database functions
+import theme from "@/app/theme";
 
 const EngineTempGauge = ({ canID }) => {
   const [engineTemp, setEngineTemp] = useState(0);  // State to store the temperature in Celsius
@@ -57,8 +58,9 @@ const EngineTempGauge = ({ canID }) => {
             gauge: {
               axis: {
                 range: isFahrenheit ? [0, 700] : [0, 550],  // Adjust range for Fahrenheit or Celsius
+                tickcolor: "white"  // White ticks and axis lines
               },
-              bar: { color: "red" },
+              bar: { color: `${theme.palette.primary.main}` },
               steps: [
                 { range: isFahrenheit ? [233, 466] : [183, 366], color: "lightgray" },
                 { range: isFahrenheit ? [466, 700] : [366, 550], color: "gray" },
@@ -69,7 +71,13 @@ const EngineTempGauge = ({ canID }) => {
         layout={{
           width: 600,
           height: 400,
-          title: `Engine Temperature (${isFahrenheit ? "F" : "C"})`,
+          title: {
+            text: `Engine Temperature (${isFahrenheit ? "F" : "C"})`,
+            font: { color: "white" }  // White title font color
+          },
+          font: { color: "white" },  // White font color for all text
+          paper_bgcolor: "rgba(0, 0, 0, 0)",  // Transparent background for the paper
+          plot_bgcolor: "rgba(0, 0, 0, 0)",   // Transparent background for the plot
         }}
       />
     </div>
