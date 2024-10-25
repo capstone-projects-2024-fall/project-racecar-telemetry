@@ -59,24 +59,24 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
     xaxis: {
       title: {
         text: "Timestamp (ms)",
-        font: {
-          color: "white",
-        },
+        font: { color: "white" },
       },
-      tickfont: {
-        color: "white",
-      },
+      tickfont: { color: "white" },
+      zeroline: true,
+      zerolinecolor: "white",
+      zerolinewidth: 5,
     },
     yaxis: {
       title: {
-        text: "MPH",
-        font: {
-          color: "white",
-        },
+        text: "G",
+        font: { color: "white" },
+        standoff: 15,
       },
-      tickfont: {
-        color: "white",
-      },
+      tickfont: { color: "white" },
+      automargin: true,
+      zeroline: true,
+      zerolinecolor: "white",
+      zerolinewidth: 5,
     },
     paper_bgcolor: "rgba(0, 0, 0, 0)",
     plot_bgcolor: "rgba(0, 0, 0, 0)",
