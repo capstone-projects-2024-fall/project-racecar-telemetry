@@ -6,39 +6,40 @@ import { db } from "@firebaseConfig"; // Firebase config file
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const TimeSeriesGraph = ({ canID, yAxis, title }) => {
-  const [canData, setCanData] = useState(null); // State to store CAN data
+  const [timestamps, setTimestamps] = useState([]); // Array to store timestamp history
+  const [axisToPlot, setAxisToPlot] = useState([]); // Array to store axis data history
 
   useEffect(() => {
     if (!canID) return; // If no canID is provided, do nothing
 
     // Create a reference to the 'CANdata/canID' node in the database
-    const dataRef = ref(db, `CANdata/${canID}`); // Use dynamic canID to reference the correct node
+    const dataRef = ref(db, `CANdata/${canID}`);
 
     // Set up the real-time listener using `onValue`
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
-        setCanData(snapshot.val()); // Update the state with real-time data
-      } else {
-        setCanData(null); // Handle case when no data exists
+        const data = snapshot.val();
+        console.log("CAN data:", data);
+
+        // Append new data points to history arrays
+        setTimestamps((prev) => [...prev, data.Time]); // Add new time data
+        if (yAxis === "X") {
+          setAxisToPlot((prev) => [...prev, data.X]);
+        } else if (yAxis === "Y") {
+          setAxisToPlot((prev) => [...prev, data.Y]);
+        } else if (yAxis === "Z") {
+          setAxisToPlot((prev) => [...prev, data.Z]);
+        }
       }
     });
 
     // Clean up the listener when the component unmounts or canID changes
     return () => unsubscribe();
-  }, [canID]); // Re-run effect when canID changes
-
-  let axisToPlot;
-  if (canData && yAxis == "X") {
-    axisToPlot = canData.X;
-  } else if (canData && yAxis == "Y") {
-    axisToPlot = canData.Y;
-  } else if (canData && yAxis == "Z") {
-    axisToPlot = canData.Z;
-  }
+  }, [canID, yAxis]); // Re-run effect when canID or yAxis changes
 
   const data = [
     {
-      x: canData ? canData.timestamp : 0,
+      x: timestamps,
       y: axisToPlot,
       type: "scatter",
       mode: "lines+markers",
@@ -48,19 +49,19 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
 
   const layout = {
     title: {
-      text: title, // Chart title
+      text: title,
       font: {
         size: 24,
       },
     },
     xaxis: {
       title: {
-        text: "Timestamp (ms)", // X-axis label
+        text: "Timestamp (ms)",
       },
     },
     yaxis: {
       title: {
-        text: "MPH", // Y-axis label
+        text: "MPH",
       },
     },
   };
