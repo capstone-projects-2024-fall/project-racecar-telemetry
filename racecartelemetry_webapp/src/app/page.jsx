@@ -10,7 +10,6 @@ import TestData from "@components/testData";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
 import theme from "@app/theme";
-import GaugeGraph from "@components/GaugeGraph";
 import { useEffect } from "react";
 import EngineTempGauge from "@components/EngineTempGauge";
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Plot from "react-plotly.js";
+import dynamic from 'next/dynamic'; 
+// Dynamically import Plot from react-plotly.js with SSR disabled
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { db } from "@firebaseConfig";  // Import Firebase config
 import { ref, onValue } from "firebase/database";  // Firebase Realtime Database functions
 
