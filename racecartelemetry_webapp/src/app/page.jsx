@@ -28,7 +28,6 @@ export default function Home() {
         {/* <DataDisplay data={telemetryData} /> 
         {/* <TimeSeriesGraph /> */}
         {/* <TestData/> */}
-        <EngineTempGauge canID={'001'}/>
         <CANDataLiveReading canID={'001'}/> 
       </div>
     </ThemeProvider>
