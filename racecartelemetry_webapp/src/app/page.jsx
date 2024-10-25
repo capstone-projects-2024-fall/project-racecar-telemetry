@@ -8,7 +8,8 @@ import DataDisplay from "@components/DataDisplay";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import TestData from "@components/testData";
 import CANDataLiveReading from "@components/CANDataLiveReading";
-import GaugeGraph from "@components/GaugeGraph";
+import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
+import theme from "@app/theme";
 import { useEffect } from "react";
 import EngineTempGauge from "@components/EngineTempGauge";
 
@@ -21,15 +22,14 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-col justify-center">
-      <NavBar />
-      <DataDisplay canID={"001"} />
-      homepage add stuff
-      <TimeSeriesGraph canID={"001"} yAxis="X" title="Acceleration" />
-      <GaugeGraph />
-      <EngineTempGauge canID={"001"}/>
-      <TestData />
-      <CANDataLiveReading canID={"001"} />
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="flex flex-col justify-center">
+        <NavBar/>
+        {/* <DataDisplay data={telemetryData} /> 
+        {/* <TimeSeriesGraph /> */}
+        {/* <TestData/> */}
+        <CANDataLiveReading canID={'001'}/> 
+      </div>
+    </ThemeProvider>
   );
 }

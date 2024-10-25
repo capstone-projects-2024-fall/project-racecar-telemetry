@@ -6,13 +6,19 @@ import Box from "@mui/material/Box";
 import Link from "next/link";
 import { green, red } from "@mui/material/colors";
 import dbConnectionStatus from "@hooks/dbConnectionStatus"; 
+import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
+import theme from "@app/theme";
 
 const Navbar = () => {
   const isConnected = dbConnectionStatus();
 
   return (
-    <AppBar position="static" sx={{ marginBottom: 5 }}>
-      <Toolbar sx={{ background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" }}>
+  <ThemeProvider theme={theme}>
+    <AppBar position="sticky" sx={{ marginBottom: 5 }}>
+      <Toolbar sx={{ background: "linear-gradient(45deg, #A32036 40%, #010000fa 60%)",
+        backdropFilter: "blur(50px)",         
+        WebkitBackdropFilter: "blur(50px)",
+       }}>
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Temple Formula Racing
@@ -39,15 +45,42 @@ const Navbar = () => {
         </Box>
 
         <Link href="/" passHref>
-          <Button sx={{ color: "white" }}>Dashboard</Button>
+          <Button  sx={{ 
+            color: "white",
+            transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+            "&:hover":{
+                transform: "scale(1.2) translateX(-10px)",
+                color: "#e61b3d",
+            },
+            }}>
+              Dashboard
+            </Button>
         </Link>
 
         <Link href="/ComponentEditor" passHref>
-          <Button sx={{ color: "white" }}>Component Editor</Button>
+          <Button  sx={{
+             color: "white",
+             transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+             "&:hover":{
+                 transform: "scale(1.1)",
+                 color: "#e61b3d",
+             },
+              }}>
+                Component Editor
+              </Button>
         </Link>
 
         <Link href="/CANDataAssignment" passHref>
-          <Button sx={{ color: "white" }}>Data Assignment</Button>
+          <Button  sx={{
+             color: "white",
+             transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+            "&:hover":{
+                transform: "scale(1.1)",
+                color: "#e61b3d",
+            },
+             }}>
+              Data Assignment
+            </Button>
         </Link>
 
     
@@ -58,6 +91,7 @@ const Navbar = () => {
         */}
       </Toolbar>
     </AppBar>
+    </ThemeProvider>
   );
 };
 
