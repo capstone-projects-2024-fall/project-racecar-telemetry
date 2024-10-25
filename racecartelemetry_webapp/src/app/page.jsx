@@ -10,6 +10,9 @@ import TestData from "@components/testData";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
 import theme from "@app/theme";
+import GaugeGraph from "@components/GaugeGraph";
+import { useEffect } from "react";
+import EngineTempGauge from "@components/EngineTempGauge";
 
 export default function Home() {
   const telemetryData = [
@@ -18,6 +21,7 @@ export default function Home() {
     { label: "RPM", value: 6500 },
     { label: "Battery Voltage (V)", value: 12.5 },
   ];
+
   return (
     <ThemeProvider theme={theme}>
       <div className="flex flex-col justify-center">
