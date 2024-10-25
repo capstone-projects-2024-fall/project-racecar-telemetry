@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
 import { db } from "@firebaseConfig"; // Firebase config file
+import theme from "@/app/theme";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const TimeSeriesGraph = ({ canID, yAxis, title }) => {
-  const [timestamps, setTimestamps] = useState([]); // Array to store timestamp history
-  const [axisToPlot, setAxisToPlot] = useState([]); // Array to store axis data history
+  const [timestamps, setTimestamps] = useState([]);
+  const [axisToPlot, setAxisToPlot] = useState([]);
 
   useEffect(() => {
     if (!canID) return; // If no canID is provided, do nothing
@@ -43,7 +44,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
       y: axisToPlot,
       type: "scatter",
       mode: "lines+markers",
-      marker: { color: "blue" },
+      marker: { color: `${theme.palette.primary.main}` },
     },
   ];
 
@@ -52,23 +53,52 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
       text: title,
       font: {
         size: 24,
+        color: "white",
       },
     },
     xaxis: {
       title: {
         text: "Timestamp (ms)",
+        font: {
+          color: "white",
+        },
+      },
+      tickfont: {
+        color: "white",
       },
     },
     yaxis: {
       title: {
         text: "MPH",
+        font: {
+          color: "white",
+        },
+      },
+      tickfont: {
+        color: "white",
       },
     },
+    paper_bgcolor: "rgba(0, 0, 0, 0)",
+    plot_bgcolor: "rgba(0, 0, 0, 0)",
+    margin: { l: 50, r: 50, t: 50, b: 50 },
   };
 
   return (
     <>
-      <Plot data={data} layout={layout} />
+      <div
+        style={{
+          border: `2px solid ${theme.palette.primary.main}`,
+          padding: "10px",
+          borderRadius: "8px",
+        }}
+      >
+        <Plot
+          data={data}
+          layout={layout}
+          useResizeHandler={true}
+          style={{ width: "100%", height: "100%" }}
+        />
+      </div>
     </>
   );
 };
