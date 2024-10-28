@@ -3,7 +3,7 @@ import { useState } from "react";
 import React from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import NavBar from "@components/Navbar";
+import NavBar from "@components/NavBar";
 import DataDisplay from "@components/DataDisplay";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import GGDiagram from "@components/GGDiagram";

@@ -1,5 +1,5 @@
 // src/components/Layout.jsx
-import Navbar from '@components/Navbar';
+import Navbar from '@components/NavBar';
 
 export default function Layout({ children }) {
   return (
