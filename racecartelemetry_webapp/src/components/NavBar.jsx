@@ -11,6 +11,7 @@ import theme from "@app/theme";
 
 const Navbar = () => {
   const isConnected = dbConnectionStatus();
+  console.log(isConnected);
 
   return (
   <ThemeProvider theme={theme}>
@@ -39,8 +40,8 @@ const Navbar = () => {
             {isConnected === null
               ? "Checking connection..."
               : isConnected
-              ? "Database Connected"
-              : "Database Disconnected"}
+              ? "Telemetry Connected"
+              : "Telemetry Disconnected"}
           </Typography>
         </Box>
 
