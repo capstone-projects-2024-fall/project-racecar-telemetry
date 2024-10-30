@@ -85,9 +85,9 @@ function SortableItem({ id, children }) {
     transition,
     padding: "1rem",
     backgroundColor: "none",
-    border: "1px solid #ddd",
+    border: "1px solid #9e9e9e",
     borderRadius: 10,
-    marginBottom: "1rem",
+    marginBottom: "0rem",
     display: "flex",
     flexDirection: "column",
     width: "32%",
@@ -104,7 +104,7 @@ function SortableItem({ id, children }) {
           backgroundColor: "none",
           textAlign: "center",
           color: "Grey",
-          border: "1px solid #ddd",
+          border: "1px solid #737373",
           borderRadius: 10,
         }}
       >
