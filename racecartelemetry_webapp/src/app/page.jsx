@@ -17,12 +17,11 @@ export default function Home() {
     <ThemeProvider theme={theme}>
       <div className="flex flex-col justify-center">
         <NavBar />
-        {/* <DataDisplay data={telemetryData} /> 
-        {/* <TimeSeriesGraph /> */}
-        {/* <TestData/> */}
+       
         <CANDataLiveReading canID={"001"} />
         <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Acceleration"} />
         <GGDiagram canID={"001"} title={"GG Diagram"} />
+        <EngineTempGauge canID={"001"}/>
 
       </div>
     </ThemeProvider>

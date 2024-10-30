@@ -37,6 +37,7 @@ const EngineTempGauge = ({ canID }) => {
   // Toggle between Celsius and Fahrenheit
   const toggleTemperatureUnit = () => {
     setIsFahrenheit(!isFahrenheit);
+    console.log("Unit converted");
   };
 
   return (
