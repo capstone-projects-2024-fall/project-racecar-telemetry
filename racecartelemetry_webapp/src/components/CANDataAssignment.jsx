@@ -35,8 +35,26 @@ const CANDataAssignment = () => {
     setRows(updatedRows);
   };
 
-  const handleSubmit = () => {
-    console.log("Submitted Data:", rows);
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('/api/dataAssignmentAPI', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: rows,  
+          collectionName: 'canConfigurations' 
+        })
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        console.log("Data saved successfully:", result);
+      } else {
+        console.error("Error saving data:", result);
+      }
+    } catch (error) {
+      console.error("Failed to save data:", error);
+    }
   };
 
   const handleCancel = () => {
