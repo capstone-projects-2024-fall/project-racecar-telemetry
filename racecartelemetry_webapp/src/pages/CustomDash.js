@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
+import EngineTempGauge from "@components/EngineTempGauge";
 
 
 // Reusable DraggableComponent
@@ -20,7 +21,7 @@ function DraggableComponent({ id, children }) {
 function DroppableZone({ id, children }) {
   const { setNodeRef } = useDroppable({ id });
   const style = {
-    backgroundColor: '#90EE90', // Light green background
+    backgroundColor: '#90EE90',
     border: '1px dashed #aaa',
     padding: '1rem',
     minWidth: '100px',
@@ -29,8 +30,9 @@ function DroppableZone({ id, children }) {
     alignItems: 'center',
     justifyContent: 'center',
   };
+  
   return (
-    <div ref={setNodeRef}  style={style}>
+    <div ref={setNodeRef} style={style}>
       {children}
     </div>
   );
@@ -41,6 +43,7 @@ export default function CustomDash() {
   const initialLayout = [
     { id: 'item1', position: 'zone-1' },
     { id: 'item2', position: 'zone-2' },
+    { id: 'engineTempGauge', position: 'zone-3' } // Add EngineTempGauge here
   ];
   const [layout, setLayout] = useState(initialLayout);
 
@@ -66,17 +69,17 @@ export default function CustomDash() {
 }
 
 function DroppableGrid({ layout }) {
-  const zones = ['zone-1', 'zone-2', 'zone-3', 'zone-4']; // Define zones as needed
- 
+  const zones = ['zone-1', 'zone-2', 'zone-3', 'zone-4'];
+
   return (
-    <div className="droppable-grid">
+    <div className="droppable-grid" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', padding: '1rem' }}>
       {zones.map((zone) => (
         <DroppableZone key={zone} id={zone}>
           {layout
             .filter((item) => item.position === zone)
             .map((item) => (
               <DraggableComponent key={item.id} id={item.id}>
-                {item.id} {/* Placeholder for content */}
+                {item.id === 'engineTempGauge' ? <EngineTempGauge /> : item.id}
               </DraggableComponent>
             ))}
         </DroppableZone>
