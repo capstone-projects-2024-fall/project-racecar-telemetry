@@ -95,6 +95,12 @@ const ConfigManager = ({ onConfigSelect }) => {
                 Configuration Manager
             </Typography>
 
+            {errorMessage && (
+                <Alert severity="error" onClose={() => setErrorMessage("")}>
+                    {errorMessage}
+                </Alert>
+            )}
+
             <Grid container spacing={2} sx={{ marginBottom: 3 }}>
                 <Grid item xs={12}>
                     <Select
