@@ -1,35 +1,31 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
-import { db } from "@firebaseConfig"; // Firebase config file
+import { ref, onValue } from "firebase/database";
+import { db } from "@firebaseConfig";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const GGDiagram = ({ canID, title }) => {
-  const [lateral, setLat] = useState([]); // Array to store timestamp history
-  const [longitudinal, setLong] = useState([]); // Array to store axis data history
+  const [lateral, setLat] = useState([]); // Array to store lateral acceleration history
+  const [longitudinal, setLong] = useState([]); // Array to store longitudinal acceleration history
 
   useEffect(() => {
-    if (!canID) return; // If no canID is provided, do nothing
+    if (!canID) return;
 
-    // Create a reference to the 'CANdata/canID' node in the database
     const dataRef = ref(db, `CANdata/${canID}`);
 
-    // Set up the real-time listener using `onValue`
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         console.log("CAN data:", data);
 
-        // Append new data points to history arrays
-        setLat((prev) => [...prev, data.Y]); // Add new time data
+        setLat((prev) => [...prev, data.Y]);
         setLong((prev) => [...prev, data.X]);
       }
     });
 
-    // Clean up the listener when the component unmounts or canID changes
     return () => unsubscribe();
-  }, [canID]); // Re-run effect when canID changes
+  }, [canID]);
 
   const data = [
     {
@@ -40,7 +36,6 @@ const GGDiagram = ({ canID, title }) => {
       marker: { color: "blue" },
     },
   ];
-
 
   const layout = {
     title: {
@@ -75,12 +70,19 @@ const GGDiagram = ({ canID, title }) => {
     paper_bgcolor: "rgba(0, 0, 0, 0)",
     plot_bgcolor: "rgba(0, 0, 0, 0)",
     margin: { l: 50, r: 50, t: 50, b: 50 },
+    autosize: true, // Enable responsive sizing
+    responsive: true,
   };
 
   return (
-    <>
-      <Plot data={data} layout={layout} />
-    </>
+    <div style={{ width: "100%", height: "100%", maxWidth: "100%", padding: "10px", boxSizing: "border-box" }}>
+      <Plot
+        data={data}
+        layout={layout}
+        config={{ responsive: true }}
+        style={{ width: "100%", height: "100%" }} // Fills container space
+      />
+    </div>
   );
 };
 

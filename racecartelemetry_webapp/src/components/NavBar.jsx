@@ -45,7 +45,7 @@ const Navbar = () => {
           </Typography>
         </Box>
 
-        <Link href="/" passHref>
+        <Link href="/" >
           <Button  sx={{ 
             color: "white",
             transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
@@ -58,7 +58,7 @@ const Navbar = () => {
             </Button>
         </Link>
 
-        <Link href="/ComponentEditor" passHref>
+        <Link href="/ComponentEditor" >
           <Button  sx={{
              color: "white",
              transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
@@ -71,7 +71,7 @@ const Navbar = () => {
               </Button>
         </Link>
 
-        <Link href="/CANDataAssignment" passHref>
+        <Link href="/CANDataAssignment" >
           <Button  sx={{
              color: "white",
              transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
@@ -84,12 +84,19 @@ const Navbar = () => {
             </Button>
         </Link>
 
-    
-        {/* Uncomment when adding the logout functionality
-        <Button sx={{ color: "white", border: 2 }} onClick={handleLogout}>
-          Logout
-        </Button>
-        */}
+        <Link href="/CustomDash" >
+          <Button  sx={{
+             color: "white",
+             transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+            "&:hover":{
+                transform: "scale(1.1)",
+                color: "#e61b3d",
+            },
+             }}>
+              Custom Dash
+            </Button>
+        </Link>
+        
       </Toolbar>
     </AppBar>
     </ThemeProvider>
