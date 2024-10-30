@@ -1,104 +1,108 @@
 import React, { useState } from "react";
-import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import EngineTempGauge from "@components/EngineTempGauge";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 
-// Reusable DraggableComponent
-function DraggableComponent({ id, children }) {
-  const { setNodeRef, listeners, transform } = useDraggable({ id });
-  const style = {
-    transform: `translate3d(${transform?.x || 0}px, ${transform?.y || 0}px, 0)`,
-  };
-
-  return (
-    <div ref={setNodeRef} {...listeners} style={style} className="draggable">
-      {children}
-    </div>
-  );
-}
-
-// Reusable DroppableZone
-function DroppableZone({ id, children }) {
-  const { setNodeRef } = useDroppable({ id });
-  const style = {
-    backgroundColor: "grey",
-    border: "1px dashed #aaa",
-    padding: "1rem",
-    minWidth: "300px",
-    minHeight: "100px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
-  return (
-    <div ref={setNodeRef} style={style}>
-      {children}
-    </div>
-  );
-}
-
 // Main CustomDash component
 export default function CustomDash() {
-  const initialLayout = [
-    { id: "item1", position: "zone-1" },
-    { id: "item2", position: "zone-2" },
-    { id: "engineTempGauge", position: "zone-3" },
-    { id: "timeSeriesGraph", position: "zone-4" },
-  ];
-  const [layout, setLayout] = useState(initialLayout);
+  const [layout, setLayout] = useState([
+    { id: "engineTempGauge", component: <EngineTempGauge canID={"001"} /> },
+    { id: "timeSeriesGraph", component: <TimeSeriesGraph canID={"001"} /> },
+  ]);
+
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setLayout((prevLayout) =>
-        prevLayout.map((item) =>
-          item.id === active.id ? { ...item, position: over.id } : item
-        )
-      );
+      setLayout((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
     }
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <div className="custom-dash">
-        <DroppableGrid layout={layout} />
-      </div>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext
+        items={layout.map((item) => item.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        <div
+          className="custom-dash"
+          style={{
+            display: "flex",
+            flexWrap: "wrap", // Allows wrapping to the next row
+            gap: "1rem", // Adjusts space between items
+            padding: "1rem",
+            justifyContent: "flex-start", // Aligns items to the start of the row
+          }}
+        >
+          {layout.map((item) => (
+            <SortableItem key={item.id} id={item.id}>
+              {item.component}
+            </SortableItem>
+          ))}
+        </div>
+      </SortableContext>
     </DndContext>
   );
 }
 
-function DroppableGrid({ layout }) {
-  const zones = ["zone-1", "zone-2", "zone-3", "zone-4"];
+// SortableItem component with Drag Handle (inside CustomDash.js)
+function SortableItem({ id, children }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    padding: "1rem",
+    backgroundColor: "grey",
+    border: "1px solid #ddd",
+    marginBottom: "1rem",
+    display: "flex",
+    flexDirection: "column",
+    width: "30%",
+    boxSizing: "border-box",
+  };
 
   return (
-    <div
-      className="droppable-grid"
-      style={{
-        display: "flex",
-        gap: "1rem",
-        flexWrap: "wrap",
-        padding: "1rem",
-      }}
-    >
-      {zones.map((zone) => (
-        <DroppableZone key={zone} id={zone}>
-          {layout
-            .filter((item) => item.position === zone)
-            .map((item) => (
-              <DraggableComponent key={item.id} id={item.id}>
-                {item.id === "engineTempGauge" ? (
-                  <EngineTempGauge canID={"001"} />
-                ) : item.id === 'timeSeriesGraph' ? (
-                    <TimeSeriesGraph  canID={"001"}/> 
-                ) : (
-                  item.id
-                )}
-              </DraggableComponent>
-            ))}
-        </DroppableZone>
-      ))}
+    <div ref={setNodeRef} style={style} {...attributes}>
+      {/* Drag Handle */}
+      <div
+        {...listeners}
+        style={{
+          cursor: "grab",
+          padding: "0.5rem",
+          backgroundColor: "#ccc",
+          textAlign: "center",
+        }}
+      >
+        Drag Handle
+      </div>
+      {/* Main Component Content */}
+      <div style={{ flex: 1 }}>{children}</div>
     </div>
   );
 }
