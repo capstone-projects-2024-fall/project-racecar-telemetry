@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
 
+
 // Reusable DraggableComponent
 function DraggableComponent({ id, children }) {
   const { setNodeRef, listeners, transform } = useDraggable({ id });
@@ -18,8 +19,18 @@ function DraggableComponent({ id, children }) {
 // Reusable DroppableZone
 function DroppableZone({ id, children }) {
   const { setNodeRef } = useDroppable({ id });
+  const style = {
+    backgroundColor: '#90EE90', // Light green background
+    border: '1px dashed #aaa',
+    padding: '1rem',
+    minWidth: '100px',
+    minHeight: '100px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
   return (
-    <div ref={setNodeRef} className="droppable-zone">
+    <div ref={setNodeRef}  style={style}>
       {children}
     </div>
   );
@@ -56,7 +67,7 @@ export default function CustomDash() {
 
 function DroppableGrid({ layout }) {
   const zones = ['zone-1', 'zone-2', 'zone-3', 'zone-4']; // Define zones as needed
-
+ 
   return (
     <div className="droppable-grid">
       {zones.map((zone) => (
