@@ -1,12 +1,9 @@
 "use client";
 import { useState } from "react";
 import React from "react";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
 import NavBar from "@components/NavBar";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import GGDiagram from "@components/GGDiagram";
-import TestData from "@components/testData";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 import { ThemeProvider, CssBaseline, GlobalStyles } from "@mui/material";
 import theme from "@app/theme";
