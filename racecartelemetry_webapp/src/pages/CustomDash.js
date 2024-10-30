@@ -86,6 +86,7 @@ function SortableItem({ id, children }) {
     padding: "1rem",
     backgroundColor: "none",
     border: "1px solid #ddd",
+    borderRadius: 10,
     marginBottom: "1rem",
     display: "flex",
     flexDirection: "column",
@@ -100,9 +101,11 @@ function SortableItem({ id, children }) {
         {...listeners}
         style={{
           cursor: "grab",
-          padding: "0.5rem",
-          backgroundColor: "#ccc",
+          backgroundColor: "none",
           textAlign: "center",
+          color: "Grey",
+          border: "1px solid #ddd",
+          borderRadius: 10,
         }}
       >
         Drag Handle
