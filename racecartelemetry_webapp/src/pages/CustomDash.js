@@ -15,12 +15,18 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import EngineTempGauge from "@components/EngineTempGauge";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
+import GGDiagram from "@components/GGDiagram";
+import CANDataLiveReading from "@components/CANDataLiveReading";
+
 
 // Main CustomDash component
 export default function CustomDash() {
   const [layout, setLayout] = useState([
     { id: "engineTempGauge", component: <EngineTempGauge canID={"001"} /> },
     { id: "timeSeriesGraph", component: <TimeSeriesGraph canID={"001"} /> },
+    { id: "ggDiagram", component: <GGDiagram canID={"001"} /> },
+    { id: "canDataLiveReading", component: <CANDataLiveReading canID={"001"} /> },
+
   ]);
 
   const sensors = useSensors(useSensor(PointerSensor));
@@ -78,12 +84,12 @@ function SortableItem({ id, children }) {
     transform: CSS.Transform.toString(transform),
     transition,
     padding: "1rem",
-    backgroundColor: "grey",
+    backgroundColor: "none",
     border: "1px solid #ddd",
     marginBottom: "1rem",
     display: "flex",
     flexDirection: "column",
-    width: "30%",
+    width: "32%",
     boxSizing: "border-box",
   };
 
