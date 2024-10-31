@@ -1,8 +1,9 @@
+//@components/ConfigManager
+
 import React, { useState, useEffect } from "react"
 import { Button, Select, MenuItem, TextField, Box, Typography, Grid, Alert } from "@mui/material"
 
 const ConfigManager = ({ onConfigSelect }) => {
-    console.log("called")
     const [configs, setConfigs] = useState([])
     const [selectedConfig, setSelectedConfig] = useState("")
     const [configData, setConfigData] = useState({ name: "", data: {} })
@@ -10,7 +11,7 @@ const ConfigManager = ({ onConfigSelect }) => {
 
     const fetchConfigs = async () => {
         try {
-            const response = await fetch('/api/dataAssignmentAPI?collectionName=canConfigs', {
+            const response = await fetch('/api/CANConfigurationAPI?collectionName=canConfigs', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             })
@@ -29,23 +30,23 @@ const ConfigManager = ({ onConfigSelect }) => {
     const selectConfig = (configId) => {
         const selected = configs.find((config) => config.id === configId)
         setSelectedConfig(configId)
-        setConfigData(selected || { name: "", data: {} })
-        if (onConfigSelect) onConfigSelect(selected)
+        setConfigData(selected || { id: "" })
+        if (onConfigSelect) onConfigSelect(configId)
     }
 
     const createConfig = async () => {
         if (Array.isArray(configs) && configs.some((config) => config.name === configData.name)) {
-            setErrorMessage("A config with this name already exists.");
+            setErrorMessage("A config with this name already exists.")
             return;
         }
 
         if (!configData.name) {
-            setErrorMessage("Config name is required.");
+            setErrorMessage("Config name is required.")
             return;
         }
 
         try {
-            const response = await fetch('/api/dataAssignmentAPI', {
+            const response = await fetch('/api/CANConfigurationAPI', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -129,7 +130,7 @@ const ConfigManager = ({ onConfigSelect }) => {
                 <Grid item xs={12}>
                     <TextField
                         label="New Config Name"
-                        value={configData.name}
+                        value={configData.name || ""}
                         onChange={(e) => setConfigData({ ...configData, name: e.target.value })}
                         fullWidth
                         variant="outlined"
@@ -150,18 +151,7 @@ const ConfigManager = ({ onConfigSelect }) => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={2} sx={{ justifyContent: "flex-start" }}>
-                <Grid item>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={console.log("selected")}
-                        sx={{ width: 150, height: 50, }}
-                    >
-                        View
-                    </Button>
-                </Grid>
-            </Grid>
+
         </Box>
     )
 }

@@ -71,7 +71,7 @@ const Navbar = () => {
               </Button>
         </Link>
 
-        <Link href="/CANDataAssignment" >
+        <Link href="/CANConfiguration" >
           <Button  sx={{
              color: "white",
              transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
@@ -80,7 +80,7 @@ const Navbar = () => {
                 color: "#e61b3d",
             },
              }}>
-              Data Assignment
+              CAN Configuration
             </Button>
         </Link>
 

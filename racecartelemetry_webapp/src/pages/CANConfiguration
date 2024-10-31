@@ -1,8 +1,0 @@
-import CANConfiguration from "@components/CANConfiguration";
-
-const CANConfigurationPage = () => {
-    console.log("runnign")
-    return <CANConfiguration />;
-};
-
-export default CANConfigurationPage;

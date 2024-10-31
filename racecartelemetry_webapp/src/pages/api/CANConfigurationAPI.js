@@ -1,7 +1,7 @@
-// pages/api/dataAssignmentAPI.js
+// pages/api/CANConfigurationAPI.js
 
 import { dbFirestore } from '@firebaseConfig'
-import { collection, setDoc, getDocs, doc } from "firebase/firestore"
+import { collection, setDoc, getDocs, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore"
 
 // handler (request, response) only POST and GET 
 const handler = async (req, res) => {
@@ -11,7 +11,7 @@ const handler = async (req, res) => {
         const { collectionName, data, docId } = req.body;
 
         if (!collectionName) {
-            return res.status(400).json({ message: 'Collection name is required' });  // Return 400 error if missing
+            return res.status(400).json({ message: 'Collection name is required' });  
         }
 
         try {
@@ -27,7 +27,7 @@ const handler = async (req, res) => {
     } else if (req.method === 'GET') {
 
         const { collectionName } = req.query;
-        
+
         if (!collectionName) {
             return res.status(400).json({ message: 'Collection name is required' });
         }
