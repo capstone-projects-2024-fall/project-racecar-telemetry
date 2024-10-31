@@ -1,8 +1,10 @@
+//@components/CANDataAssignment
+
 import React, { useState } from "react";
 import { CANInput } from "./CANInput";
 import { Button, Box, Typography, Grid } from "@mui/material";
 
-const CANDataAssignment = () => {
+const CANDataAssignment = ({selectedConfig}) => {
   const [rows, setRows] = useState([
     {
       DataChannel: "",
@@ -35,8 +37,27 @@ const CANDataAssignment = () => {
     setRows(updatedRows);
   };
 
-  const handleSubmit = () => {
-    console.log("Submitted Data:", rows);
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('/api/CANConfigurationAPI', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: rows,  
+          collectionName: `canConfigs/${selectedConfig}` ,
+          docID: selectedConfig
+        })
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        console.log("Data saved successfully:", result);
+      } else {
+        console.error("Error saving data:", result);
+      }
+    } catch (error) {
+      console.error("Failed to save data:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -74,7 +95,7 @@ const CANDataAssignment = () => {
           color: "#333",
         }}
       >
-        CAN Data Assignment
+        {selectedConfig || "No Configuration Selected"}
       </Typography>
 
       {rows.map((row, index) => (

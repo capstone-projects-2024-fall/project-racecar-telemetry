@@ -36,7 +36,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/pages/CANDataAssignment.js",
     "src/app/layout.jsx",
     "src/app/page.jsx"
   ],
