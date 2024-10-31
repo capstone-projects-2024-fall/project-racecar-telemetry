@@ -18,6 +18,8 @@ import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import GGDiagram from "@components/GGDiagram";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 
+import { Button, Menu, MenuItem, Checkbox, FormControlLabel } from "@mui/material";
+
 export default function CustomDash() {
   const componentsList = [
     { id: "engineTempGauge", label: "Engine Temperature Gauge", component: <EngineTempGauge canID={"001"} /> },
@@ -30,6 +32,19 @@ export default function CustomDash() {
   const [visibleComponents, setVisibleComponents] = useState(
     componentsList.reduce((acc, item) => ({ ...acc, [item.id]: true }), {})
   );
+
+  // Dropdown menu state
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // Open dropdown menu
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Close dropdown menu
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   const handleCheckboxChange = (id) => {
     setVisibleComponents((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -53,20 +68,30 @@ export default function CustomDash() {
   return (
     <div>
       {/* Dropdown with checkboxes */}
-      <div style={{ marginBottom: "1rem", color: "grey"}}>
-        <label style={{ fontSize: "18px", fontWeight: "bold" }}>Select Components:</label>
-        <div>
+      <div style={{ marginBottom: "1rem" }}>
+        <Button variant="contained" onClick={handleOpenMenu}>
+          Select Components
+        </Button>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleCloseMenu}
+        >
           {componentsList.map((item) => (
-            <label key={item.id} style={{ display: "block", fontSize: "16px" }}>
-              <input
-                type="checkbox"
-                checked={visibleComponents[item.id]}
-                onChange={() => handleCheckboxChange(item.id)}
+            <MenuItem key={item.id}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={visibleComponents[item.id]}
+                    onChange={() => handleCheckboxChange(item.id)}
+                    color="primary"
+                  />
+                }
+                label={item.label}
               />
-              {item.label}
-            </label>
+            </MenuItem>
           ))}
-        </div>
+        </Menu>
       </div>
 
       {/* Drag and Drop Context */}
