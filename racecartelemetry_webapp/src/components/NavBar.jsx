@@ -5,13 +5,13 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Link from "next/link";
 import { green, red } from "@mui/material/colors";
-import dbConnectionStatus from "@hooks/dbConnectionStatus"; 
+import telemetryConnectionStatus from "@hooks/telemetryConnectionStatus"; 
 import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
 import theme from "@app/theme";
 
 const Navbar = () => {
-  const isConnected = dbConnectionStatus();
-  console.log(isConnected);
+  const isConnected = telemetryConnectionStatus()
+  console.log(isConnected)
 
   return (
   <ThemeProvider theme={theme}>
