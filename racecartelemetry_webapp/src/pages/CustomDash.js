@@ -18,7 +18,6 @@ import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import GGDiagram from "@components/GGDiagram";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 
-
 // Main CustomDash component
 export default function CustomDash() {
   const [layout, setLayout] = useState([
@@ -26,7 +25,6 @@ export default function CustomDash() {
     { id: "timeSeriesGraph", component: <TimeSeriesGraph canID={"001"} /> },
     { id: "ggDiagram", component: <GGDiagram canID={"001"} /> },
     { id: "canDataLiveReading", component: <CANDataLiveReading canID={"001"} /> },
-
   ]);
 
   const sensors = useSensors(useSensor(PointerSensor));
@@ -83,8 +81,8 @@ function SortableItem({ id, children }) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    padding: "1rem",
-    backgroundColor: "none",
+    padding: "0.2rem",
+    backgroundColor: "transparent",
     border: "1px solid #9e9e9e",
     borderRadius: 10,
     marginBottom: "0rem",
@@ -101,11 +99,13 @@ function SortableItem({ id, children }) {
         {...listeners}
         style={{
           cursor: "grab",
-          backgroundColor: "none",
+          backgroundColor: "transparent",
           textAlign: "center",
-          color: "Grey",
+          color: "grey",
+          padding: "0.5rem", // Added padding for better visibility
           border: "1px solid #737373",
           borderRadius: 10,
+          marginBottom: "0.5rem", // Space between handle and content
         }}
       >
         Drag Handle
