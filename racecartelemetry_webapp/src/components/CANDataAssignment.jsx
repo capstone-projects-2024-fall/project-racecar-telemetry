@@ -44,8 +44,8 @@ const CANDataAssignment = ({selectedConfig}) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           data: rows,  
-          collectionName: `canConfigs/${selectedConfig.name}` ,
-          docID: selectedConfig.id
+          collectionName: `canConfigs/${selectedConfig}` ,
+          docID: selectedConfig
         })
       });
 
