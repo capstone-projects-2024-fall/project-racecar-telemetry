@@ -18,14 +18,22 @@ import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import GGDiagram from "@components/GGDiagram";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 
-// Main CustomDash component
 export default function CustomDash() {
-  const [layout, setLayout] = useState([
-    { id: "engineTempGauge", component: <EngineTempGauge canID={"001"} /> },
-    { id: "timeSeriesGraph", component: <TimeSeriesGraph canID={"001"} /> },
-    { id: "ggDiagram", component: <GGDiagram canID={"001"} /> },
-    { id: "canDataLiveReading", component: <CANDataLiveReading canID={"001"} /> },
-  ]);
+  const componentsList = [
+    { id: "engineTempGauge", label: "Engine Temperature Gauge", component: <EngineTempGauge canID={"001"} /> },
+    { id: "timeSeriesGraph", label: "Time Series Graph", component: <TimeSeriesGraph canID={"001"} /> },
+    { id: "ggDiagram", label: "GG Diagram", component: <GGDiagram canID={"001"} /> },
+    { id: "canDataLiveReading", label: "CAN Data Live Reading", component: <CANDataLiveReading canID={"001"} /> },
+  ];
+
+  const [layout, setLayout] = useState(componentsList);
+  const [visibleComponents, setVisibleComponents] = useState(
+    componentsList.reduce((acc, item) => ({ ...acc, [item.id]: true }), {})
+  );
+
+  const handleCheckboxChange = (id) => {
+    setVisibleComponents((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -43,33 +51,56 @@ export default function CustomDash() {
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext
-        items={layout.map((item) => item.id)}
-        strategy={verticalListSortingStrategy}
-      >
-        <div
-          className="custom-dash"
-          style={{
-            display: "flex",
-            flexWrap: "wrap", // Allows wrapping to the next row
-            gap: "1rem", // Adjusts space between items
-            padding: "1rem",
-            justifyContent: "flex-start", // Aligns items to the start of the row
-          }}
-        >
-          {layout.map((item) => (
-            <SortableItem key={item.id} id={item.id}>
-              {item.component}
-            </SortableItem>
+    <div>
+      {/* Dropdown with checkboxes */}
+      <div style={{ marginBottom: "1rem", color: "grey"}}>
+        <label style={{ fontSize: "18px", fontWeight: "bold" }}>Select Components:</label>
+        <div>
+          {componentsList.map((item) => (
+            <label key={item.id} style={{ display: "block", fontSize: "16px" }}>
+              <input
+                type="checkbox"
+                checked={visibleComponents[item.id]}
+                onChange={() => handleCheckboxChange(item.id)}
+              />
+              {item.label}
+            </label>
           ))}
         </div>
-      </SortableContext>
-    </DndContext>
+      </div>
+
+      {/* Drag and Drop Context */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={layout.map((item) => item.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div
+            className="custom-dash"
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "1rem",
+              padding: "1rem",
+              justifyContent: "flex-start",
+            }}
+          >
+            {layout.map(
+              (item) =>
+                visibleComponents[item.id] && (
+                  <SortableItem key={item.id} id={item.id}>
+                    {item.component}
+                  </SortableItem>
+                )
+            )}
+          </div>
+        </SortableContext>
+      </DndContext>
+    </div>
   );
 }
 
@@ -81,11 +112,10 @@ function SortableItem({ id, children }) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    padding: "0.2rem",
+    padding: "1rem",
     backgroundColor: "transparent",
     border: "1px solid #9e9e9e",
     borderRadius: 10,
-    marginBottom: "0rem",
     display: "flex",
     flexDirection: "column",
     width: "32%",
@@ -94,7 +124,6 @@ function SortableItem({ id, children }) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-      {/* Drag Handle */}
       <div
         {...listeners}
         style={{
@@ -102,15 +131,14 @@ function SortableItem({ id, children }) {
           backgroundColor: "transparent",
           textAlign: "center",
           color: "grey",
-          padding: "0.5rem", // Added padding for better visibility
+          padding: "0.5rem",
           border: "1px solid #737373",
           borderRadius: 10,
-          marginBottom: "0.5rem", // Space between handle and content
+          marginBottom: "0.5rem",
         }}
       >
         Drag Handle
       </div>
-      {/* Main Component Content */}
       <div style={{ flex: 1 }}>{children}</div>
     </div>
   );
