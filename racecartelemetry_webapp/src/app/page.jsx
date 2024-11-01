@@ -38,15 +38,15 @@ export default function Home() {
           <DataWidget canID={"001"} valueToDisplay={"Z"} />
         </Box>
 
-        <Box sx={{ width: "100%", maxWidth: 1200, marginBottom: 2 }}>
+        <Box sx={{ width: "100%", marginBottom: 2 }}>
           <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Acceleration"} />
         </Box>
 
-        <Box sx={{ width: "100%", maxWidth: 1200, marginBottom: 2 }}>
+        <Box sx={{ width: "100%", marginBottom: 2 }}>
           <GGDiagram canID={"001"} title={"GG Diagram"} />
         </Box>
 
-        <Box sx={{ width: "100%", maxWidth: 1200 }}>
+        <Box sx={{ width: "100%" }}>
           <EngineTempGauge canID={"001"} />
         </Box>
       </Box>
