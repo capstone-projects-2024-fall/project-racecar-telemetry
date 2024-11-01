@@ -33,12 +33,9 @@ export default function Home() {
             flexWrap: "wrap",
           }}
         >
-          <DataWidget canID={"001"} valueToDisplay={"Lateral Acceleration"} />
-          <DataWidget
-            canID={"001"}
-            valueToDisplay={"Longitudinal Acceleration"}
-          />
-          <DataWidget canID={"001"} valueToDisplay={"Vertical Acceleration"} />
+          <DataWidget canID={"001"} valueToDisplay={"X"} />
+          <DataWidget canID={"001"} valueToDisplay={"Y"} />
+          <DataWidget canID={"001"} valueToDisplay={"Z"} />
         </Box>
 
         <Box sx={{ width: "100%", maxWidth: 1200, marginBottom: 2 }}>

@@ -1,16 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
+import { db } from "@firebaseConfig"; // Firebase config file
 
 const DataWidget = ({ canID, valueToDisplay }) => {
   const [number, setNumber] = useState(0);
+  const [text, setText] = useState("");
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setNumber((prevNumber) => prevNumber + 1); // Update logic here
-    }, 1000); // Adjust the update interval
+    if (!canID) return; // If no canID is provided, do nothing
 
-    return () => clearInterval(interval); // Clean up interval on component unmount
-  }, []);
+    // Create a reference to the 'CANdata/canID' node in the database
+    const dataRef = ref(db, `CANdata/${canID}`);
+
+    // Set up the real-time listener using `onValue`
+    const unsubscribe = onValue(dataRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+
+        // Append new data points to history arrays
+        if (valueToDisplay === "X") {
+          setNumber(data.X);
+          setText("Longitudinal Acceleration");
+        } else if (valueToDisplay === "Y") {
+          setNumber(data.Y);
+          setText("Lateral Acceleration");
+        } else if (valueToDisplay === "Z") {
+          setNumber(data.Z);
+          setText("Vertical Acceleration");
+        }
+      }
+    });
+
+    // Clean up the listener when the component unmounts or canID changes
+    return () => unsubscribe();
+  }, [canID, valueToDisplay]); // Re-run effect when canID or yAxis changes
 
   return (
     <Box
@@ -29,10 +53,10 @@ const DataWidget = ({ canID, valueToDisplay }) => {
       }}
     >
       <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
-        {valueToDisplay}
+        {text}
       </Typography>
       <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-        {number}
+        {number}g
       </Typography>
     </Box>
   );
