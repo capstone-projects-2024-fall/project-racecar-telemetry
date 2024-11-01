@@ -1,41 +1,58 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import NavBar from "@components/NavBar";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import GGDiagram from "@components/GGDiagram";
 import CANDataLiveReading from "@components/CANDataLiveReading";
-import { ThemeProvider, CssBaseline, GlobalStyles } from "@mui/material";
+import { ThemeProvider, CssBaseline, Box, Grid } from "@mui/material";
 import theme from "@app/theme";
-import { useEffect } from "react";
 import EngineTempGauge from "@components/EngineTempGauge";
 import DataWidget from "@components/DataWidget";
-import Box from "@mui/material";
 
 export default function Home() {
   return (
     <ThemeProvider theme={theme}>
-      <div className="flex flex-col justify-center">
-        <NavBar />
-        <div
-          style={{
+      <CssBaseline />
+      <NavBar />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: 2,
+        }}
+      >
+        <Box
+          sx={{
             display: "flex",
             flexDirection: "row",
-            gap: "16px",
-            marginBottom: "16px",
+            justifyContent: "center",
+            gap: 2,
+            marginBottom: 2,
+            flexWrap: "wrap",
           }}
         >
           <DataWidget canID={"001"} valueToDisplay={"Lateral Acceleration"} />
           <DataWidget
             canID={"001"}
-            valueToDisplay={"Longitudal Acceleration"}
+            valueToDisplay={"Longitudinal Acceleration"}
           />
           <DataWidget canID={"001"} valueToDisplay={"Vertical Acceleration"} />
-        </div>
-        <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Acceleration"} />
-        <GGDiagram canID={"001"} title={"GG Diagram"} />
-        <EngineTempGauge canID={"001"} />
-      </div>
+        </Box>
+
+        <Box sx={{ width: "100%", maxWidth: 1200, marginBottom: 2 }}>
+          <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Acceleration"} />
+        </Box>
+
+        <Box sx={{ width: "100%", maxWidth: 1200, marginBottom: 2 }}>
+          <GGDiagram canID={"001"} title={"GG Diagram"} />
+        </Box>
+
+        <Box sx={{ width: "100%", maxWidth: 1200 }}>
+          <EngineTempGauge canID={"001"} />
+        </Box>
+      </Box>
     </ThemeProvider>
   );
 }
