@@ -69,13 +69,13 @@ const GGDiagram = ({ canID, title }) => {
     },
     paper_bgcolor: "rgba(0, 0, 0, 0)",
     plot_bgcolor: "rgba(0, 0, 0, 0)",
-    margin: { l: 50, r: 50, t: 50, b: 50 },
+    margin: { l: 10, r: 10, t: 10, b: 10 },
     autosize: true, // Enable responsive sizing
     responsive: true,
   };
 
   return (
-    <div style={{ width: "100%", height: "100%", maxWidth: "100%", padding: "10px", boxSizing: "border-box" }}>
+    <div style={{ width: "100%", height: "100%", maxWidth: "100%", padding: "0px", boxSizing: "border-box" }}>
       <Plot
         data={data}
         layout={layout}
