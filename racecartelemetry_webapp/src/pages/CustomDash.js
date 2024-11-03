@@ -24,8 +24,8 @@ export default function CustomDash() {
   const componentsList = [
     { id: "engineTempGauge", label: "Engine Temperature Gauge", component: <DataGauge canID="001" metricKey="Temp" title="Engine Temperature" maxPrimaryRange={550} maxSecondaryRange={700} primaryUnit="C" secondaryUnit="F" />  },
     { id: "xAccelGauge", label: "X Accel Gauge", component: <DataGauge canID="001" metricKey="X" title="X Accel Gauge" maxPrimaryRange={30} maxSecondaryRange={100} primaryUnit="G" secondaryUnit="G" />  },
-    { id: "timeSeriesGraph", label: "Time Series Graph", component: <TimeSeriesGraph canID={"001"} /> },
-    { id: "ggDiagram", label: "GG Diagram", component: <GGDiagram canID={"001"} /> },
+    { id: "timeSeriesGraph", label: "Time Series Graph", component:  <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Acceleration"} /> },
+    { id: "ggDiagram", label: "GG Diagram", component: <GGDiagram canID={"001"} title={"GG Diagram"} /> },
     { id: "canDataLiveReading", label: "CAN Data Live Reading", component: <CANDataLiveReading canID={"001"} /> },
   ];
 

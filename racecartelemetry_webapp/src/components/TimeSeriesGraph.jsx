@@ -52,8 +52,9 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
     title: {
       text: title,
       font: {
-        size: 24,
-        color: "white",
+        fontSize: "18px", 
+        color: "white", 
+        fontWeight: "bold"
       },
     },
     xaxis: {
@@ -80,7 +81,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
     },
     paper_bgcolor: "rgba(0, 0, 0, 0)",
     plot_bgcolor: "rgba(0, 0, 0, 0)",
-    margin: { l: 10, r: 10, t: 10, b: 10 },
+    margin: { l: 10, r: 10, t: 40, b: 10 },
   };
 
   return (
