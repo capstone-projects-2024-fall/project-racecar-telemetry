@@ -72,7 +72,7 @@ const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondar
         layout={{
           autosize: true,
           responsive: true,
-          margin: { t: 0, b: 0, l: 0, r: 0 }, // Reduced margins to fit inside container
+          margin: { t: 0, b: 0, l: 20, r: 25 }, // Reduced margins to fit inside container
           font: { color: "white" },
           paper_bgcolor: "rgba(0, 0, 0, 0)",
           plot_bgcolor: "rgba(0, 0, 0, 0)"
