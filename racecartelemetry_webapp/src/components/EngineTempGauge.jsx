@@ -5,35 +5,39 @@ import { db } from "@firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import theme from "@/app/theme";
 
-const EngineTempGauge = ({ canID }) => {
-  const [engineTemp, setEngineTemp] = useState(0);
+const DataGauge = ({ canID, metricKey, title, maxCelsiusRange = 550, maxFahrenheitRange = 700 }) => {
+  const [metricValue, setMetricValue] = useState(0);
   const [isFahrenheit, setIsFahrenheit] = useState(false);
 
   useEffect(() => {
-    if (!canID) return;
+    if (!canID || !metricKey) return;
 
     const dataRef = ref(db, `CANdata/${canID}`);
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const canData = snapshot.val();
-        setEngineTemp(canData.Temp);
+        if (canData[metricKey] !== undefined) {
+          setMetricValue(canData[metricKey]);
+        }
       }
     });
 
     return () => unsubscribe();
-  }, [canID]);
+  }, [canID, metricKey]);
 
   const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
-  const displayedTemp = isFahrenheit ? convertToFahrenheit(engineTemp) : engineTemp;
+  const displayedValue = isFahrenheit && metricKey === "Temp" ? convertToFahrenheit(metricValue) : metricValue;
 
   const toggleTemperatureUnit = () => setIsFahrenheit(!isFahrenheit);
 
   return (
     <div style={{ padding: 3, width: "100%", height: "100%", maxWidth: "100%", margin: '0 auto' }}>
-      <div style={{ textAlign: "center", color:"grey"}}>
-        <button onClick={toggleTemperatureUnit} style={{ fontSize: "16px" }}>
-          Show in {isFahrenheit ? "Celsius" : "Fahrenheit"}
-        </button>
+      <div style={{ textAlign: "center", color: "grey" }}>
+        {metricKey === "Temp" && (
+          <button onClick={toggleTemperatureUnit} style={{ fontSize: "16px" }}>
+            Show in {isFahrenheit ? "Celsius" : "Fahrenheit"}
+          </button>
+        )}
       </div>
 
       <Plot
@@ -41,16 +45,16 @@ const EngineTempGauge = ({ canID }) => {
           {
             type: "indicator",
             mode: "gauge+number",
-            value: displayedTemp,
+            value: displayedValue,
             gauge: {
               axis: {
-                range: isFahrenheit ? [0, 700] : [0, 550],
+                range: isFahrenheit ? [0, maxFahrenheitRange] : [0, maxCelsiusRange],
                 tickcolor: "white"
               },
               bar: { color: `${theme.palette.primary.main}` },
               steps: [
                 { range: isFahrenheit ? [233, 466] : [183, 366], color: "lightgray" },
-                { range: isFahrenheit ? [466, 700] : [366, 550], color: "gray" },
+                { range: isFahrenheit ? [466, maxFahrenheitRange] : [366, maxCelsiusRange], color: "gray" },
               ],
             },
           },
@@ -58,9 +62,9 @@ const EngineTempGauge = ({ canID }) => {
         layout={{
           autosize: true,
           responsive: true,
-          margin: { t: 30, b: 30, l: 30, r: 30 }, // Adds padding within the plot to avoid overflow
+          margin: { t: 30, b: 30, l: 30, r: 30 },
           title: {
-            text: `Engine Temperature (${isFahrenheit ? "F" : "C"})`,
+            text: `${title} (${isFahrenheit && metricKey === "Temp" ? "F" : "C"})`,
             font: { color: "white" }
           },
           font: { color: "white" },
@@ -68,10 +72,10 @@ const EngineTempGauge = ({ canID }) => {
           plot_bgcolor: "rgba(0, 0, 0, 0)"
         }}
         config={{ responsive: true }}
-        style={{ width: "100%", height: "100%" }} // Makes the plot take full space of the container
+        style={{ width: "100%", height: "100%" }}
       />
     </div>
   );
 };
 
-export default EngineTempGauge;
+export default DataGauge;
