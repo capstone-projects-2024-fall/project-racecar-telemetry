@@ -16,7 +16,7 @@ const DataDisplay = ({ data }) => {
         component={Paper}
         sx={{
           maxWidth: 500,
-          margin: '20px auto',
+          margin: '10px auto',
           borderRadius: 2,
           boxShadow: 3,
           padding: 2,
