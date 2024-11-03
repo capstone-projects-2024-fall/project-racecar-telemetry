@@ -7,7 +7,7 @@ import theme from "@/app/theme";
 
 const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondaryRange = 700, primaryUnit = "C", secondaryUnit }) => {
   const [metricValue, setMetricValue] = useState(0);
-  const [isSecondaryUnit, setIsSecondaryUnit] = useState(false); // Tracks which unit to display
+  const [isSecondaryUnit, setIsSecondaryUnit] = useState(false);
 
   useEffect(() => {
     if (!canID || !metricKey) return;
@@ -25,11 +25,9 @@ const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondar
     return () => unsubscribe();
   }, [canID, metricKey]);
 
-  // Conversion functions for temperature and speed
   const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
   const convertToMPH = (kmh) => kmh * 0.621371;
 
-  // Determine the displayed value based on the selected unit
   const displayedValue =
     metricKey === "Temp" && isSecondaryUnit
       ? convertToFahrenheit(metricValue)
@@ -37,18 +35,19 @@ const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondar
       ? convertToMPH(metricValue)
       : metricValue;
 
-  // Toggle the unit based on metric type
   const toggleUnit = () => setIsSecondaryUnit(!isSecondaryUnit);
 
   return (
-    <div style={{ padding: 3, width: "100%", height: "100%", maxWidth: "100%", margin: '0 auto' }}>
-      <div style={{ textAlign: "center", color: "grey" }}>
-        {/* Show the toggle button only if secondaryUnit is provided */}
+    <div style={{ padding: 10, width: "100%", height: "100%", maxWidth: "100%", margin: "0 auto" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "0.5rem" }}>
         {secondaryUnit && (
-          <button onClick={toggleUnit} style={{ fontSize: "16px" }}>
+          <button onClick={toggleUnit} style={{ fontSize: "14px", marginBottom: "0.3rem", color: "grey"}}>
             Show in {isSecondaryUnit ? primaryUnit : secondaryUnit}
           </button>
         )}
+        <div style={{ fontSize: "18px", color: "white", fontWeight: "bold" }}>
+          {title} ({isSecondaryUnit ? secondaryUnit : primaryUnit})
+        </div>
       </div>
 
       <Plot
@@ -73,17 +72,13 @@ const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondar
         layout={{
           autosize: true,
           responsive: true,
-          margin: { t: 30, b: 30, l: 30, r: 30 },
-          title: {
-            text: `${title} (${isSecondaryUnit && secondaryUnit ? secondaryUnit : primaryUnit})`,
-            font: { color: "white" }
-          },
+          margin: { t: 0, b: 0, l: 0, r: 0 }, // Reduced margins to fit inside container
           font: { color: "white" },
           paper_bgcolor: "rgba(0, 0, 0, 0)",
           plot_bgcolor: "rgba(0, 0, 0, 0)"
         }}
         config={{ responsive: true }}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "250px", maxWidth: "100%" }} // Limit the height to fit inside the card
       />
     </div>
   );
