@@ -5,7 +5,7 @@ import { db } from "@firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import theme from "@/app/theme";
 
-const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondaryRange = 700, primaryUnit = "C", secondaryUnit = "F" }) => {
+const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondaryRange = 700, primaryUnit = "C", secondaryUnit }) => {
   const [metricValue, setMetricValue] = useState(0);
   const [isSecondaryUnit, setIsSecondaryUnit] = useState(false); // Tracks which unit to display
 
@@ -43,7 +43,8 @@ const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondar
   return (
     <div style={{ padding: 3, width: "100%", height: "100%", maxWidth: "100%", margin: '0 auto' }}>
       <div style={{ textAlign: "center", color: "grey" }}>
-        {(metricKey === "Temp" || metricKey === "Speed") && (
+        {/* Show the toggle button only if secondaryUnit is provided */}
+        {secondaryUnit && (
           <button onClick={toggleUnit} style={{ fontSize: "16px" }}>
             Show in {isSecondaryUnit ? primaryUnit : secondaryUnit}
           </button>
@@ -74,7 +75,7 @@ const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondar
           responsive: true,
           margin: { t: 30, b: 30, l: 30, r: 30 },
           title: {
-            text: `${title} (${isSecondaryUnit ? secondaryUnit : primaryUnit})`,
+            text: `${title} (${isSecondaryUnit && secondaryUnit ? secondaryUnit : primaryUnit})`,
             font: { color: "white" }
           },
           font: { color: "white" },
