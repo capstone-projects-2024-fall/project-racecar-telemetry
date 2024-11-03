@@ -5,9 +5,9 @@ import { db } from "@firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import theme from "@/app/theme";
 
-const DataGauge = ({ canID, metricKey, title, maxCelsiusRange = 550, maxFahrenheitRange = 700 }) => {
+const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondaryRange = 700, primaryUnit = "C", secondaryUnit = "F" }) => {
   const [metricValue, setMetricValue] = useState(0);
-  const [isFahrenheit, setIsFahrenheit] = useState(false);
+  const [isSecondaryUnit, setIsSecondaryUnit] = useState(false); // Tracks which unit to display
 
   useEffect(() => {
     if (!canID || !metricKey) return;
@@ -25,17 +25,27 @@ const DataGauge = ({ canID, metricKey, title, maxCelsiusRange = 550, maxFahrenhe
     return () => unsubscribe();
   }, [canID, metricKey]);
 
+  // Conversion functions for temperature and speed
   const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
-  const displayedValue = isFahrenheit && metricKey === "Temp" ? convertToFahrenheit(metricValue) : metricValue;
+  const convertToMPH = (kmh) => kmh * 0.621371;
 
-  const toggleTemperatureUnit = () => setIsFahrenheit(!isFahrenheit);
+  // Determine the displayed value based on the selected unit
+  const displayedValue =
+    metricKey === "Temp" && isSecondaryUnit
+      ? convertToFahrenheit(metricValue)
+      : metricKey === "Speed" && isSecondaryUnit
+      ? convertToMPH(metricValue)
+      : metricValue;
+
+  // Toggle the unit based on metric type
+  const toggleUnit = () => setIsSecondaryUnit(!isSecondaryUnit);
 
   return (
     <div style={{ padding: 3, width: "100%", height: "100%", maxWidth: "100%", margin: '0 auto' }}>
       <div style={{ textAlign: "center", color: "grey" }}>
-        {metricKey === "Temp" && (
-          <button onClick={toggleTemperatureUnit} style={{ fontSize: "16px" }}>
-            Show in {isFahrenheit ? "Celsius" : "Fahrenheit"}
+        {(metricKey === "Temp" || metricKey === "Speed") && (
+          <button onClick={toggleUnit} style={{ fontSize: "16px" }}>
+            Show in {isSecondaryUnit ? primaryUnit : secondaryUnit}
           </button>
         )}
       </div>
@@ -48,13 +58,13 @@ const DataGauge = ({ canID, metricKey, title, maxCelsiusRange = 550, maxFahrenhe
             value: displayedValue,
             gauge: {
               axis: {
-                range: isFahrenheit ? [0, maxFahrenheitRange] : [0, maxCelsiusRange],
+                range: isSecondaryUnit ? [0, maxSecondaryRange] : [0, maxPrimaryRange],
                 tickcolor: "white"
               },
               bar: { color: `${theme.palette.primary.main}` },
               steps: [
-                { range: isFahrenheit ? [233, 466] : [183, 366], color: "lightgray" },
-                { range: isFahrenheit ? [466, maxFahrenheitRange] : [366, maxCelsiusRange], color: "gray" },
+                { range: isSecondaryUnit ? [maxSecondaryRange * 0.33, maxSecondaryRange * 0.66] : [maxPrimaryRange * 0.33, maxPrimaryRange * 0.66], color: "lightgray" },
+                { range: isSecondaryUnit ? [maxSecondaryRange * 0.66, maxSecondaryRange] : [maxPrimaryRange * 0.66, maxPrimaryRange], color: "gray" },
               ],
             },
           },
@@ -64,7 +74,7 @@ const DataGauge = ({ canID, metricKey, title, maxCelsiusRange = 550, maxFahrenhe
           responsive: true,
           margin: { t: 30, b: 30, l: 30, r: 30 },
           title: {
-            text: `${title} (${isFahrenheit && metricKey === "Temp" ? "F" : "C"})`,
+            text: `${title} (${isSecondaryUnit ? secondaryUnit : primaryUnit})`,
             font: { color: "white" }
           },
           font: { color: "white" },
