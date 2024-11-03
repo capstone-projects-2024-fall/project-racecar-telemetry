@@ -7,7 +7,7 @@ import GGDiagram from "@components/GGDiagram";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 import { ThemeProvider, CssBaseline, GlobalStyles } from "@mui/material";
 import theme from "@app/theme";
-import EngineTempGauge from "@components/EngineTempGauge";
+import DataGauge from "@components/DataGauge";
 
 export default function Home() {
   return (
@@ -18,8 +18,8 @@ export default function Home() {
         <CANDataLiveReading canID={"001"} />
         <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Acceleration"} />
         <GGDiagram canID={"001"} title={"GG Diagram"} />
-        <EngineTempGauge canID={"001"} />
-      </div>
+        <DataGauge canID="001" metricKey="Temp" title="Engine Temperature" maxPrimaryRange={550} maxSecondaryRange={700} primaryUnit="C" secondaryUnit="F" />
+        </div>
     </ThemeProvider>
   );
 }
