@@ -42,9 +42,6 @@ const GGDiagram = ({ canID, title }) => {
     title: {
       text: title,
       font: {
-        fontSize: "18px",
-        color: "white",
-        fontWeight: "bold",
         size: 24,
         color: theme.palette.primary.main,
       },
@@ -75,9 +72,6 @@ const GGDiagram = ({ canID, title }) => {
       gridcolor: "rgba(255, 255, 255, 0.1)",
       gridwidth: 1,
     },
-    margin: { l: 10, r: 10, t: 30, b: 10 },
-    autosize: true, // Enable responsive sizing
-    responsive: true,
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
   };
@@ -86,10 +80,6 @@ const GGDiagram = ({ canID, title }) => {
     <div
       style={{
         width: "100%",
-        height: "100%",
-        maxWidth: "100%",
-        padding: "0px",
-        boxSizing: "border-box",
         padding: "0",
         borderRadius: "12px",
         border: `2px solid ${theme.palette.primary.main}`,
