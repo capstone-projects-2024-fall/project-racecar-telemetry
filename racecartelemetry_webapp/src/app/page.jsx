@@ -39,7 +39,11 @@ export default function Home() {
         </Box>
 
         <Box sx={{ width: "100%", marginBottom: 2 }}>
-          <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Acceleration"} />
+          <TimeSeriesGraph
+            canID={"001"}
+            yAxis={"X"}
+            title={"Longitudinal Acceleration"}
+          />
         </Box>
 
         <Box sx={{ width: "100%", marginBottom: 2 }}>

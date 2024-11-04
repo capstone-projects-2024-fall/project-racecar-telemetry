@@ -66,8 +66,8 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
       zeroline: true,
       zerolinecolor: "rgba(255, 255, 255, 0.5)",
       zerolinewidth: 2,
-      gridcolor: "rgba(255, 255, 255, 0.1)", // Adjusted to make the grid color lighter
-      gridwidth: 1, // Set the grid line width
+      gridcolor: "rgba(255, 255, 255, 0.1)",
+      gridwidth: 1,
     },
     yaxis: {
       title: {
@@ -80,8 +80,8 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
       zeroline: true,
       zerolinecolor: "rgba(255, 255, 255, 0.5)",
       zerolinewidth: 2,
-      gridcolor: "rgba(255, 255, 255, 0.1)", // Adjusted to make the grid color lighter
-      gridwidth: 1, // Set the grid line width
+      gridcolor: "rgba(255, 255, 255, 0.1)",
+      gridwidth: 1,
     },
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
@@ -91,19 +91,19 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
     <div
       style={{
         width: "100%",
-        padding: "0", // Set padding to 0
+        padding: "0",
         borderRadius: "12px",
         border: `2px solid ${theme.palette.primary.main}`,
         boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
         backgroundColor: "rgba(30, 30, 30, 0.8)",
-        margin: "0", // Set margin to 0 if necessary
+        margin: "0",
       }}
     >
       <Plot
         data={data}
         layout={layout}
         useResizeHandler={true}
-        style={{ width: "100%", height: "400px", margin: "0", padding: "0" }} // Ensure no margin or padding
+        style={{ width: "100%", height: "400px", margin: "0", padding: "0" }}
       />
     </div>
   );
