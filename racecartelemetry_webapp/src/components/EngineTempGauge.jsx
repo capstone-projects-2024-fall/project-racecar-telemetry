@@ -30,7 +30,7 @@ const EngineTempGauge = ({ canID }) => {
 
   return (
     <div style={{ padding: 3, width: "100%", height: "100%", maxWidth: "100%", margin: '0 auto' }}>
-      <div style={{ textAlign: "center" }}>
+      <div style={{ textAlign: "center", color:"grey"}}>
         <button onClick={toggleTemperatureUnit} style={{ fontSize: "16px" }}>
           Show in {isFahrenheit ? "Celsius" : "Fahrenheit"}
         </button>
@@ -58,7 +58,7 @@ const EngineTempGauge = ({ canID }) => {
         layout={{
           autosize: true,
           responsive: true,
-          margin: { t: 50, b: 50, l: 50, r: 50 }, // Adds padding within the plot to avoid overflow
+          margin: { t: 30, b: 30, l: 30, r: 30 }, // Adds padding within the plot to avoid overflow
           title: {
             text: `Engine Temperature (${isFahrenheit ? "F" : "C"})`,
             font: { color: "white" }
