@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
+import theme from "@/app/theme";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -44,35 +45,41 @@ const GGDiagram = ({ canID, title }) => {
         fontSize: "18px",
         color: "white",
         fontWeight: "bold",
+        size: 24,
+        color: theme.palette.primary.main,
       },
     },
     xaxis: {
       title: {
-        text: "Lateral Acceleration [G]",
+        text: "Timestamp (s)",
         font: { color: "white" },
       },
       tickfont: { color: "white" },
       zeroline: true,
-      zerolinecolor: "white",
-      zerolinewidth: 5,
+      zerolinecolor: "rgba(255, 255, 255, 0.5)",
+      zerolinewidth: 2,
+      gridcolor: "rgba(255, 255, 255, 0.1)",
+      gridwidth: 1,
     },
     yaxis: {
       title: {
-        text: "Longitudinal Acceleration [G]",
+        text: "G",
         font: { color: "white" },
         standoff: 15,
       },
       tickfont: { color: "white" },
       automargin: true,
       zeroline: true,
-      zerolinecolor: "white",
-      zerolinewidth: 5,
+      zerolinecolor: "rgba(255, 255, 255, 0.5)",
+      zerolinewidth: 2,
+      gridcolor: "rgba(255, 255, 255, 0.1)",
+      gridwidth: 1,
     },
-    paper_bgcolor: "rgba(0, 0, 0, 0)",
-    plot_bgcolor: "rgba(0, 0, 0, 0)",
     margin: { l: 10, r: 10, t: 30, b: 10 },
     autosize: true, // Enable responsive sizing
     responsive: true,
+    paper_bgcolor: "rgba(20, 20, 20, 0.9)",
+    plot_bgcolor: "rgba(20, 20, 20, 0.9)",
   };
 
   return (
@@ -83,13 +90,19 @@ const GGDiagram = ({ canID, title }) => {
         maxWidth: "100%",
         padding: "0px",
         boxSizing: "border-box",
+        padding: "0",
+        borderRadius: "12px",
+        border: `2px solid ${theme.palette.primary.main}`,
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+        backgroundColor: "rgba(30, 30, 30, 0.8)",
+        margin: "0",
       }}
     >
       <Plot
         data={data}
         layout={layout}
-        config={{ responsive: true }}
-        style={{ width: "100%", height: "100%" }} // Fills container space
+        useResizeHandler={true}
+        style={{ width: "100%", height: "400px", margin: "0", padding: "0" }}
       />
     </div>
   );
