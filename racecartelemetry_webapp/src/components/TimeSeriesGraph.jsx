@@ -23,7 +23,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
         console.log("CAN data:", data);
 
         // Append new data points to history arrays
-        setTimestamps((prev) => [...prev, data.Time]); // Add new time data
+        setTimestamps((prev) => [...prev, data.Time / 1000]); // Add new time data
         if (yAxis === "X") {
           setAxisToPlot((prev) => [...prev, data.X]);
         } else if (yAxis === "Y") {
@@ -44,7 +44,8 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
       y: axisToPlot,
       type: "scatter",
       mode: "lines+markers",
-      marker: { color: `${theme.palette.primary.main}` },
+      marker: { color: `${theme.palette.primary.main}`, size: 6 },
+      line: { width: 2 },
     },
   ];
 
@@ -53,18 +54,20 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
       text: title,
       font: {
         size: 24,
-        color: "white",
+        color: theme.palette.primary.main,
       },
     },
     xaxis: {
       title: {
-        text: "Timestamp (ms)",
+        text: "Timestamp (s)",
         font: { color: "white" },
       },
       tickfont: { color: "white" },
       zeroline: true,
-      zerolinecolor: "white",
-      zerolinewidth: 5,
+      zerolinecolor: "rgba(255, 255, 255, 0.5)",
+      zerolinewidth: 2,
+      gridcolor: "rgba(255, 255, 255, 0.1)",
+      gridwidth: 1,
     },
     yaxis: {
       title: {
@@ -75,31 +78,34 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
       tickfont: { color: "white" },
       automargin: true,
       zeroline: true,
-      zerolinecolor: "white",
-      zerolinewidth: 5,
+      zerolinecolor: "rgba(255, 255, 255, 0.5)",
+      zerolinewidth: 2,
+      gridcolor: "rgba(255, 255, 255, 0.1)",
+      gridwidth: 1,
     },
-    paper_bgcolor: "rgba(0, 0, 0, 0)",
-    plot_bgcolor: "rgba(0, 0, 0, 0)",
-    margin: { l: 10, r: 10, t: 10, b: 10 },
+    paper_bgcolor: "rgba(20, 20, 20, 0.9)",
+    plot_bgcolor: "rgba(20, 20, 20, 0.9)",
   };
 
   return (
-    <>
-      <div
-        style={{
-          border: `2px solid ${theme.palette.primary.main}`,
-          padding: "0px",
-          borderRadius: "8px",
-        }}
-      >
-        <Plot
-          data={data}
-          layout={layout}
-          useResizeHandler={true}
-          style={{ width: "100%", height: "100%" }}
-        />
-      </div>
-    </>
+    <div
+      style={{
+        width: "100%",
+        padding: "0",
+        borderRadius: "12px",
+        border: `2px solid ${theme.palette.primary.main}`,
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+        backgroundColor: "rgba(30, 30, 30, 0.8)",
+        margin: "0",
+      }}
+    >
+      <Plot
+        data={data}
+        layout={layout}
+        useResizeHandler={true}
+        style={{ width: "100%", height: "400px", margin: "0", padding: "0" }}
+      />
+    </div>
   );
 };
 
