@@ -53,7 +53,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
     title: {
       text: title,
       font: {       
-        fontWeight: "bold"
+        fontWeight: "bold",
         size: 24,
         color: theme.palette.primary.main,
       },
