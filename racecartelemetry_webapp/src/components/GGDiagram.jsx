@@ -34,7 +34,7 @@ const GGDiagram = ({ canID, title }) => {
       y: longitudinal,
       type: "scatter",
       mode: "markers",
-      marker: { color: "blue" },
+      marker: { color: theme.palette.primary.main },
     },
   ];
 

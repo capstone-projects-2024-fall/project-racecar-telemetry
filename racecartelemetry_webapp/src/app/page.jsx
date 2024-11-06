@@ -9,12 +9,13 @@ import { ThemeProvider, CssBaseline, Box, Grid } from "@mui/material";
 import theme from "@app/theme";
 import DataGauge from "@components/DataGauge";
 import DataWidget from "@components/DataWidget";
+import LinearGauge from "@components/LinearGauge";
 
 export default function Home() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-        
+
       <NavBar />
       <Box
         sx={{
@@ -52,7 +53,19 @@ export default function Home() {
         </Box>
 
         <Box sx={{ width: "100%" }}>
-        <DataGauge canID="001" metricKey="Temp" title="Engine Temperature" maxPrimaryRange={550} maxSecondaryRange={700} primaryUnit="C" secondaryUnit="F" />
+          <DataGauge
+            canID="001"
+            metricKey="Temp"
+            title="Engine Temperature"
+            maxPrimaryRange={550}
+            maxSecondaryRange={700}
+            primaryUnit="C"
+            secondaryUnit="F"
+          />
+        </Box>
+
+        <Box>
+          <LinearGauge value={10} />
         </Box>
       </Box>
     </ThemeProvider>
