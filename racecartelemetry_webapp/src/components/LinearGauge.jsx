@@ -7,7 +7,7 @@ const LinearGauge = ({ value }) => {
   var data = [
     {
       type: "indicator",
-      value: 120,
+      value: 100,
       gauge: {
         shape: "bullet",
         axis: {
@@ -16,28 +16,25 @@ const LinearGauge = ({ value }) => {
         },
         bar: { color: theme.palette.primary.main },
       },
-      domain: { x: [0.15, 0.75], y: [0.25, 0.65] }, // Adjusted y domain for more space for the title
+      domain: { x: [0.15, 0.75], y: [0.25, 0.65] },
       number: {
-        font: { color: "white", size: 25 }, // Set the value color to white
+        font: { color: "white", size: 25 },
       },
     },
   ];
 
   var layout = {
-    width: 400, // Reduced width for smaller graph
-    height: 250, // Reduced height for smaller graph
-    margin: { t: 40, b: 10, l: 50, r: 10 }, // Increased top margin to make space for the title
-    grid: { rows: 2, columns: 2, pattern: "independent" },
+    width: 500, // Set the width to 100% to fill the container
+    height: 200, // Set the height to 100% to fill the container
+    margin: { t: 40, b: 10, l: 50, r: 10 },
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
     title: {
-      text: "Throttle Position", // Title placed above the graph
-      font: { size: 18 },
-      font: { color: "white" },
-
-      x: 0.5, // Center the title
+      text: "Throttle Position",
+      font: { size: 18, color: theme.palette.primary.main },
+      x: 0.5,
       xanchor: "center",
-      y: 0.7, // Position the title at the top
+      y: 0.7,
       yanchor: "top",
     },
     template: {
@@ -53,8 +50,22 @@ const LinearGauge = ({ value }) => {
   };
 
   return (
-    <div style={{ border: `2px solid ${theme.palette.primary.main}` }}>
-      <Plot data={data} layout={layout} useResizeHandler={true} style={{}} />
+    <div
+      style={{
+        display: "flex", // Use flexbox to make it responsive
+        justifyContent: "center", // Center content horizontally
+        alignItems: "center", // Center content vertically
+        border: `2px solid ${theme.palette.primary.main}`,
+        borderRadius: "12px",
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+      }}
+    >
+      <Plot
+        data={data}
+        layout={layout}
+        useResizeHandler={true}
+        style={{ width: "100%", height: "100%" }}
+      />
     </div>
   );
 };

@@ -64,7 +64,7 @@ export default function Home() {
           />
         </Box>
 
-        <Box sx={{ width: "100%" }}>
+        <Box>
           <LinearGauge value={10} />
         </Box>
       </Box>
