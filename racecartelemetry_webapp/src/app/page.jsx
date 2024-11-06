@@ -52,10 +52,11 @@ function SortableItem({ id, children }) {
           backgroundColor: "transparent",
           textAlign: "center",
           color: "grey",
-          padding: "0.5rem",
+          padding: "0.2rem",
           border: "1px solid #737373",
           borderRadius: 10,
-          marginBottom: "0.5rem",
+          marginBottom: "0.1rem",
+          fontSize: "0.8rem",
         }}
       >
         Drag Handle
@@ -67,8 +68,8 @@ function SortableItem({ id, children }) {
 
 export default function Home() {
   const [layout, setLayout] = useState([
-    { id: "engineTempGauge", component: <DataGauge canID="001" metricKey="Temp" title="Engine Temperature" maxPrimaryRange={550} maxSecondaryRange={700} primaryUnit="C" secondaryUnit="F" /> },
-    { id: "xAccelGauge", component: <DataGauge canID="001" metricKey="X" title="X Accel Gauge" maxPrimaryRange={30} primaryUnit="G" /> },
+    { id: "engineTempGauge", component: <DataGauge canID="001" metricKey="Temp" title="Engine Temperature" maxPrimaryRange={200} maxSecondaryRange={300} primaryUnit="C" secondaryUnit="F" /> },
+    { id: "xAccelGauge", component: <DataGauge canID="001" metricKey="X" title="X Accel Gauge" maxPrimaryRange={50} primaryUnit="G" /> },
     { id: "timeSeriesGraph", component: <TimeSeriesGraph canID="001" yAxis="X" title="Longitudinal Acceleration" /> },
     { id: "ggDiagram", component: <GGDiagram canID="001" title="GG Diagram" /> },
     { id: "canDataLiveReading", component: <CANDataLiveReading canID="001" /> },
