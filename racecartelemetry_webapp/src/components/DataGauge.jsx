@@ -48,37 +48,39 @@ const DataGauge = ({
   return (
     <div
       style={{
-        padding: 10,
+        padding: 5,
         width: "100%",
         height: "100%",
-        maxWidth: "100%",
-        margin: "0 auto",
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginBottom: "0.5rem",
+          fontSize: "1rem",
+          color: "white",
+          fontWeight: "bold",
+          textAlign: "center",
+          lineHeight: 1.2,
+          marginBottom: "0.3rem",
         }}
       >
-        {secondaryUnit && (
-          <button
-            onClick={toggleUnit}
-            style={{ fontSize: "14px", marginBottom: "0.3rem", color: "grey" }}
-          >
-            Show in {isSecondaryUnit ? primaryUnit : secondaryUnit}
-          </button>
-        )}
-        <div style={{ fontSize: "18px", color: "white", fontWeight: "bold" }}>
-          {title} ({isSecondaryUnit ? secondaryUnit : primaryUnit})
-        </div>
+        {title} ({isSecondaryUnit ? secondaryUnit : primaryUnit})
       </div>
-
+      {secondaryUnit && (
+        <button
+          onClick={toggleUnit}
+          style={{
+            fontSize: "0.85rem",
+            color: "grey",
+            marginBottom: "0.3rem",
+          }}
+        >
+          Show in {isSecondaryUnit ? primaryUnit : secondaryUnit}
+        </button>
+      )}
       <div
         style={{
           width: "100%",
@@ -86,8 +88,8 @@ const DataGauge = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          transform: "scale(0.9)", // Initial scale to ensure fit; adjust as needed
-          transformOrigin: "center", // Keeps the gauge centered in the container
+          transform: "scale(0.85)", // Slightly smaller to fit more comfortably
+          transformOrigin: "center",
         }}
       >
         <Plot
@@ -124,7 +126,7 @@ const DataGauge = ({
           layout={{
             autosize: true,
             responsive: true,
-            margin: { t: 0, b: 0, l: 20, r: 25 },
+            margin: { t: 0, b: 0, l: 10, r: 10 }, // Tight margins
             font: { color: "white" },
             paper_bgcolor: "rgba(0, 0, 0, 0)",
             plot_bgcolor: "rgba(0, 0, 0, 0)",
