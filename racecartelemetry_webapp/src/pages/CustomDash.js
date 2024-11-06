@@ -144,7 +144,7 @@ function SortableItem({ id, children }) {
     borderRadius: 10,
     display: "flex",
     flexDirection: "column",
-    width: "19%",
+    width: "30%",
     height: "500px", // Set a fixed height to contain the components
     boxSizing: "border-box",
     overflow: "hidden", // Prevents overflow if component exceeds height

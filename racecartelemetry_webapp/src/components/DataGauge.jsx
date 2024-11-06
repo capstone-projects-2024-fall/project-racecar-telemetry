@@ -53,6 +53,9 @@ const DataGauge = ({
         height: "100%",
         maxWidth: "100%",
         margin: "0 auto",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <div
@@ -76,48 +79,60 @@ const DataGauge = ({
         </div>
       </div>
 
-      <Plot
-        data={[
-          {
-            type: "indicator",
-            mode: "gauge+number",
-            value: displayedValue,
-            gauge: {
-              axis: {
-                range: isSecondaryUnit
-                  ? [0, maxSecondaryRange]
-                  : [0, maxPrimaryRange],
-                tickcolor: "white",
-              },
-              bar: { color: `${theme.palette.primary.main}` },
-              steps: [
-                {
-                  range: isSecondaryUnit
-                    ? [maxSecondaryRange * 0.33, maxSecondaryRange * 0.66]
-                    : [maxPrimaryRange * 0.33, maxPrimaryRange * 0.66],
-                  color: "lightgray",
-                },
-                {
-                  range: isSecondaryUnit
-                    ? [maxSecondaryRange * 0.66, maxSecondaryRange]
-                    : [maxPrimaryRange * 0.66, maxPrimaryRange],
-                  color: "gray",
-                },
-              ],
-            },
-          },
-        ]}
-        layout={{
-          autosize: true,
-          responsive: true,
-          margin: { t: 0, b: 0, l: 20, r: 25 }, // Reduced margins to fit inside container
-          font: { color: "white" },
-          paper_bgcolor: "rgba(0, 0, 0, 0)",
-          plot_bgcolor: "rgba(0, 0, 0, 0)",
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          transform: "scale(0.9)", // Initial scale to ensure fit; adjust as needed
+          transformOrigin: "center", // Keeps the gauge centered in the container
         }}
-        config={{ responsive: true }}
-        style={{ width: "100%", height: "250px", maxWidth: "100%" }} // Limit the height to fit inside the card
-      />
+      >
+        <Plot
+          data={[
+            {
+              type: "indicator",
+              mode: "gauge+number",
+              value: displayedValue,
+              gauge: {
+                axis: {
+                  range: isSecondaryUnit
+                    ? [0, maxSecondaryRange]
+                    : [0, maxPrimaryRange],
+                  tickcolor: "white",
+                },
+                bar: { color: `${theme.palette.primary.main}` },
+                steps: [
+                  {
+                    range: isSecondaryUnit
+                      ? [maxSecondaryRange * 0.33, maxSecondaryRange * 0.66]
+                      : [maxPrimaryRange * 0.33, maxPrimaryRange * 0.66],
+                    color: "lightgray",
+                  },
+                  {
+                    range: isSecondaryUnit
+                      ? [maxSecondaryRange * 0.66, maxSecondaryRange]
+                      : [maxPrimaryRange * 0.66, maxPrimaryRange],
+                    color: "gray",
+                  },
+                ],
+              },
+            },
+          ]}
+          layout={{
+            autosize: true,
+            responsive: true,
+            margin: { t: 0, b: 0, l: 20, r: 25 },
+            font: { color: "white" },
+            paper_bgcolor: "rgba(0, 0, 0, 0)",
+            plot_bgcolor: "rgba(0, 0, 0, 0)",
+          }}
+          config={{ responsive: true }}
+          style={{ width: "100%", height: "100%" }}
+        />
+      </div>
     </div>
   );
 };
