@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
-import dynamic from 'next/dynamic'; 
+import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { db } from "@firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import theme from "@/app/theme";
 
-const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondaryRange = 700, primaryUnit = "C", secondaryUnit }) => {
+const DataGauge = ({
+  canID,
+  metricKey,
+  title,
+  maxPrimaryRange = 550,
+  maxSecondaryRange = 700,
+  primaryUnit = "C",
+  secondaryUnit,
+}) => {
   const [metricValue, setMetricValue] = useState(0);
   const [isSecondaryUnit, setIsSecondaryUnit] = useState(false);
 
@@ -38,10 +46,28 @@ const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondar
   const toggleUnit = () => setIsSecondaryUnit(!isSecondaryUnit);
 
   return (
-    <div style={{ padding: 10, width: "100%", height: "100%", maxWidth: "100%", margin: "0 auto" }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "0.5rem" }}>
+    <div
+      style={{
+        padding: 10,
+        width: "100%",
+        height: "100%",
+        maxWidth: "100%",
+        margin: "0 auto",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginBottom: "0.5rem",
+        }}
+      >
         {secondaryUnit && (
-          <button onClick={toggleUnit} style={{ fontSize: "14px", marginBottom: "0.3rem", color: "grey"}}>
+          <button
+            onClick={toggleUnit}
+            style={{ fontSize: "14px", marginBottom: "0.3rem", color: "grey" }}
+          >
             Show in {isSecondaryUnit ? primaryUnit : secondaryUnit}
           </button>
         )}
@@ -58,13 +84,25 @@ const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondar
             value: displayedValue,
             gauge: {
               axis: {
-                range: isSecondaryUnit ? [0, maxSecondaryRange] : [0, maxPrimaryRange],
-                tickcolor: "white"
+                range: isSecondaryUnit
+                  ? [0, maxSecondaryRange]
+                  : [0, maxPrimaryRange],
+                tickcolor: "white",
               },
               bar: { color: `${theme.palette.primary.main}` },
               steps: [
-                { range: isSecondaryUnit ? [maxSecondaryRange * 0.33, maxSecondaryRange * 0.66] : [maxPrimaryRange * 0.33, maxPrimaryRange * 0.66], color: "lightgray" },
-                { range: isSecondaryUnit ? [maxSecondaryRange * 0.66, maxSecondaryRange] : [maxPrimaryRange * 0.66, maxPrimaryRange], color: "gray" },
+                {
+                  range: isSecondaryUnit
+                    ? [maxSecondaryRange * 0.33, maxSecondaryRange * 0.66]
+                    : [maxPrimaryRange * 0.33, maxPrimaryRange * 0.66],
+                  color: "lightgray",
+                },
+                {
+                  range: isSecondaryUnit
+                    ? [maxSecondaryRange * 0.66, maxSecondaryRange]
+                    : [maxPrimaryRange * 0.66, maxPrimaryRange],
+                  color: "gray",
+                },
               ],
             },
           },
@@ -75,7 +113,7 @@ const DataGauge = ({ canID, metricKey, title, maxPrimaryRange = 550, maxSecondar
           margin: { t: 0, b: 0, l: 20, r: 25 }, // Reduced margins to fit inside container
           font: { color: "white" },
           paper_bgcolor: "rgba(0, 0, 0, 0)",
-          plot_bgcolor: "rgba(0, 0, 0, 0)"
+          plot_bgcolor: "rgba(0, 0, 0, 0)",
         }}
         config={{ responsive: true }}
         style={{ width: "100%", height: "250px", maxWidth: "100%" }} // Limit the height to fit inside the card
