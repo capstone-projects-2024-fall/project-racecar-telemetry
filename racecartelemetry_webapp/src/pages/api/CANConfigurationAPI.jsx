@@ -26,29 +26,40 @@ const handler = async (req, res) => {
         }
     } else if (req.method === 'GET') {
 
-        const { collectionName } = req.query;
+        const { collectionName, docId } = req.query;
 
         if (!collectionName) {
             return res.status(400).json({ message: 'Collection name is required' });
         }
-
         try {
-            const querySnapshot = await getDocs(collection(dbFirestore, collectionName))
-            const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-
-            if (docs.length === 0) {
-                res.status(404).json({ message: 'No documents found' });
+            if (docId) {
+              // Fetch a specific document
+              const docRef = doc(dbFirestore, collectionName, docId);
+              const docSnapshot = await getDoc(docRef);
+      
+              if (!docSnapshot.exists()) {
+                res.status(404).json({ message: 'Document not found' });
+              } else {
+                res.status(200).json(docSnapshot.data());
+              }
             } else {
+              // Fetch all documents in the collection
+              const querySnapshot = await getDocs(collection(dbFirestore, collectionName));
+              const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+              if (docs.length === 0) {
+                res.status(404).json({ message: 'No documents found' });
+              } else {
                 res.status(200).json({ data: docs });
+              }
             }
-
-        } catch (error) {
-            console.error("Error retrieving data:", error)
-            res.status(500).json({ message: 'Failed to retrieve data', error: error.message })
+          } catch (error) {
+            console.error("Error retrieving data:", error);
+            res.status(500).json({ message: 'Failed to retrieve data', error: error.message });
+          }
+        } else {
+          res.status(405).json({ message: 'Method not allowed' });
         }
-    } else {
-        res.status(405).json({ message: 'Method not allowed' })
-    }
 }
 
 

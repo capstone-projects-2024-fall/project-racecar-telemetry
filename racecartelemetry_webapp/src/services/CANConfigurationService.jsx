@@ -31,3 +31,17 @@ export const saveCANData = async (selectedConfig, rows) => {
     });
     return await response.json();
   };
+
+  export const fetchCANData = async (selectedConfig) => {
+    const response = await fetch(`/api/CANConfigurationAPI?collectionName=canConfigs&docId=${selectedConfig}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+  
+    return await response.json();
+  };
+  

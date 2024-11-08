@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import CANDataAssignment from '@components/CANDataAssignment'
 import ConfigManager from '@components/ConfigManager'
 import Box from '@mui/material/Box';
+import CANDataView from '@components/CANDataView';
 
 
 export default function CANConfigurationPage() {
@@ -15,6 +16,9 @@ export default function CANConfigurationPage() {
       <ConfigManager onConfigSelect = {setSelectedConfig} />
 
       {selectedConfig && <CANDataAssignment selectedConfig = {selectedConfig}/>}
+      
+      <CANDataView selectedConfig={selectedConfig}/>
+
       </Box>
     </>
 
