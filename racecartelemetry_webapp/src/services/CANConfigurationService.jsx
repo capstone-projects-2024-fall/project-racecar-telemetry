@@ -18,3 +18,16 @@ export const createConfig = async (configName) => {
     });
     return await response.json();
 };
+
+export const saveCANData = async (selectedConfig, rows) => {
+    const response = await fetch('/api/CANConfigurationAPI', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: rows,
+        collectionName: 'canConfigs',
+        docId: selectedConfig
+      })
+    });
+    return await response.json();
+  };
