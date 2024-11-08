@@ -11,8 +11,9 @@ export default function CANConfigurationPage() {
 
   return (
     <>
-    <Box>
+    <Box display="flex" flexDirection="column" gap={2} pb={4}>
       <ConfigManager onConfigSelect = {setSelectedConfig} />
+
       {selectedConfig && <CANDataAssignment selectedConfig = {selectedConfig}/>}
       </Box>
     </>

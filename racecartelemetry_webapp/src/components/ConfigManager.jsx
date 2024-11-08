@@ -36,15 +36,15 @@ const ConfigManager = ({ onConfigSelect }) => {
 
     const createConfig = async () => {
         if (Array.isArray(configs) && configs.some((config) => config.name === configData.name)) {
-            setErrorMessage("A config with this name already exists.")
+            setErrorMessage("A config with this name already exists.");
             return;
         }
-
+    
         if (!configData.name) {
-            setErrorMessage("Config name is required.")
+            setErrorMessage("Config name is required.");
             return;
         }
-
+    
         try {
             const response = await fetch('/api/CANConfigurationAPI', {
                 method: 'POST',
@@ -53,24 +53,25 @@ const ConfigManager = ({ onConfigSelect }) => {
                     docId: configData.name,
                     collectionName: 'canConfigs'
                 })
-            })
-            const result = await response.json()
+            });
+            const result = await response.json();
             if (response.ok) {
-                console.log("Config saved successfully:", result)
-
-                fetchConfigs()
-
+                console.log("Config saved successfully:", result);
+    
+                fetchConfigs();
+    
                 if (onConfigSelect) {
-                    onConfigSelect(configData)
+                    // Pass only the config name or ID instead of the whole object
+                    onConfigSelect(configData.name);
                 }
             } else {
-                console.error("Error saving config:", result)
+                console.error("Error saving config:", result);
             }
         } catch (error) {
-            console.error("Failed to save config:", error)
+            console.error("Failed to save config:", error);
         }
-    }
-
+    };
+    
     return (
         <Box
             sx={{
