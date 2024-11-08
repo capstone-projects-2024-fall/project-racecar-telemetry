@@ -11,9 +11,10 @@ export default function CANConfigurationPage() {
 
   return (
     <>
-
+    <Box>
       <ConfigManager onConfigSelect = {setSelectedConfig} />
       {selectedConfig && <CANDataAssignment selectedConfig = {selectedConfig}/>}
+      </Box>
     </>
 
   );
