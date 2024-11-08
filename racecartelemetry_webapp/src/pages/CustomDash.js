@@ -26,7 +26,7 @@ export default function CustomDash() {
     { id: "xAccelGauge", label: "X Accel Gauge", component: <DataGauge canID="001" metricKey="X" title="X Accel Gauge" maxPrimaryRange={50}  primaryUnit="G" />  },
     { id: "timeSeriesGraph", label: "Time Series Graph", component:  <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Acceleration"} /> },
     { id: "ggDiagram", label: "GG Diagram", component: <GGDiagram canID={"001"} title={"GG Diagram"} /> },
-    { id: "canDataLiveReading", label: "CAN Data Live Reading", component: <CANDataLiveReading canID={"001"} /> },
+    { id: "canDataLiveReading", label: "CAN Data Live Reading", component: <CANDataLiveReading canID={"210"} /> },
   ];
 
   const [layout, setLayout] = useState(componentsList);
