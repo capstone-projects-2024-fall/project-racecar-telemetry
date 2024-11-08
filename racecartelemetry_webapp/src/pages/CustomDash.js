@@ -25,8 +25,7 @@ export default function CustomDash() {
     { id: "engineTempGauge", component: <EngineTempGauge canID={"001"} /> },
     { id: "timeSeriesGraph", component: <TimeSeriesGraph canID={"001"} /> },
     { id: "ggDiagram", component: <GGDiagram canID={"001"} /> },
-    { id: "canDataLiveReading", component: <CANDataLiveReading canID={"001"} /> },
-
+    { id: "canDataLiveReading", component: <CANDataLiveReading canID={"210"} /> },
   ]);
 
   const sensors = useSensors(useSensor(PointerSensor));
