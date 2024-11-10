@@ -23,7 +23,6 @@ import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@app/theme";
 import DataGauge from "@components/DataGauge";
 import DataWidget from "@components/DataWidget";
-import LinearGauge from "@components/LinearGauge";
 
 function SortableItem({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -199,21 +198,6 @@ export default function Home() {
           <Box sx={{ width: "50%" }}>
             <GGDiagram canID={"001"} title={"GG Diagram"} />
           </Box>
-
-        <Box sx={{ width: "100%" }}>
-          <DataGauge
-            canID="001"
-            metricKey="Temp"
-            title="Engine Temperature"
-            maxPrimaryRange={550}
-            maxSecondaryRange={700}
-            primaryUnit="C"
-            secondaryUnit="F"
-          />
-        </Box>
-
-        <Box>
-          <LinearGauge value={10} />
         </Box>
       </Box>
     </ThemeProvider>
