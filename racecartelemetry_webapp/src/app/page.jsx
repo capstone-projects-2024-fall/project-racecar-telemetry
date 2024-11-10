@@ -68,10 +68,46 @@ function SortableItem({ id, children }) {
 
 export default function Home() {
   const [layout, setLayout] = useState([
-    { id: "engineTempGauge", component: <DataGauge canID="001" metricKey="Temp" title="Engine Temperature" maxPrimaryRange={200} maxSecondaryRange={300} primaryUnit="C" secondaryUnit="F" /> },
-    { id: "xAccelGauge", component: <DataGauge canID="001" metricKey="X" title="X Accel Gauge" maxPrimaryRange={50} primaryUnit="G" /> },
-    { id: "timeSeriesGraph", component: <TimeSeriesGraph canID="001" yAxis="X" title="Longitudinal Acceleration" /> },
-    { id: "ggDiagram", component: <GGDiagram canID="001" title="GG Diagram" /> },
+    {
+      id: "engineTempGauge",
+      component: (
+        <DataGauge
+          canID="001"
+          metricKey="Temp"
+          title="Engine Temperature"
+          maxPrimaryRange={200}
+          maxSecondaryRange={300}
+          primaryUnit="C"
+          secondaryUnit="F"
+        />
+      ),
+    },
+    {
+      id: "xAccelGauge",
+      component: (
+        <DataGauge
+          canID="001"
+          metricKey="X"
+          title="X Accel Gauge"
+          maxPrimaryRange={50}
+          primaryUnit="G"
+        />
+      ),
+    },
+    {
+      id: "timeSeriesGraph",
+      component: (
+        <TimeSeriesGraph
+          canID="001"
+          yAxis="X"
+          title="Longitudinal Acceleration"
+        />
+      ),
+    },
+    {
+      id: "ggDiagram",
+      component: <GGDiagram canID="001" title="GG Diagram" />,
+    },
     { id: "canDataLiveReading", component: <CANDataLiveReading canID="001" /> },
   ]);
 
@@ -94,8 +130,14 @@ export default function Home() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <NavBar />
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", padding: 2 }}>
-        
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: 2,
+        }}
+      >
         {/* Data Widgets */}
         <Box
           sx={{
@@ -113,8 +155,15 @@ export default function Home() {
         </Box>
 
         {/* Draggable Row of Components */}
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={layout.map((item) => item.id)} strategy={verticalListSortingStrategy}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={layout.map((item) => item.id)}
+            strategy={verticalListSortingStrategy}
+          >
             <Box
               sx={{
                 display: "flex",
@@ -136,15 +185,20 @@ export default function Home() {
         </DndContext>
 
         {/* Side-by-Side Graphs */}
-        <Box sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}>
+        <Box
+          sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}
+        >
           <Box sx={{ width: "50%" }}>
-            <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Longitudinal Acceleration"} />
+            <TimeSeriesGraph
+              canID={"001"}
+              yAxis={"X"}
+              title={"Longitudinal Acceleration"}
+            />
           </Box>
           <Box sx={{ width: "50%" }}>
             <GGDiagram canID={"001"} title={"GG Diagram"} />
           </Box>
         </Box>
-        
       </Box>
     </ThemeProvider>
   );
