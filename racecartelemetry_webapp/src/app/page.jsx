@@ -31,14 +31,14 @@ function SortableItem({ id, children }) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    padding: "0.5rem",
+    padding: "0.3rem",
     backgroundColor: "transparent",
     border: "1px solid #9e9e9e",
     borderRadius: 10,
     display: "flex",
     flexDirection: "column",
-    width: "18%", // Make the width 18% to fit five items in one row
-    height: "250px", // Adjust height as needed
+    width: "20%",
+    height: "250px",
     boxSizing: "border-box",
     overflow: "hidden",
   };
@@ -142,9 +142,7 @@ export default function Home() {
         <Box sx={{ width: "100%", marginBottom: 2 }}>
           <GGDiagram canID={"001"} title={"GG Diagram"} />
         </Box>
-        <Box sx={{ width: "100%" }}>
-          <DataGauge canID="001" metricKey="Temp" title="Engine Temperature" maxPrimaryRange={550} maxSecondaryRange={700} primaryUnit="C" secondaryUnit="F" />
-        </Box>
+        
       </Box>
     </ThemeProvider>
   );
