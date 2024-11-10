@@ -1,8 +1,10 @@
 //@components/ConfigManager
 
 import React, { useState, useEffect } from "react"
-import { Button, Select, MenuItem, TextField, Box, Typography, Grid, Alert } from "@mui/material"
+import { Button, Select, IconButton, MenuItem, TextField, Box, Typography, Grid, Alert } from "@mui/material"
+import DeleteIcon from "@mui/icons-material/Delete";
 import { fetchConfigs, createConfig } from '@services/CANConfigurationService';
+import { deleteConfig } from "../services/CANConfigurationService";
 const ConfigManager = ({ onConfigSelect }) => {
     const [configs, setConfigs] = useState([])
     const [selectedConfig, setSelectedConfig] = useState("")
@@ -27,6 +29,15 @@ const ConfigManager = ({ onConfigSelect }) => {
         setSelectedConfig(configId)
         setConfigData(selected || { id: "" })
         if (onConfigSelect) onConfigSelect(configId)
+    }
+
+    const handleDeleteConfig = async (configId) => {
+        try {
+            await deleteConfig(configId)
+            setConfigs(configs.filter(config => config.id !== configId))
+        } catch (error) {
+            console.error("Failed to delete config: ", error)
+        }
     }
 
     const handleCreateConfig = async () => {
@@ -56,7 +67,7 @@ const ConfigManager = ({ onConfigSelect }) => {
         }
     };
 
-    
+
     return (
         <Box
             sx={{
@@ -97,14 +108,22 @@ const ConfigManager = ({ onConfigSelect }) => {
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
+                        renderValue={(selected) => selected || "Select Config"}
                     >
                         <MenuItem value="" disabled>
                             Select Config
                         </MenuItem>
                         {Array.isArray(configs) && configs.length > 0 ? (
                             configs.map((config) => (
-                                <MenuItem key={config.id} value={config.id}>
-                                    {config.id}
+                                <MenuItem key={config.id} value={config.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span>{config.id}</span>
+                                    <IconButton onClick={(e) => {
+                                        e.stopPropagation()
+                                        console.log("Deleting config with ID:", config.id)
+                                        handleDeleteConfig(config.id)
+                                    }}>
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
                                 </MenuItem>
                             ))
                         ) : (
