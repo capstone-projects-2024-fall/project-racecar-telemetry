@@ -135,12 +135,14 @@ export default function Home() {
           </SortableContext>
         </DndContext>
 
-        {/* Additional Content */}
-        <Box sx={{ width: "100%", marginBottom: 2 }}>
-          <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Longitudinal Acceleration"} />
-        </Box>
-        <Box sx={{ width: "100%", marginBottom: 2 }}>
-          <GGDiagram canID={"001"} title={"GG Diagram"} />
+        {/* Side-by-Side Graphs */}
+        <Box sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}>
+          <Box sx={{ width: "50%" }}>
+            <TimeSeriesGraph canID={"001"} yAxis={"X"} title={"Longitudinal Acceleration"} />
+          </Box>
+          <Box sx={{ width: "50%" }}>
+            <GGDiagram canID={"001"} title={"GG Diagram"} />
+          </Box>
         </Box>
         
       </Box>
