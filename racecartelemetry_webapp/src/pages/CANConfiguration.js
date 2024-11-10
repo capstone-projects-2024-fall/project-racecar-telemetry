@@ -9,19 +9,23 @@ import CANDataView from '@components/CANDataView';
 
 export default function CANConfigurationPage() {
   const [selectedConfig, setSelectedConfig] = useState("")
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <>
-    <Box display="flex" flexDirection="column" gap={2} pb={4}>
-      <ConfigManager onConfigSelect = {setSelectedConfig} />
+      <Box display="flex" flexDirection="column" gap={2} pb={4}>
+        <ConfigManager onConfigSelect={setSelectedConfig} />
 
-      {selectedConfig && <CANDataAssignment selectedConfig = {selectedConfig}/>}
-      
-      <CANDataView selectedConfig={selectedConfig}/>
-
+        {/* Conditionally render based on isEditing state */}
+        {selectedConfig && (
+          isEditing ? (
+            <CANDataAssignment selectedConfig={selectedConfig} setIsEditing={setIsEditing} />
+          ) : (
+            <CANDataView selectedConfig={selectedConfig} setIsEditing={setIsEditing} />
+          )
+        )}
       </Box>
     </>
-
   );
 }
 

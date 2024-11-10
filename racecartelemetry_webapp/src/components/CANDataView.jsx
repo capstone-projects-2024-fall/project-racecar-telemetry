@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { CANInput } from "./CANInput";
-import { Button, Box, Typography, Grid } from "@mui/material";
+import { Button, Box, Typography, Grid, Paper, Grid2, IconButton } from "@mui/material";
 import { saveCANData } from '@services/CANConfigurationService';
 import { fetchCANData } from "@services/CANConfigurationService";
+import theme from "@app/theme";
+import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
-const CANDataView = ({selectedConfig}) => {
+const CANDataView = ({selectedConfig, setIsEditing}) => {
     const [configData, setConfigData] = useState(null);
 
     useEffect(() => {
@@ -29,63 +32,121 @@ const CANDataView = ({selectedConfig}) => {
       : [];
     
       return (
-        <Box
-          sx={{
-            width: 1300,
-            padding: 3,
-            borderRadius: 2,
-            backgroundColor: "#f0f0f0",
-            boxShadow: 3,
-            margin: "auto",
-          }}
-        >
-          <Typography
-            variant="h6"
-            gutterBottom
-            sx={{
-              marginBottom: 2,
-              fontWeight: "bold",
-              textAlign: "center",
-              color: "#333",
-            }}
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Box
+             sx={{
+                display: "flex",            
+                flexDirection: "column",      
+                maxWidth: "90%",
+                padding: 3,
+                borderRadius: 2,
+                backgroundColor: "white",
+                boxShadow: 3,
+                margin: "auto",
+                position: "relative",
+                justifyContent: "center",     
+                alignItems: "center",         
+                textAlign: "center",          
+              }}
           >
-            {selectedConfig || "No Configuration Selected"}
-          </Typography>
-            
-          {configData ? (
-            <Grid container spacing={2}>
-              {configArray.map((item, index) => (
-                <Grid item xs={12} key={index}>
-                  <Typography variant="body1">
-                    Data Channel: {item.DataChannel}
-                  </Typography>
-                  <Typography variant="body1">
-                    CanID: {item.CanID}
-                  </Typography>
-                  <Typography variant="body1">
-                    Message Length: {item.MessageLength}
-                  </Typography>
-                  <Typography variant="body1">
-                    Offset Bytes: {item.OffsetBytes}
-                  </Typography>
-                  <Typography variant="body1">
-                    Adder: {item.Adder}
-                  </Typography>
-                  <Typography variant="body1">
-                    Multiplier: {item.Multiplier}
-                  </Typography>
-                  <Typography variant="body1">
-                    Unit: {item.Unit}
-                  </Typography>
-                </Grid>
-              ))}
-            </Grid>
-          ) : (
-            <Typography variant="body2" color="textSecondary">
-              Loading configuration data...
+            <IconButton
+              onClick={() => setIsEditing(true)}
+              sx={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+    
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{
+                marginBottom: 2,
+                fontWeight: "bold",
+                textAlign: "center",
+                color: "#333",
+              }}
+            >
+              {selectedConfig || "No Configuration Selected"}
             </Typography>
-          )}
-        </Box>
+    
+             
+              {configData ? (
+                <Grid2 
+                  container 
+                  spacing={2} 
+                  justifyContent="center" 
+                  alignItems="center"
+                  sx={{ maxWidth: "fit-content" }} // Ensures the grid wraps content tightly
+                >
+                  {configArray.map((item, index) => (
+                    <Grid2 container item spacing={1} key={index}>
+                      <Grid2 xs="auto">
+                        <Paper
+                         elevation={3} sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}
+                         >
+                          <Typography variant="body1" color="white">
+                            <strong>Data Channel:</strong> {item.DataChannel}
+                          </Typography>
+                        </Paper>
+                      </Grid2>
+                      <Grid2 xs="auto">
+                        <Paper elevation={3} sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}>
+                          <Typography variant="body1" color="white">
+                            <strong>CanID:</strong> {item.CanID}
+                          </Typography>
+                        </Paper>
+                      </Grid2>
+                      <Grid2 xs="auto">
+                        <Paper elevation={3} sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}>
+                          <Typography variant="body1" color="white">
+                            <strong>Message Length:</strong> {item.MessageLength}
+                          </Typography>
+                        </Paper>
+                      </Grid2>
+                      <Grid2 xs="auto">
+                        <Paper elevation={3} sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}>
+                          <Typography variant="body1" color="white">
+                            <strong>Offset Bytes:</strong> {item.OffsetBytes}
+                          </Typography>
+                        </Paper>
+                      </Grid2>
+                      <Grid2 xs="auto">
+                        <Paper elevation={3} sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}>
+                          <Typography variant="body1" color="white">
+                            <strong>Adder:</strong> {item.Adder}
+                          </Typography>
+                        </Paper>
+                      </Grid2>
+                      <Grid2 xs="auto">
+                        <Paper elevation={3} sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}>
+                          <Typography variant="body1" color="white">
+                            <strong>Multiplier:</strong> {item.Multiplier}
+                          </Typography>
+                        </Paper>
+                      </Grid2>
+                      <Grid2 xs="auto">
+                        <Paper elevation={3} sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}>
+                          <Typography variant="body1" color="white">
+                            <strong>Unit:</strong> {item.Unit}
+                          </Typography>
+                        </Paper>
+                      </Grid2>
+                    </Grid2>
+                  ))}
+                </Grid2>
+              ) : (
+                <Typography variant="body2" color="white">
+                  Loading configuration data...
+                </Typography>
+              )}
+             
+          </Box>
+        </ThemeProvider>
       );
 };
 

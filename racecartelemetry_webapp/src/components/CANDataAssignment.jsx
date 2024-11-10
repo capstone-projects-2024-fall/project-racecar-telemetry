@@ -3,7 +3,7 @@ import { CANInput } from "./CANInput";
 import { Button, Box, Typography, Grid } from "@mui/material";
 import { saveCANData } from '@services/CANConfigurationService';
 
-const CANDataAssignment = ({selectedConfig}) => {
+const CANDataAssignment = ({selectedConfig, setIsEditing}) => {
   const [rows, setRows] = useState([
     {
       DataChannel: "",
@@ -44,21 +44,6 @@ const CANDataAssignment = ({selectedConfig}) => {
       console.error("Failed to save data:", error);
     }
   };
-  
-
-  const handleCancel = () => {
-    setRows([
-      {
-        DataChannel: "",
-        CanID: "",
-        MessageLength: "",
-        OffsetBytes: "",
-        Adder: "",
-        Multiplier: "",
-        Unit: "",
-      },
-    ]);
-  };
 
   return (
     <Box
@@ -66,7 +51,7 @@ const CANDataAssignment = ({selectedConfig}) => {
         width: 1300,
         padding: 3,
         borderRadius: 2,
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f0f0f0 ",
         boxShadow: 3,
         margin: "auto",
       }}
@@ -118,10 +103,10 @@ const CANDataAssignment = ({selectedConfig}) => {
           <Button
             variant="outlined"
             color="secondary"
-            onClick={handleCancel}
+            onClick={() => setIsEditing(false)}
             sx={{ width: 150, height: 50 }}
           >
-            Cancel
+            Back
           </Button>
         </Grid>
         <Grid item>
