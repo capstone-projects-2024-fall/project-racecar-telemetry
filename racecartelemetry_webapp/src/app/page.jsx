@@ -108,7 +108,16 @@ export default function Home() {
       id: "ggDiagram",
       component: <GGDiagram canID="001" title="GG Diagram" />,
     },
-    { id: "throttlePosGauge", component: <LinearGauge /> },
+    {
+      id: "throttlePosGauge",
+      component: (
+        <LinearGauge
+          canID="001"
+          valueToShow="Throttle"
+          title="Throttle Position"
+        />
+      ),
+    },
   ]);
 
   const sensors = useSensors(useSensor(PointerSensor));
