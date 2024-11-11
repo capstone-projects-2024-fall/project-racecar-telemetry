@@ -13,21 +13,89 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import EngineTempGauge from "@components/EngineTempGauge";
+import DataGauge from "@components/DataGauge";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import GGDiagram from "@components/GGDiagram";
 import CANDataLiveReading from "@components/CANDataLiveReading";
 
+import {
+  Button,
+  Menu,
+  MenuItem,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 
-// Main CustomDash component
 export default function CustomDash() {
-  const [layout, setLayout] = useState([
-    { id: "engineTempGauge", component: <EngineTempGauge canID={"001"} /> },
-    { id: "timeSeriesGraph", component: <TimeSeriesGraph canID={"001"} /> },
-    { id: "ggDiagram", component: <GGDiagram canID={"001"} /> },
-    { id: "canDataLiveReading", component: <CANDataLiveReading canID={"001"} /> },
+  const componentsList = [
+    {
+      id: "engineTempGauge",
+      label: "Engine Temperature Gauge",
+      component: (
+        <DataGauge
+          canID="210"
+          metricKey="Temp"
+          title="Engine Temperature"
+          maxPrimaryRange={550}
+          maxSecondaryRange={700}
+          primaryUnit="C"
+          secondaryUnit="F"
+        />
+      ),
+    },
+    {
+      id: "xAccelGauge",
+      label: "X Accel Gauge",
+      component: (
+        <DataGauge
+          canID="210"
+          metricKey="X"
+          title="X Accel Gauge"
+          maxPrimaryRange={50}
+          primaryUnit="G"
+        />
+      ),
+    },
+    {
+      id: "timeSeriesGraph",
+      label: "Time Series Graph",
+      component: (
+        <TimeSeriesGraph canID={"210"} yAxis={"X"} title={"Acceleration"} />
+      ),
+    },
+    {
+      id: "ggDiagram",
+      label: "GG Diagram",
+      component: <GGDiagram canID={"210"} title={"GG Diagram"} />,
+    },
+    {
+      id: "canDataLiveReading",
+      label: "CAN Data Live Reading",
+      component: <CANDataLiveReading canID={"210"} />,
+    },
+  ];
 
-  ]);
+  const [layout, setLayout] = useState(componentsList);
+  const [visibleComponents, setVisibleComponents] = useState(
+    componentsList.reduce((acc, item) => ({ ...acc, [item.id]: true }), {})
+  );
+
+  // Dropdown menu state
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // Open dropdown menu
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Close dropdown menu
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleCheckboxChange = (id) => {
+    setVisibleComponents((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -45,33 +113,66 @@ export default function CustomDash() {
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext
-        items={layout.map((item) => item.id)}
-        strategy={verticalListSortingStrategy}
-      >
-        <div
-          className="custom-dash"
-          style={{
-            display: "flex",
-            flexWrap: "wrap", // Allows wrapping to the next row
-            gap: "1rem", // Adjusts space between items
-            padding: "1rem",
-            justifyContent: "flex-start", // Aligns items to the start of the row
-          }}
+    <div>
+      {/* Dropdown with checkboxes */}
+      <div style={{ marginBottom: "1rem" }}>
+        <Button variant="contained" onClick={handleOpenMenu}>
+          Select Components
+        </Button>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleCloseMenu}
         >
-          {layout.map((item) => (
-            <SortableItem key={item.id} id={item.id}>
-              {item.component}
-            </SortableItem>
+          {componentsList.map((item) => (
+            <MenuItem key={item.id}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={visibleComponents[item.id]}
+                    onChange={() => handleCheckboxChange(item.id)}
+                    color="primary"
+                  />
+                }
+                label={item.label}
+              />
+            </MenuItem>
           ))}
-        </div>
-      </SortableContext>
-    </DndContext>
+        </Menu>
+      </div>
+
+      {/* Drag and Drop Context */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={layout.map((item) => item.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div
+            className="custom-dash"
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "1rem",
+              padding: "1rem",
+              justifyContent: "flex-start",
+            }}
+          >
+            {layout.map(
+              (item) =>
+                visibleComponents[item.id] && (
+                  <SortableItem key={item.id} id={item.id}>
+                    {item.component}
+                  </SortableItem>
+                )
+            )}
+          </div>
+        </SortableContext>
+      </DndContext>
+    </div>
   );
 }
 
@@ -84,30 +185,34 @@ function SortableItem({ id, children }) {
     transform: CSS.Transform.toString(transform),
     transition,
     padding: "1rem",
-    backgroundColor: "none",
-    border: "1px solid #ddd",
-    marginBottom: "1rem",
+    backgroundColor: "transparent",
+    border: "1px solid #9e9e9e",
+    borderRadius: 10,
     display: "flex",
     flexDirection: "column",
-    width: "32%",
+    width: "30%",
+    height: "500px", // Set a fixed height to contain the components
     boxSizing: "border-box",
+    overflow: "hidden", // Prevents overflow if component exceeds height
   };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-      {/* Drag Handle */}
       <div
         {...listeners}
         style={{
           cursor: "grab",
-          padding: "0.5rem",
-          backgroundColor: "#ccc",
+          backgroundColor: "transparent",
           textAlign: "center",
+          color: "grey",
+          padding: "0.5rem",
+          border: "1px solid #737373",
+          borderRadius: 10,
+          marginBottom: "0.5rem",
         }}
       >
         Drag Handle
       </div>
-      {/* Main Component Content */}
       <div style={{ flex: 1 }}>{children}</div>
     </div>
   );

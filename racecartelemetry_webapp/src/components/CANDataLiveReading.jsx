@@ -4,6 +4,7 @@ import { ref, onValue } from "firebase/database";  // Firebase Realtime Database
 import DataDisplay from '@components/DataDisplay';
 
 const CANDataLiveReading = ({ canID }) => {  // Accept canID as a prop
+  //console.log("hi");
   const [canData, setCanData] = useState(null);  // State to store CAN data
 
   useEffect(() => {
@@ -27,11 +28,9 @@ const CANDataLiveReading = ({ canID }) => {  // Accept canID as a prop
 
   const telemetryData = canData
     ? [
-        { label: "Longitude", value: canData.X || 'N/A' },
-        { label: "Latitude", value: canData.Y || 'N/A' },
-        { label: "Vertical", value: canData.Z || 'N/A' },
-        { label: "Timestamp", value: canData.Time || 'N/A' },
-        { label: "Temperature", value: canData.Temp || 'N/A' },
+        { label: "can id", value: canID || 'N/A' },
+        { label: "data", value: canData.Data|| 'N/A' },
+        { label: "time", value: canData.Time || 'N/A'}
       ]
     : [];
 
