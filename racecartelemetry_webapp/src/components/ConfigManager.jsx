@@ -1,31 +1,28 @@
 //@components/ConfigManager
 
 import React, { useState, useEffect } from "react"
-import { Button, Select, MenuItem, TextField, Box, Typography, Grid, Alert } from "@mui/material"
-
+import { Button, Select, IconButton, MenuItem, TextField, Box, Typography, Grid, Alert } from "@mui/material"
+import DeleteIcon from "@mui/icons-material/Delete";
+import { fetchConfigs, createConfig } from '@services/CANConfigurationService';
+import { deleteConfig } from "../services/CANConfigurationService"
 const ConfigManager = ({ onConfigSelect }) => {
     const [configs, setConfigs] = useState([])
     const [selectedConfig, setSelectedConfig] = useState("")
     const [configData, setConfigData] = useState({ name: "", data: {} })
     const [errorMessage, setErrorMessage] = useState("")
 
-    const fetchConfigs = async () => {
-        try {
-            const response = await fetch('/api/CANConfigurationAPI?collectionName=canConfigs', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            })
-            const result = await response.json()
-            console.log(result)
-            setConfigs(result.data)
-        } catch (error) {
-            console.error("Error fetching configs:", error)
-        }
-    }
-
     useEffect(() => {
-        fetchConfigs()
-    }, [])
+        const getConfigs = async () => {
+            try {
+                const data = await fetchConfigs();
+                setConfigs(data);
+            } catch (error) {
+                console.error("Error fetching configs:", error);
+            }
+        };
+        getConfigs();
+    }, []);
+
 
     const selectConfig = (configId) => {
         const selected = configs.find((config) => config.id === configId)
@@ -34,42 +31,42 @@ const ConfigManager = ({ onConfigSelect }) => {
         if (onConfigSelect) onConfigSelect(configId)
     }
 
-    const createConfig = async () => {
+    const handleDeleteConfig = async (configId) => {
+        try {
+            await deleteConfig(configId)
+            setConfigs(configs.filter(config => config.id !== configId))
+        } catch (error) {
+            console.error("Failed to delete config: ", error)
+        }
+    }
+
+    const handleCreateConfig = async () => {
         if (Array.isArray(configs) && configs.some((config) => config.name === configData.name)) {
-            setErrorMessage("A config with this name already exists.")
+            setErrorMessage("A config with this name already exists.");
             return;
         }
 
         if (!configData.name) {
-            setErrorMessage("Config name is required.")
+            setErrorMessage("Config name is required.");
             return;
         }
 
         try {
-            const response = await fetch('/api/CANConfigurationAPI', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    docId: configData.name,
-                    collectionName: 'canConfigs'
-                })
-            })
-            const result = await response.json()
-            if (response.ok) {
-                console.log("Config saved successfully:", result)
+            const result = await createConfig(configData.name);
+            console.log("Config saved successfully:", result);
 
-                fetchConfigs()
+            // Refresh configs after creating a new one
+            const data = await fetchConfigs();
+            setConfigs(data);
 
-                if (onConfigSelect) {
-                    onConfigSelect(configData)
-                }
-            } else {
-                console.error("Error saving config:", result)
+            if (onConfigSelect) {
+                onConfigSelect(configData.name);
             }
         } catch (error) {
-            console.error("Failed to save config:", error)
+            console.error("Failed to save config:", error);
         }
-    }
+    };
+
 
     return (
         <Box
@@ -111,14 +108,22 @@ const ConfigManager = ({ onConfigSelect }) => {
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
+                        renderValue={(selected) => selected || "Select Config"}
                     >
                         <MenuItem value="" disabled>
                             Select Config
                         </MenuItem>
                         {Array.isArray(configs) && configs.length > 0 ? (
                             configs.map((config) => (
-                                <MenuItem key={config.id} value={config.id}>
-                                    {config.id}
+                                <MenuItem key={config.id} value={config.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span>{config.id}</span>
+                                    <IconButton onClick={(e) => {
+                                        e.stopPropagation()
+                                        console.log("Deleting config with ID:", config.id)
+                                        handleDeleteConfig(config.id)
+                                    }}>
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
                                 </MenuItem>
                             ))
                         ) : (
@@ -143,7 +148,7 @@ const ConfigManager = ({ onConfigSelect }) => {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={createConfig}
+                        onClick={handleCreateConfig}
                         sx={{ width: 150, height: 50 }}
                     >
                         Create

@@ -23,6 +23,7 @@
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
       "@api/*":["src/pages/api/*"],
+      "@services/*":["src/services/*"],
       "@styles/*": ["src/styles/*"],
       "@firebaseConfig": ["src/firebase/firebaseConfig.js"],
       "@app/*": ["src/app/*"],
