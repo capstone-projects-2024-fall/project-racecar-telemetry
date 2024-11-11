@@ -19,56 +19,112 @@ Data Assignment Window:
 ![dashboardConnected](/img/DataAssignment.png)
 
 ## Front-End UML Class Diagram
-This diagram shows the different components which will make up the Dashboard of the web app. The dashboard page is made up of the LoginForm, Graph, LinearGraph, RadialGraph, GraphEditor, NavBar, LogoutButton, Header, NewDisplayButton, ErrorModal, and DataAssignmentWindow components. This is a NextJS app, and this diagram shows the path of /app/dashboard/page.js. All of the Graph related components allow users to customize their dashboard and view data in different ways. The LoginForm component is used to authenticate users sessions. The NavBar and Header components are for structure, design, and allows users to add new displays to their dashboard. The ErrorModal is used when there is a problem with the Live streaming of data, and gives a specific error message to help resolve it. The DataAssignmentWindow is used when the CAN IDs change and need to be mapped to their new data assignment.
+This diagram shows the different components which will make up the Dashboard of the web app. The main Page component consists of GraphEditor, NavBar, DataGauge, TimeSeriesGraph, GGDiagram, LinearGauge, and DataWidget, which are all ways that our website displays data. The CANConfiguration page, along with its related components, ConfigManager, CANDataAssignment, and CANInput manage CAN customization.
 
 
 ```mermaid
 classDiagram
-App *-- Dashboard
-Dashboard *-- Page
-Page *-- LoginForm
-Page *-- Graph
-Graph *-- GraphEditor
+App *-- Page
+Page *-- GraphEditor
 Page *-- NavBar
-Page *-- Header
-Header *-- NewDisplayButton
-NavBar *-- LogoutButton
-Graph <|-- LinearGraph
-Graph <|-- RadialGraph
-Page *-- ErrorModal
-Page *-- DataAssignmentWindow
+Page *-- DataGauge
+Page *-- TimeSeriesGraph
+Page *-- GGDiagram
+Page *-- LinearGauge
+Page *-- DataWidget
+App *-- CANConfiguration
+CANConfiguration *-- ConfigManager
+CANConfiguration *-- CANDataAssignment
 
 
-ErrorModal: +String errorMessage
-Header: +String imagePath
-Header: +String Title
-Header: +String Status
-Header: +setStatus(String)void
-NewDisplayButton: +onNewDisplay()void
-NavBar: +onLogout()void
-LogoutButton: +Logout()void
-Page: +String status
-Page: +Map CANIDs
-Page: +handleLogout()void
-Page: +handleNewDisplay()void
-Page: +handleChangeCanIDs()void
-Dashboard: 
-LoginForm: +onSubmit()void
-LoginForm: +String username
-LoginForm: +String password
-Graph: +int DataChannel
-Graph: +String DataLabel
-Graph: +String DisplayType
-Graph: +int UnitOfMeasure
-Graph: +String Color
-Graph: +int Max
-Graph: +int Min
-Graph: +onDelete()void
-Graph: +onClickSettings()void
-Page: +handleDelete()void
-Page: +handleClickSettings()void
-Page: +handleSubmit()void
-Page: +handleSetStatus()void
+
+CANDataAssignment *-- CANInput
+
+
+DataGauge: +String canID
+DataGauge: +String metricKey
+DataGauge: +String title
+DataGauge: +Number maxPrimaryRange
+DataGauge: +Number maxSecondaryRange
+DataGauge: +String primaryUnit
+DataGauge: +String secondaryUnit
+DataGauge: +Number metricValue
+DataGauge: +Boolean isSecondaryUnit = false
+DataGauge: +useEffect()void
+DataGauge: +convertToFahrenheit(number)number
+DataGauge: +convertToMPH(number)number
+DataGauge: +toggleUnit()void
+DataGauge: +setMetricValue(String)void
+DataGauge: +setIsSecondaryUnit(Bool)void
+
+TimeSeriesGraph: +String canID
+TimeSeriesGraph: +String yAxis
+TimeSeriesGraph: +String title
+TimeSeriesGraph: +Array timestamps
+TimeSeriesGraph: +Array axisToPlot
+TimeSeriesGraph: +useEffect()void
+TimeSeriesGraph: +Array data
+TimeSeriesGraph: +Object layout
+TimeSeriesGraph: +setTimestamps(Array)void
+TimeSeriesGraph: +setAxisToPlot(Array)void
+
+LinearGauge: +String canID
+LinearGauge: +String valueToShow
+LinearGauge: +String title
+LinearGauge: +String value
+LinearGauge: +useEffect()void
+LinearGauge: +Array data 
+LinearGauge: +Object latout
+LinearGauge: +setValue(String)void
+
+DataWidget: +String canID
+DataWidget: +String valueToDisplay
+DataWidget: +Int number
+DataWidget: +String text
+DataWidget: +useEffect()void
+DataWidget: +setNumber()void
+DataWidget: +setText()void
+
+
+
+
+
+GGDiagram: +String canID
+GGDiagram: +String title
+GGDiagram: +Array lateral
+GGDiagram: +Array longitudinal
+GGDiagram: +useEffect()void
+GGDiagram: +Array data
+GGDiagram: +Object Layout
+GGDiagram: +setLat(Array)void
+GGDiagram: +setLong(Array)void
+
+
+NavBar: +Bool isConnected
+
+Page: +Object attributes
+Page: +Object listeners
+Page: +Object transform
+Page: +Object transistion
+Page: +Object style
+Page: +State layout
+
+Page: +setNodeRef()void
+Page: +setLayout()void
+Page: +useSensors()void
+Page: +handleDragEnd(event)void
+
+
+
+GraphEditor: +int DataChannel
+GraphEditor: +String DataLabel
+GraphEditor: +String DisplayType
+GraphEditor: +int UnitOfMeasure
+GraphEditor: +String Color
+GraphEditor: +int Max
+GraphEditor: +int Min
+
+
 GraphEditor: +setDataChannel(int)void
 GraphEditor: +setDataLabel(String)void
 GraphEditor: +setDisplayType(String)void
@@ -76,9 +132,34 @@ GraphEditor: +setUnitOfMeasure(int)void
 GraphEditor: +setColor(String)void
 GraphEditor: +setMax(int)void
 GraphEditor: +setMin(int)void
-LinearGraph: 
-RadialGraph: 
-DataAssignmentWindow: +setCanIDS(Map)
+
+CANDataAssignment: +Array rows
+CANDataAssignment: +setRows(Array)void
+CANDataAssignment: +handleAddRow(Array)void
+CANDataAssignment: +handleRowChange(int, Object)void
+CANDataAssignment: +handleSubmit()void
+CANDataAssignment: +handleCancel()void
+
+CANInput: +Int index
+CANInput: +Object row
+CANInput: +onRowChange(Object)void
+CANInput: +handleInputChange(String, Int)void
+
+ConfigManager: +Array configs
+ConfigManager: +setConfigs(array)void
+ConfigManager: +String selectedConfig
+ConfigManager: +setSelectedConfig(array)void
+ConfigManager: +Object configData
+ConfigManager: +setConfigData(Object)void
+ConfigManager: +String errorMessage
+ConfigManager: +setErrorMessage(String)void
+ConfigManager: +fetchConfigs(String)Object
+ConfigManager: +useEffect()void
+ConfigManager: +selectConfig()void
+ConfigManager: +createConfig()void
+
+CANConfiguration: +String selectedConfig
+CANConfiguration: +setSelectedConfig(String)void
 ```
 
 <!--
