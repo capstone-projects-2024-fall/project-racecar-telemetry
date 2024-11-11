@@ -83,30 +83,36 @@ export default function Home() {
       ),
     },
     {
-      id: "xAccelGauge",
+      id: "batteryVoltage",
       component: (
         <DataGauge
           canID="001"
           metricKey="X"
-          title="X Accel Gauge"
-          maxPrimaryRange={50}
-          primaryUnit="G"
+          title="Battery Voltage"
+          maxPrimaryRange={15}
+          primaryUnit="V"
         />
       ),
     },
     {
-      id: "timeSeriesGraph",
+      id: "breakPressureFront",
       component: (
-        <TimeSeriesGraph
+        <LinearGauge
           canID="001"
-          yAxis="X"
-          title="Longitudinal Acceleration"
+          valueToShow="Throttle"
+          title="Break Pressure Front"
         />
       ),
     },
     {
-      id: "ggDiagram",
-      component: <GGDiagram canID="001" title="GG Diagram" />,
+      id: "breakPressureRear",
+      component: (
+        <LinearGauge
+          canID="001"
+          valueToShow="Throttle"
+          title="Break Pressure Rear"
+        />
+      ),
     },
     {
       id: "throttlePosGauge",
@@ -158,9 +164,21 @@ export default function Home() {
             flexWrap: "wrap",
           }}
         >
-          <DataWidget canID={"001"} valueToDisplay={"X"} />
-          <DataWidget canID={"001"} valueToDisplay={"Y"} />
-          <DataWidget canID={"001"} valueToDisplay={"Z"} />
+          <DataWidget
+            canID={"001"}
+            valueToDisplay={"X"}
+            title="Battery Voltage (V)"
+          />
+          <DataWidget
+            canID={"001"}
+            valueToDisplay={"Y"}
+            title="Throttle Position"
+          />
+          <DataWidget
+            canID={"001"}
+            valueToDisplay={"Z"}
+            title="Engine Temp (C)"
+          />
         </Box>
 
         {/* Draggable Row of Components */}
@@ -201,11 +219,17 @@ export default function Home() {
             <TimeSeriesGraph
               canID={"001"}
               yAxis={"X"}
-              title={"Longitudinal Acceleration"}
+              title={"Throttle Position"}
+              unit={"%"}
             />
           </Box>
           <Box sx={{ width: "50%" }}>
-            <GGDiagram canID={"001"} title={"GG Diagram"} />
+            <TimeSeriesGraph
+              canID={"001"}
+              yAxis={"X"}
+              title={"Break Pressure Front"}
+              unit={"%"}
+            />{" "}
           </Box>
         </Box>
       </Box>

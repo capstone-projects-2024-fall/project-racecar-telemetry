@@ -3,9 +3,8 @@ import { Box, Typography } from "@mui/material";
 import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
 import { db } from "@firebaseConfig"; // Firebase config file
 
-const DataWidget = ({ canID, valueToDisplay }) => {
+const DataWidget = ({ canID, valueToDisplay, title }) => {
   const [number, setNumber] = useState(0);
-  const [text, setText] = useState("");
 
   useEffect(() => {
     if (!canID) return; // If no canID is provided, do nothing
@@ -21,13 +20,10 @@ const DataWidget = ({ canID, valueToDisplay }) => {
         // Append new data points to history arrays
         if (valueToDisplay === "X") {
           setNumber(data.X);
-          setText("Longitudinal Acceleration");
         } else if (valueToDisplay === "Y") {
           setNumber(data.Y);
-          setText("Lateral Acceleration");
         } else if (valueToDisplay === "Z") {
           setNumber(data.Z);
-          setText("Vertical Acceleration");
         }
       }
     });
@@ -53,7 +49,7 @@ const DataWidget = ({ canID, valueToDisplay }) => {
       }}
     >
       <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
-        {text}
+        {title}
       </Typography>
       <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
         {number}g
