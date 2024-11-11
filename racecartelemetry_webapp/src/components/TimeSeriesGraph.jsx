@@ -6,9 +6,21 @@ import theme from "@/app/theme";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
+const TimeSeriesGraph = ({ canID, yAxis, title, unit, multiplier, startByte, length }) => {
   const [timestamps, setTimestamps] = useState([]);
   const [axisToPlot, setAxisToPlot] = useState([]);
+
+  const parseCAN =  (data) => {
+    const bytes = data.split(' ');
+    let dataString; 
+    for (let i = startByte; i < (startByte+length); i++)
+    {
+      dataString += bytes[i];
+    }
+    let translatedData = parseInt(hexString, 16);
+    translatedData /= multiplier;
+    return translatedData;
+  }
 
   useEffect(() => {
     if (!canID) return; // If no canID is provided, do nothing
@@ -20,17 +32,20 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
+        const translatedData = parseCAN(data.Data);
         console.log("CAN data:", data);
 
         // Append new data points to history arrays
         setTimestamps((prev) => [...prev, data.Time / 1000]); // Add new time data
-        if (yAxis === "X") {
-          setAxisToPlot((prev) => [...prev, data.X]);
-        } else if (yAxis === "Y") {
-          setAxisToPlot((prev) => [...prev, data.Y]);
-        } else if (yAxis === "Z") {
-          setAxisToPlot((prev) => [...prev, data.Z]);
-        }
+        setAxisToPlot((prev) => [...prev, translatedData]); // Add new time data
+
+        // if (yAxis === "X") {
+        //   setAxisToPlot((prev) => [...prev, data.X]);
+        // } else if (yAxis === "Y") {
+        //   setAxisToPlot((prev) => [...prev, data.Y]);
+        // } else if (yAxis === "Z") {
+        //   setAxisToPlot((prev) => [...prev, data.Z]);
+        // }
       }
     });
 

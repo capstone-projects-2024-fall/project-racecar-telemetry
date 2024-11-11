@@ -5,8 +5,21 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
 import { db } from "@firebaseConfig"; // Firebase config file
-const LinearGauge = ({ canID, valueToShow, title }) => {
+const LinearGauge = ({ canID, valueToShow, title, multiplier, startByte, length }) => {
   const [value, setValue] = useState();
+
+  const parseCAN =  (data) => {
+    const bytes = data.split(' ');
+    let dataString; 
+    for (let i = startByte; i < (startByte+length); i++)
+    {
+      dataString += bytes[i];
+    }
+    let translatedData = parseInt(hexString, 16);
+    translatedData /= multiplier;
+    return translatedData;
+  }
+
 
   useEffect(() => {
     if (!canID) return; // If no canID is provided, do nothing
@@ -18,11 +31,11 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
+        const translatedData = parseCAN(data.Data);
         console.log("CAN data:", data);
+        console.log("Translated data:", translatedData);
 
-        if (valueToShow === "Throttle") {
-          setValue(data.Temp); // What is the throttle going to be under in the Db?
-        }
+        setValue(translatedData);
       }
     });
 

@@ -13,9 +13,24 @@ const DataGauge = ({
   maxSecondaryRange = 700,
   primaryUnit = "C",
   secondaryUnit,
+  multiplier, 
+  startByte,
+  length
 }) => {
   const [metricValue, setMetricValue] = useState(0);
   const [isSecondaryUnit, setIsSecondaryUnit] = useState(false);
+
+  const parseCAN =  (data) => {
+    const bytes = data.split(' ');
+    let dataString; 
+    for (let i = startByte; i < (startByte+length); i++)
+    {
+      dataString += bytes[i];
+    }
+    let translatedData = parseInt(hexString, 16);
+    translatedData /= multiplier;
+    return translatedData;
+  }
 
   useEffect(() => {
     if (!canID || !metricKey) return;
@@ -24,9 +39,11 @@ const DataGauge = ({
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const canData = snapshot.val();
-        if (canData[metricKey] !== undefined) {
-          setMetricValue(canData[metricKey]);
-        }
+        const translatedData = parseCAN(canData.Data);
+        // if (canData[metricKey] !== undefined) {
+        //   setMetricValue(canData[metricKey]);
+        // }
+        setMetricValue(translatedData);
       }
     });
 

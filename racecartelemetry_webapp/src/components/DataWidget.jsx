@@ -3,8 +3,20 @@ import { Box, Typography } from "@mui/material";
 import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
 import { db } from "@firebaseConfig"; // Firebase config file
 
-const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
+const DataWidget = ({ canID, valueToDisplay, title, unit, multiplier, startByte, length }) => {
   const [number, setNumber] = useState(0);
+
+  const parseCAN =  (data) => {
+    const bytes = data.split(' ');
+    let dataString; 
+    for (let i = startByte; i < (startByte+length); i++)
+    {
+      dataString += bytes[i];
+    }
+    let translatedData = parseInt(hexString, 16);
+    translatedData /= multiplier;
+    return translatedData;
+  }
 
   useEffect(() => {
     if (!canID) return; // If no canID is provided, do nothing
@@ -16,15 +28,15 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
-
+        setNumber(parseCAN(data.Data));
         // Append new data points to history arrays
-        if (valueToDisplay === "X") {
-          setNumber(data.X);
-        } else if (valueToDisplay === "Y") {
-          setNumber(data.Y);
-        } else if (valueToDisplay === "Z") {
-          setNumber(data.Z);
-        }
+        // if (valueToDisplay === "X") {
+        //   setNumber(data.X);
+        // } else if (valueToDisplay === "Y") {
+        //   setNumber(data.Y);
+        // } else if (valueToDisplay === "Z") {
+        //   setNumber(data.Z);
+        // }
       }
     });
 

@@ -79,6 +79,9 @@ export default function Home() {
           maxSecondaryRange={300}
           primaryUnit="C"
           secondaryUnit="F"
+          multiplier = {1}
+          startByte = {2}
+          length = {1}
         />
       ),
     },
@@ -91,26 +94,35 @@ export default function Home() {
           title="Battery Voltage"
           maxPrimaryRange={15}
           primaryUnit="V"
+          multiplier = {10} // 1 decimal place
+          startByte = {1} 
+          length = {1}
         />
       ),
     },
     {
-      id: "breakPressureFront",
+      id: "brakePressureFront",
       component: (
         <LinearGauge
           canID="210"
           valueToShow="Throttle"
-          title="Break Pressure Front"
+          title="Brake Pressure Front" // psi
+          multiplier = {1}
+          startByte = {3}
+          length = {2}
         />
       ),
     },
     {
-      id: "breakPressureRear",
+      id: "brakePressureRear",
       component: (
         <LinearGauge
           canID="210"
           valueToShow="Throttle"
-          title="Break Pressure Rear"
+          title="Brake Pressure Rear"
+          multiplier = {1}
+          startByte = {5}
+          length = {2}
         />
       ),
     },
@@ -121,6 +133,9 @@ export default function Home() {
           canID="210"
           valueToShow="Throttle"
           title="Throttle Position"
+          multiplier = {100} // to change from decimal to number between 0-100
+          startByte = {0} 
+          length = {1}
         />
       ),
     },
@@ -169,18 +184,27 @@ export default function Home() {
             valueToDisplay={"X"}
             title="Battery Voltage (V)"
             unit="V"
+            multiplier = {10} // 1 decimal place
+            startByte = {1} 
+            length = {1}
           />
           <DataWidget
             canID={"210"}
             valueToDisplay={"Y"}
             title="Throttle Position"
             unit="%"
+            multiplier = {100} // to change from decimal to number between 0-100
+            startByte = {0} 
+            length = {1}
           />
           <DataWidget
             canID={"210"}
             valueToDisplay={"Z"}
             title="Engine Temp (C)"
             unit="C"
+            multiplier = {1}
+            startByte = {2}
+            length = {1}
           />
         </Box>
 
@@ -224,14 +248,20 @@ export default function Home() {
               yAxis={"X"}
               title={"Throttle Position"}
               unit={"%"}
+              multiplier = {100} // to change from decimal to number between 0-100
+              startByte = {0} 
+              length = {1}
             />
           </Box>
           <Box sx={{ width: "50%" }}>
             <TimeSeriesGraph
               canID={"210"}
               yAxis={"X"}
-              title={"Break Pressure Front"}
+              title={"Brake Pressure Front"}
               unit={"%"}
+              multiplier = {1}
+              startByte = {3}
+              length = {2}
             />{" "}
           </Box>
         </Box>
