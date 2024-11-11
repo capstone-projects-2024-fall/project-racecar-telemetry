@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
 import { db } from "@firebaseConfig"; // Firebase config file
 
-const DataWidget = ({ canID, valueToDisplay, title }) => {
+const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
   const [number, setNumber] = useState(0);
 
   useEffect(() => {
@@ -52,7 +52,8 @@ const DataWidget = ({ canID, valueToDisplay, title }) => {
         {title}
       </Typography>
       <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-        {number}g
+        {number}
+        {unit}
       </Typography>
     </Box>
   );

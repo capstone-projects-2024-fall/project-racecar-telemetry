@@ -72,7 +72,7 @@ export default function Home() {
       id: "engineTempGauge",
       component: (
         <DataGauge
-          canID="001"
+          canID="210"
           metricKey="Temp"
           title="Engine Temperature"
           maxPrimaryRange={200}
@@ -86,7 +86,7 @@ export default function Home() {
       id: "batteryVoltage",
       component: (
         <DataGauge
-          canID="001"
+          canID="210"
           metricKey="X"
           title="Battery Voltage"
           maxPrimaryRange={15}
@@ -98,7 +98,7 @@ export default function Home() {
       id: "breakPressureFront",
       component: (
         <LinearGauge
-          canID="001"
+          canID="210"
           valueToShow="Throttle"
           title="Break Pressure Front"
         />
@@ -108,7 +108,7 @@ export default function Home() {
       id: "breakPressureRear",
       component: (
         <LinearGauge
-          canID="001"
+          canID="210"
           valueToShow="Throttle"
           title="Break Pressure Rear"
         />
@@ -118,7 +118,7 @@ export default function Home() {
       id: "throttlePosGauge",
       component: (
         <LinearGauge
-          canID="001"
+          canID="210"
           valueToShow="Throttle"
           title="Throttle Position"
         />
@@ -165,19 +165,22 @@ export default function Home() {
           }}
         >
           <DataWidget
-            canID={"001"}
+            canID={"210"}
             valueToDisplay={"X"}
             title="Battery Voltage (V)"
+            unit="V"
           />
           <DataWidget
-            canID={"001"}
+            canID={"210"}
             valueToDisplay={"Y"}
             title="Throttle Position"
+            unit="%"
           />
           <DataWidget
-            canID={"001"}
+            canID={"210"}
             valueToDisplay={"Z"}
             title="Engine Temp (C)"
+            unit="C"
           />
         </Box>
 
@@ -217,7 +220,7 @@ export default function Home() {
         >
           <Box sx={{ width: "50%" }}>
             <TimeSeriesGraph
-              canID={"001"}
+              canID={"210"}
               yAxis={"X"}
               title={"Throttle Position"}
               unit={"%"}
@@ -225,7 +228,7 @@ export default function Home() {
           </Box>
           <Box sx={{ width: "50%" }}>
             <TimeSeriesGraph
-              canID={"001"}
+              canID={"210"}
               yAxis={"X"}
               title={"Break Pressure Front"}
               unit={"%"}
