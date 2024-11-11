@@ -18,7 +18,7 @@ import { CSS } from "@dnd-kit/utilities";
 import NavBar from "@components/NavBar";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import GGDiagram from "@components/GGDiagram";
-import CANDataLiveReading from "@components/CANDataLiveReading";
+import LinearGauge from "@components/LinearGauge";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@app/theme";
 import DataGauge from "@components/DataGauge";
@@ -108,7 +108,7 @@ export default function Home() {
       id: "ggDiagram",
       component: <GGDiagram canID="001" title="GG Diagram" />,
     },
-    { id: "canDataLiveReading", component: <CANDataLiveReading canID="001" /> },
+    { id: "throttlePosGauge", component: <LinearGauge /> },
   ]);
 
   const sensors = useSensors(useSensor(PointerSensor));

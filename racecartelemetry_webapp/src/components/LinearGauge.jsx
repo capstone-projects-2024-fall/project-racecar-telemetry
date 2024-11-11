@@ -24,9 +24,9 @@ const LinearGauge = ({ value }) => {
   ];
 
   var layout = {
-    width: 500, // Set the width to 100% to fill the container
-    height: 200, // Set the height to 100% to fill the container
-    margin: { t: 40, b: 10, l: 50, r: 10 },
+    width: 300,
+    height: 200,
+    margin: { t: 40, b: 10, l: 20, r: 0 },
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
     title: {
