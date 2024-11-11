@@ -6,7 +6,7 @@ import theme from "@/app/theme";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const TimeSeriesGraph = ({ canID, yAxis, title }) => {
+const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
   const [timestamps, setTimestamps] = useState([]);
   const [axisToPlot, setAxisToPlot] = useState([]);
 
@@ -71,7 +71,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title }) => {
     },
     yaxis: {
       title: {
-        text: "G",
+        text: unit,
         font: { color: "white" },
         standoff: 15,
       },

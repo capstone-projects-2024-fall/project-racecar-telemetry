@@ -18,7 +18,7 @@ import { CSS } from "@dnd-kit/utilities";
 import NavBar from "@components/NavBar";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import GGDiagram from "@components/GGDiagram";
-import CANDataLiveReading from "@components/CANDataLiveReading";
+import LinearGauge from "@components/LinearGauge";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@app/theme";
 import DataGauge from "@components/DataGauge";
@@ -72,7 +72,7 @@ export default function Home() {
       id: "engineTempGauge",
       component: (
         <DataGauge
-          canID="001"
+          canID="210"
           metricKey="Temp"
           title="Engine Temperature"
           maxPrimaryRange={200}
@@ -83,32 +83,47 @@ export default function Home() {
       ),
     },
     {
-      id: "xAccelGauge",
+      id: "batteryVoltage",
       component: (
         <DataGauge
-          canID="001"
+          canID="210"
           metricKey="X"
-          title="X Accel Gauge"
-          maxPrimaryRange={50}
-          primaryUnit="G"
+          title="Battery Voltage"
+          maxPrimaryRange={15}
+          primaryUnit="V"
         />
       ),
     },
     {
-      id: "timeSeriesGraph",
+      id: "breakPressureFront",
       component: (
-        <TimeSeriesGraph
-          canID="001"
-          yAxis="X"
-          title="Longitudinal Acceleration"
+        <LinearGauge
+          canID="210"
+          valueToShow="Throttle"
+          title="Break Pressure Front"
         />
       ),
     },
     {
-      id: "ggDiagram",
-      component: <GGDiagram canID="001" title="GG Diagram" />,
+      id: "breakPressureRear",
+      component: (
+        <LinearGauge
+          canID="210"
+          valueToShow="Throttle"
+          title="Break Pressure Rear"
+        />
+      ),
     },
-    { id: "canDataLiveReading", component: <CANDataLiveReading canID="001" /> },
+    {
+      id: "throttlePosGauge",
+      component: (
+        <LinearGauge
+          canID="210"
+          valueToShow="Throttle"
+          title="Throttle Position"
+        />
+      ),
+    },
   ]);
 
   const sensors = useSensors(useSensor(PointerSensor));
@@ -149,9 +164,24 @@ export default function Home() {
             flexWrap: "wrap",
           }}
         >
-          <DataWidget canID={"001"} valueToDisplay={"X"} />
-          <DataWidget canID={"001"} valueToDisplay={"Y"} />
-          <DataWidget canID={"001"} valueToDisplay={"Z"} />
+          <DataWidget
+            canID={"210"}
+            valueToDisplay={"X"}
+            title="Battery Voltage (V)"
+            unit="V"
+          />
+          <DataWidget
+            canID={"210"}
+            valueToDisplay={"Y"}
+            title="Throttle Position"
+            unit="%"
+          />
+          <DataWidget
+            canID={"210"}
+            valueToDisplay={"Z"}
+            title="Engine Temp (C)"
+            unit="C"
+          />
         </Box>
 
         {/* Draggable Row of Components */}
@@ -190,13 +220,19 @@ export default function Home() {
         >
           <Box sx={{ width: "50%" }}>
             <TimeSeriesGraph
-              canID={"001"}
+              canID={"210"}
               yAxis={"X"}
-              title={"Longitudinal Acceleration"}
+              title={"Throttle Position"}
+              unit={"%"}
             />
           </Box>
           <Box sx={{ width: "50%" }}>
-            <GGDiagram canID={"001"} title={"GG Diagram"} />
+            <TimeSeriesGraph
+              canID={"210"}
+              yAxis={"X"}
+              title={"Break Pressure Front"}
+              unit={"%"}
+            />{" "}
           </Box>
         </Box>
       </Box>
