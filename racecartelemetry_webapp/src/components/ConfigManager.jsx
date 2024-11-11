@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react"
 import { Button, Select, IconButton, MenuItem, TextField, Box, Typography, Grid, Alert } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete";
 import { fetchConfigs, createConfig } from '@services/CANConfigurationService';
-import { deleteConfig } from "../services/CANConfigurationService";
+import { deleteConfig } from "../services/CANConfigurationService"
 const ConfigManager = ({ onConfigSelect }) => {
     const [configs, setConfigs] = useState([])
     const [selectedConfig, setSelectedConfig] = useState("")

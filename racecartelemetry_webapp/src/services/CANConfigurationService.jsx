@@ -20,16 +20,23 @@ export const createConfig = async (configName) => {
 };
 
 export const saveCANData = async (selectedConfig, rows) => {
+
   const response = await fetch('/api/CANConfigurationAPI', {
-    method: 'POST',
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      data: rows,
       collectionName: 'canConfigs',
-      docId: selectedConfig
+      docId: selectedConfig,
+      data: rows 
     })
   });
+
+  if (!response.ok) {
+    throw new Error(`Failed to save data: ${response.statusText}`);
+  }
+
   return await response.json();
+
 };
 
 export const fetchCANData = async (selectedConfig) => {
@@ -54,3 +61,22 @@ export const deleteConfig = async (configId) => {
   })
   return await response.json()
 }
+
+export const deleteConfigRow = async (selectedConfig, canId) => {
+  const response = await fetch('/api/CANConfigurationAPI', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      collectionName: 'canConfigs',
+      docId: selectedConfig,
+      action: 'deleteRow',
+      canId
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete row: ${response.statusText}`);
+  }
+
+  return await response.json();
+};
