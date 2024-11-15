@@ -9,15 +9,15 @@ import {
 import {
   SortableContext,
   useSortable,
-  arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Button, Dialog, DialogTitle, List, ListItem, ListItemText } from "@mui/material";
+import { Button, Dialog, DialogTitle, List, ListItem, ListItemText, TextField } from "@mui/material";
 
 export default function CustomDash() {
   const [rows, setRows] = useState([]);
   const [selectedBox, setSelectedBox] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newRowCount, setNewRowCount] = useState("");
 
   const componentsList = [
     { id: "engineTempGauge", label: "Engine Temperature Gauge" },
@@ -30,7 +30,17 @@ export default function CustomDash() {
   const sensors = useSensors(useSensor(PointerSensor));
 
   const handleAddRow = () => {
-    setRows((prevRows) => [...prevRows, { id: `row-${prevRows.length + 1}`, items: [] }]);
+    const count = parseInt(newRowCount, 10);
+    if (isNaN(count) || count <= 0) {
+      alert("Please enter a valid number greater than 0 for components.");
+      return;
+    }
+    // Add a new row with the specified number of blank boxes
+    setRows((prevRows) => [
+      ...prevRows,
+      { id: `row-${prevRows.length + 1}`, items: Array(count).fill(null) },
+    ]);
+    setNewRowCount(""); // Clear input after adding row
   };
 
   const handleOpenModal = (boxIndex, rowIndex) => {
@@ -63,50 +73,38 @@ export default function CustomDash() {
     });
   };
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      const [activeRowIndex, activeBoxIndex] = active.id.split("-");
-      const [overRowIndex, overBoxIndex] = over.id.split("-");
-
-      setRows((prevRows) => {
-        const newRows = [...prevRows];
-
-        const activeComponent = newRows[activeRowIndex].items[activeBoxIndex];
-        newRows[activeRowIndex].items[activeBoxIndex] = null;
-        newRows[overRowIndex].items[overBoxIndex] = activeComponent;
-
-        return newRows;
-      });
-    }
-  };
-
   const resetDashboard = () => {
     setRows([]);
   };
 
   return (
     <div>
-      {/* Add Row Button */}
-      <Button variant="contained" onClick={handleAddRow}>
-        + Add Row
-      </Button>
+      {/* Add Row */}
+      <div style={{ marginBottom: "1rem"}}>
+        <TextField
+          label="Number of Components"
+          variant="outlined"
+          size="small"
+          value={newRowCount}
+          onChange={(e) => setNewRowCount(e.target.value)}
+          style={{ marginRight: "1rem" }}
+        />
+        <Button variant="contained" onClick={handleAddRow}>
+          + Add Row
+        </Button>
+      </div>
 
       {/* Reset Button */}
       {rows.length > 0 && (
-        <Button variant="outlined" onClick={resetDashboard} style={{ marginLeft: "1rem" }}>
+        <Button variant="outlined" onClick={resetDashboard} style={{ marginBottom: "1rem" }}>
           Reset
         </Button>
       )}
 
       {/* Rows and Components */}
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={closestCenter}>
         {rows.map((row, rowIndex) => (
-          <SortableContext
-            key={row.id}
-            items={row.items.map((_, index) => `${rowIndex}-${index}`)}
-          >
+          <SortableContext key={row.id} items={row.items.map((_, index) => `${rowIndex}-${index}`)}>
             <div
               style={{
                 display: "flex",
@@ -116,19 +114,15 @@ export default function CustomDash() {
                 marginBottom: "1rem",
               }}
             >
-              {Array.from({ length: 3 }).map((_, boxIndex) => {
-                const component = row.items[boxIndex];
-
-                return (
-                  <SortableBox
-                    key={`${rowIndex}-${boxIndex}`}
-                    id={`${rowIndex}-${boxIndex}`}
-                    component={component}
-                    onAdd={() => handleOpenModal(boxIndex, rowIndex)}
-                    onRemove={() => handleRemoveComponent(rowIndex, boxIndex)}
-                  />
-                );
-              })}
+              {row.items.map((component, boxIndex) => (
+                <SortableBox
+                  key={`${rowIndex}-${boxIndex}`}
+                  id={`${rowIndex}-${boxIndex}`}
+                  component={component}
+                  onAdd={() => handleOpenModal(boxIndex, rowIndex)}
+                  onRemove={() => handleRemoveComponent(rowIndex, boxIndex)}
+                />
+              ))}
             </div>
           </SortableContext>
         ))}
@@ -154,8 +148,7 @@ export default function CustomDash() {
 }
 
 function SortableBox({ id, component, onAdd, onRemove }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
