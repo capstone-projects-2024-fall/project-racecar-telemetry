@@ -8,176 +8,152 @@ import {
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  verticalListSortingStrategy,
   useSortable,
   arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import DataGauge from "@components/DataGauge";
-import TimeSeriesGraph from "@components/TimeSeriesGraph";
-import GGDiagram from "@components/GGDiagram";
-import CANDataLiveReading from "@components/CANDataLiveReading";
-
-import {
-  Button,
-  Menu,
-  MenuItem,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
+import { Button, Dialog, DialogTitle, List, ListItem, ListItemText } from "@mui/material";
 
 export default function CustomDash() {
+  const [rows, setRows] = useState([]);
+  const [selectedBox, setSelectedBox] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const componentsList = [
-    {
-      id: "engineTempGauge",
-      label: "Engine Temperature Gauge",
-      component: (
-        <DataGauge
-          canID="210"
-          metricKey="Temp"
-          title="Engine Temperature"
-          maxPrimaryRange={550}
-          maxSecondaryRange={700}
-          primaryUnit="C"
-          secondaryUnit="F"
-        />
-      ),
-    },
-    {
-      id: "xAccelGauge",
-      label: "X Accel Gauge",
-      component: (
-        <DataGauge
-          canID="210"
-          metricKey="X"
-          title="X Accel Gauge"
-          maxPrimaryRange={50}
-          primaryUnit="G"
-        />
-      ),
-    },
-    {
-      id: "timeSeriesGraph",
-      label: "Time Series Graph",
-      component: (
-        <TimeSeriesGraph canID={"210"} yAxis={"X"} title={"Acceleration"} />
-      ),
-    },
-    {
-      id: "ggDiagram",
-      label: "GG Diagram",
-      component: <GGDiagram canID={"210"} title={"GG Diagram"} />,
-    },
-    {
-      id: "canDataLiveReading",
-      label: "CAN Data Live Reading",
-      component: <CANDataLiveReading canID={"210"} />,
-    },
+    { id: "engineTempGauge", label: "Engine Temperature Gauge" },
+    { id: "xAccelGauge", label: "X Accel Gauge" },
+    { id: "timeSeriesGraph", label: "Time Series Graph" },
+    { id: "ggDiagram", label: "GG Diagram" },
+    { id: "canDataLiveReading", label: "CAN Data Live Reading" },
   ];
 
-  const [layout, setLayout] = useState(componentsList);
-  const [visibleComponents, setVisibleComponents] = useState(
-    componentsList.reduce((acc, item) => ({ ...acc, [item.id]: true }), {})
-  );
-
-  // Dropdown menu state
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  // Open dropdown menu
-  const handleOpenMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  // Close dropdown menu
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const handleCheckboxChange = (id) => {
-    setVisibleComponents((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
   const sensors = useSensors(useSensor(PointerSensor));
+
+  const handleAddRow = () => {
+    setRows((prevRows) => [...prevRows, { id: `row-${prevRows.length + 1}`, items: [] }]);
+  };
+
+  const handleOpenModal = (boxIndex, rowIndex) => {
+    setSelectedBox({ rowIndex, boxIndex });
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBox(null);
+  };
+
+  const handleSelectComponent = (component) => {
+    if (selectedBox) {
+      const { rowIndex, boxIndex } = selectedBox;
+      setRows((prevRows) => {
+        const newRows = [...prevRows];
+        newRows[rowIndex].items[boxIndex] = component;
+        return newRows;
+      });
+    }
+    handleCloseModal();
+  };
+
+  const handleRemoveComponent = (rowIndex, boxIndex) => {
+    setRows((prevRows) => {
+      const newRows = [...prevRows];
+      newRows[rowIndex].items[boxIndex] = null;
+      return newRows;
+    });
+  };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setLayout((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
+      const [activeRowIndex, activeBoxIndex] = active.id.split("-");
+      const [overRowIndex, overBoxIndex] = over.id.split("-");
 
-        return arrayMove(items, oldIndex, newIndex);
+      setRows((prevRows) => {
+        const newRows = [...prevRows];
+
+        const activeComponent = newRows[activeRowIndex].items[activeBoxIndex];
+        newRows[activeRowIndex].items[activeBoxIndex] = null;
+        newRows[overRowIndex].items[overBoxIndex] = activeComponent;
+
+        return newRows;
       });
     }
   };
 
+  const resetDashboard = () => {
+    setRows([]);
+  };
+
   return (
     <div>
-      {/* Dropdown with checkboxes */}
-      <div style={{ marginBottom: "1rem" }}>
-        <Button variant="contained" onClick={handleOpenMenu}>
-          Select Components
-        </Button>
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleCloseMenu}
-        >
-          {componentsList.map((item) => (
-            <MenuItem key={item.id}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={visibleComponents[item.id]}
-                    onChange={() => handleCheckboxChange(item.id)}
-                    color="primary"
-                  />
-                }
-                label={item.label}
-              />
-            </MenuItem>
-          ))}
-        </Menu>
-      </div>
+      {/* Add Row Button */}
+      <Button variant="contained" onClick={handleAddRow}>
+        + Add Row
+      </Button>
 
-      {/* Drag and Drop Context */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={layout.map((item) => item.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <div
-            className="custom-dash"
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "1rem",
-              padding: "1rem",
-              justifyContent: "flex-start",
-            }}
+      {/* Reset Button */}
+      {rows.length > 0 && (
+        <Button variant="outlined" onClick={resetDashboard} style={{ marginLeft: "1rem" }}>
+          Reset
+        </Button>
+      )}
+
+      {/* Rows and Components */}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        {rows.map((row, rowIndex) => (
+          <SortableContext
+            key={row.id}
+            items={row.items.map((_, index) => `${rowIndex}-${index}`)}
           >
-            {layout.map(
-              (item) =>
-                visibleComponents[item.id] && (
-                  <SortableItem key={item.id} id={item.id}>
-                    {item.component}
-                  </SortableItem>
-                )
-            )}
-          </div>
-        </SortableContext>
+            <div
+              style={{
+                display: "flex",
+                gap: "1rem",
+                padding: "1rem",
+                border: "1px dashed #ccc",
+                marginBottom: "1rem",
+              }}
+            >
+              {Array.from({ length: 3 }).map((_, boxIndex) => {
+                const component = row.items[boxIndex];
+
+                return (
+                  <SortableBox
+                    key={`${rowIndex}-${boxIndex}`}
+                    id={`${rowIndex}-${boxIndex}`}
+                    component={component}
+                    onAdd={() => handleOpenModal(boxIndex, rowIndex)}
+                    onRemove={() => handleRemoveComponent(rowIndex, boxIndex)}
+                  />
+                );
+              })}
+            </div>
+          </SortableContext>
+        ))}
       </DndContext>
+
+      {/* Modal for Selecting Components */}
+      <Dialog open={isModalOpen} onClose={handleCloseModal}>
+        <DialogTitle>Select a Component</DialogTitle>
+        <List>
+          {componentsList.map((component) => (
+            <ListItem
+              button
+              key={component.id}
+              onClick={() => handleSelectComponent(component)}
+            >
+              <ListItemText primary={component.label} />
+            </ListItem>
+          ))}
+        </List>
+      </Dialog>
     </div>
   );
 }
 
-// SortableItem component with Drag Handle (inside CustomDash.js)
-function SortableItem({ id, children }) {
+function SortableBox({ id, component, onAdd, onRemove }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
@@ -185,35 +161,27 @@ function SortableItem({ id, children }) {
     transform: CSS.Transform.toString(transform),
     transition,
     padding: "1rem",
-    backgroundColor: "transparent",
-    border: "1px solid #9e9e9e",
-    borderRadius: 10,
-    display: "flex",
-    flexDirection: "column",
-    width: "30%",
-    height: "500px", // Set a fixed height to contain the components
-    boxSizing: "border-box",
-    overflow: "hidden", // Prevents overflow if component exceeds height
+    backgroundColor: component ? "#f5f5f5" : "#e0e0e0",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    flex: 1,
+    textAlign: "center",
+    position: "relative",
+    cursor: component ? "grab" : "pointer",
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes}>
-      <div
-        {...listeners}
-        style={{
-          cursor: "grab",
-          backgroundColor: "transparent",
-          textAlign: "center",
-          color: "grey",
-          padding: "0.5rem",
-          border: "1px solid #737373",
-          borderRadius: 10,
-          marginBottom: "0.5rem",
-        }}
-      >
-        Drag Handle
-      </div>
-      <div style={{ flex: 1 }}>{children}</div>
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {component ? (
+        <>
+          <div>{component.label}</div>
+          <Button size="small" onClick={onRemove}>
+            Remove
+          </Button>
+        </>
+      ) : (
+        <div onClick={onAdd}>+</div>
+      )}
     </div>
   );
 }
