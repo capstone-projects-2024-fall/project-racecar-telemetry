@@ -49,6 +49,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
   };
 
   const handleSave = (data) => {
+    // Set the new settings
     setDataName(data["Data Name"]);
     setColor(data["Color"]);
     setVerticalMin(data["Vertical Axis Min Value"]);

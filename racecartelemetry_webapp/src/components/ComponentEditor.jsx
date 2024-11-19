@@ -9,16 +9,32 @@ import {
   Box,
   Typography,
   Grid,
+  FormHelperText,
 } from "@mui/material";
 
 const ComponentEditor = ({ config, onSave, onCancel }) => {
   const [formState, setFormState] = useState({});
+  const [errors, setErrors] = useState({});
 
   const handleChange = (field, value) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: false })); // Clear error when input changes
   };
 
   const handleSubmit = () => {
+    const newErrors = {};
+    config.fields.forEach((field) => {
+      if (!formState[field.label]) {
+        newErrors[field.label] = "This field is required.";
+      }
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      console.log(errors);
+      return;
+    }
+
     console.log("Form Data:", formState);
     onSave(formState);
   };
@@ -53,6 +69,7 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
           fullWidth
           margin="normal"
           sx={{ marginBottom: 2 }}
+          error={!!errors[field.label]} // Highlight field if there's an error
         >
           {/* Render Select Input */}
           {field.type === "select" && (
@@ -68,18 +85,25 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
                   </MenuItem>
                 ))}
               </Select>
+              {errors[field.label] && (
+                <FormHelperText>{errors[field.label]}</FormHelperText>
+              )}
             </>
           )}
 
           {/* Render TextField for Text or Number Input */}
           {(field.type === "text" || field.type === "number") && (
-            <TextField
-              type={field.type}
-              value={formState[field.label] || ""}
-              onChange={(e) => handleChange(field.label, e.target.value)}
-              label={field.label}
-              fullWidth
-            />
+            <>
+              <TextField
+                type={field.type}
+                value={formState[field.label] || ""}
+                onChange={(e) => handleChange(field.label, e.target.value)}
+                label={field.label}
+                fullWidth
+                error={!!errors[field.label]} // Highlight TextField if there's an error
+                helperText={errors[field.label]} // Show error message below the input
+              />
+            </>
           )}
         </FormControl>
       ))}
