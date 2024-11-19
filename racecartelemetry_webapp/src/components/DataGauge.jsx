@@ -4,6 +4,10 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { db } from "@firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import theme from "@/app/theme";
+import SettingsIcon from "@mui/icons-material/Settings";
+import IconButton from "@mui/material/IconButton";
+import { Modal } from "@mui/material";
+import ComponentEditor from "@/components/ComponentEditor";
 
 const DataGauge = ({
   canID,
