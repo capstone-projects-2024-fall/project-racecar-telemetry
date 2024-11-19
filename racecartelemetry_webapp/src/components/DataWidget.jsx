@@ -2,9 +2,23 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
 import { db } from "@firebaseConfig"; // Firebase config file
+import SettingsIcon from "@mui/icons-material/Settings";
+import IconButton from "@mui/material/IconButton";
+import { Modal } from "@mui/material";
+import ComponentEditor from "@/components/ComponentEditor";
+import theme from "@/app/theme";
 
 const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
   const [number, setNumber] = useState(0);
+  const [settingsVisible, setSettingsVisible] = useState(false);
+
+  const handleSettingsClick = () => {
+    setSettingsVisible((prevState) => !prevState);
+  };
+
+  const handleSettingsClose = () => {
+    setSettingsVisible(false);
+  };
 
   useEffect(() => {
     if (!canID) return; // If no canID is provided, do nothing
@@ -33,29 +47,52 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
   }, [canID, valueToDisplay]); // Re-run effect when canID or yAxis changes
 
   return (
-    <Box
-      sx={{
-        width: 100,
-        height: 100,
-        borderRadius: "50%",
-        backgroundColor: "primary.main",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "white",
-        textAlign: "center",
-        padding: 1,
-      }}
-    >
-      <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
-        {title}
-      </Typography>
-      <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-        {number}
-        {unit}
-      </Typography>
-    </Box>
+    <>
+      {settingsVisible && (
+        <Modal open={settingsVisible} onClose={handleSettingsClose}>
+          <ComponentEditor />
+        </Modal>
+      )}
+      <Box
+        sx={{
+          width: 100,
+          height: 100,
+          borderRadius: "50%",
+          backgroundColor: "primary.main",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          color: "white",
+          textAlign: "center",
+          padding: 1,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "left",
+            justifyContent: "left",
+            alignItems: "left",
+            height: "1.5rem",
+          }}
+        >
+          <IconButton onClick={handleSettingsClick}>
+            <SettingsIcon
+              style={{
+                color: "white",
+              }}
+            />
+          </IconButton>
+        </div>
+        <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
+          {title}
+        </Typography>
+        <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+          {number}
+          {unit}
+        </Typography>
+      </Box>
+    </>
   );
 };
 
