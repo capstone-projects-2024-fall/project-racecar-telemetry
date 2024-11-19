@@ -119,9 +119,24 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
           margin: "0",
         }}
       >
-        <IconButton onClick={handleSettingsClick}>
-          <SettingsIcon style={{ color: theme.palette.primary.main }} />
-        </IconButton>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "left",
+            justifyContent: "left",
+            alignItems: "left",
+            backgroundColor: "rgba(20, 20, 20, 0.9)",
+            height: "1.5rem",
+          }}
+        >
+          <IconButton onClick={handleSettingsClick}>
+            <SettingsIcon
+              style={{
+                color: theme.palette.primary.main,
+              }}
+            />
+          </IconButton>
+        </div>
 
         <Plot
           data={data}
