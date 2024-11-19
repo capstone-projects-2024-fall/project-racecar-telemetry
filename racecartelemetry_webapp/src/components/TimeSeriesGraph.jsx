@@ -137,7 +137,15 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
   return (
     <>
       {settingsVisible && (
-        <Modal open={settingsVisible} onClose={handleSettingsClose}>
+        <Modal
+          open={settingsVisible}
+          onClose={handleSettingsClose}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <ComponentEditor
             config={config}
             onCancel={handleSettingsClose}

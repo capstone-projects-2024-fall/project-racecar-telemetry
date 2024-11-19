@@ -49,8 +49,20 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
   return (
     <>
       {settingsVisible && (
-        <Modal open={settingsVisible} onClose={handleSettingsClose}>
-          <ComponentEditor />
+        <Modal
+          open={settingsVisible}
+          onClose={handleSettingsClose}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ComponentEditor
+            config={config}
+            onCancel={handleSettingsClose}
+            onSave={handleSave}
+          />
         </Modal>
       )}
       <Box

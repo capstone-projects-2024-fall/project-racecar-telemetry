@@ -92,8 +92,20 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
   return (
     <>
       {settingsVisible && (
-        <Modal open={settingsVisible} onClose={handleSettingsClose}>
-          <ComponentEditor />
+        <Modal
+          open={settingsVisible}
+          onClose={handleSettingsClose}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ComponentEditor
+            config={config}
+            onCancel={handleSettingsClose}
+            onSave={handleSave}
+          />
         </Modal>
       )}
       <div
