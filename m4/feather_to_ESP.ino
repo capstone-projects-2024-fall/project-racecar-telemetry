@@ -7,11 +7,10 @@
 #include <Wire.h>
 #include <CANSAME5x.h>
  
-void parseCAN(int minCANID, int maxCANID);
-void featherToESP(String message);
- 
 CANSAME5x CAN;
 unsigned long startTime;
+
+void rx2Tx(int CAN_ID_RX, int CAN_ID_TX) ;
  
 void setup() {
   Serial.begin(115200);
@@ -37,7 +36,11 @@ void setup() {
 }
  
 void loop() {
-  parseCAN(0x200, 0x300); // specifying range of can IDs to scan for
+  parseCAN(0x200, 0x300); // specifying range of can IDs to scan for 
+  //featherToESP(400, millis() - startTime, "00 00 00 00 00 00 00 00");
+  //Serial.println("Attempting to send...");
+  //delay(100);
+    // Rotation Rates
 }
  
 void parseCAN(int minCANID, int maxCANID) {
@@ -52,29 +55,62 @@ void parseCAN(int minCANID, int maxCANID) {
     if (CAN.packetId() > minCANID && CAN.packetId() < maxCANID) {
       
       // get current time in milliseconds
-      unsigned long currentTime = millis() - startTime;
+      unsigned long timestamp = millis() - startTime;
 
       // Start building the serial output message with the timestamp & CAN ID
-      String serialMsg = "Time: " + String(currentTime) + " ID: " + String(CAN.packetId(), HEX) + " Data: ";
+      String data;
 
       // Add all of the message to a string
       while (CAN.available()) {
         uint8_t dataByte = CAN.read();
-        serialMsg += String(dataByte, HEX) + " "; // Append each byte in hex to serial message
+        data += String(dataByte, HEX) + " "; // Append each byte in hex to serial message
       }
 
-      // Send String of CAN frame to ESP32
-      featherToESP(serialMsg);
+      //Serial.print(CAN.packetId()+" ");
+      Serial.println(data);
 
-      // Print the message over serial
-      Serial.println(serialMsg);
+      // Send String of CAN frame to ESP32
+      featherToESP(CAN.packetId(), timestamp, data);
     }
   }
 }
 
-void featherToESP(String message)
+void featherToESP(long id, unsigned long timestamp, String data)
 {
   Wire.beginTransmission(8);  // Start transmission to I2C device with address 8
-  Wire.write(message.c_str()); 
+  //String message = " { \"Time\": " + String(timestamp) + ", \"Data\": \"" + data + "\" }";
+
+  String message = " " + String(timestamp) + " " + data; // simplifying message for i2c purposes
+  Wire.write(String(id, HEX).c_str()); 
+  Wire.write(message.c_str());
   Wire.endTransmission();     // Complete the transmission
+
+  // Print the message over serial
+  Serial.println(message);
+}
+
+void rx2Tx(int CAN_ID_RX, int CAN_ID_TX) {
+ 
+  // Run checks for CAN message:
+  //    - Check if a packet can be parsed
+  //    - Check if CAN message is not RTR (Remote Request Frame)
+  //    - Check if CAN is avaiable
+  if (CAN.parsePacket() && !CAN.packetRtr() && CAN.available()) {  
+   
+    // Read only the specified CAN ID
+    if (CAN.packetId() == CAN_ID_RX) {
+     
+      // begin a message on the write CAN ID
+      CAN.beginPacket(CAN_ID_TX);
+     
+      // echo the message from read ID to write ID
+      while (CAN.available()) {
+        CAN.write(CAN.read());
+      }
+ 
+      // finish and send CAN write packet
+      CAN.endPacket();
+    }
+  }
+
 }
