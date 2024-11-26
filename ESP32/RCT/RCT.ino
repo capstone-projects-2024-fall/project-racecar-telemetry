@@ -1,6 +1,4 @@
-#include <Wire.h>
 #include <WiFi.h>
-#include <HTTPClient.h>
 #include <WiFiClientSecure.h>
 #include <FirebaseESP32.h>
 
@@ -12,25 +10,22 @@ const char *firebaseHost = "https://race-car-telemetry-default-rtdb.firebaseio.c
 
 // Firebase and WiFi objects
 FirebaseData firebaseData;
-
 DynamicJsonDocument configJson(4096);
 DynamicJsonDocument translatedJson(1024);
-
 
 void setup() {
   Serial.begin(115200);   // Start serial communication for debugging
 
   // Connect to WiFi
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
-  {
+  while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Attempting to connect to Wi-Fi...");
   }
   Serial.println("Connected to Wi-Fi");
 
-    // Initialize Firebase
-  Firebase.begin(FIREBASE_HOST);
+  // Initialize Firebase
+  Firebase.begin(firebaseHost);
   Firebase.reconnectWiFi(true);
 
   // Fetch configuration from Firebase
@@ -38,7 +33,17 @@ void setup() {
 }
 
 void loop() {
-  decodeAndSend(canId, rawCanMessage);
+  // Replace the following with actual CAN data retrieval logic
+  uint16_t canId;
+  uint8_t rawCanMessage[8];
+  unsigned long timestamp;
+
+  // Logic to populate `canId`, `rawCanMessage`, and `timestamp` dynamically
+  // e.g., read from CAN bus
+
+  // Decode and send the message if data is available
+  decodeAndSend(canId, rawCanMessage, timestamp);
+
   delay(1000);
 }
 
@@ -46,8 +51,8 @@ void fetchSelectedConfig() {
   String selectedConfigPath = "canConfig/currentConfig";
 
   // Fetch the current configuration name
-  if (Firebase.getDocument(firebaseData, currentConfigPath)) {
-    String selectedConfig = firebaseData.jsonObject().get("current").as<String>();
+  if (Firebase.getString(firebaseData, selectedConfigPath)) {
+    String selectedConfig = firebaseData.stringData();
     Serial.println("Current config selected: " + selectedConfig);
 
     // Fetch the selected Configuration
@@ -60,10 +65,10 @@ void fetchSelectedConfig() {
 void fetchConfig(String configName) {
   String configPath = "canConfig/" + configName;
 
-  if (Firebase.getDocument(firebaseData, configPath)) {
+  if (Firebase.getJSON(firebaseData, configPath)) {
     Serial.println("Fetched configuration:");
-    Serial.println(firebaseData.jsonObject().toString());
-    deserializeJson(configJson, firebaseData.jsonObject().toString());
+    deserializeJson(configJson, firebaseData.jsonData());
+    serializeJsonPretty(configJson, Serial);
   } else {
     Serial.println("Failed to fetch configuration: " + firebaseData.errorReason());
   }
@@ -85,7 +90,7 @@ uint32_t extractBits(uint8_t rawCanMessage[8], int startBit, int bitLength) {
   return data;
 }
 
-void decodeAndSend(uint16_t canId, uint8_t rawCanMessage[8]) {
+void decodeAndSend(uint16_t canId, uint8_t rawCanMessage[8], unsigned long timestamp) {
   // Look up configuration for this CAN ID
   String canIdKey = String(canId);
   if (!configJson.containsKey(canIdKey)) {
@@ -98,9 +103,12 @@ void decodeAndSend(uint16_t canId, uint8_t rawCanMessage[8]) {
   // Clear previous translated data
   translatedJson.clear();
 
+  // Add the timestamp
+  translatedJson["timestamp"] = timestamp;
+
   // Decode each channel
   for (JsonPair kv : config) {
-    const char* channel = kv.key().c_str();
+    const char *channel = kv.key().c_str();
     int startBit = kv.value()["startBit"];
     int bitLength = kv.value()["bitLength"];
 
@@ -110,3 +118,14 @@ void decodeAndSend(uint16_t canId, uint8_t rawCanMessage[8]) {
     // Store translated value in JSON
     translatedJson[channel] = data;
   }
+
+  // Send translated data to Firebase
+  String path = "decoded/" + String(canId);
+  if (Firebase.setJSON(firebaseData, path, translatedJson)) {
+    Serial.println("Translated data sent to Firebase:");
+    serializeJsonPretty(translatedJson, Serial);
+    Serial.println();
+  } else {
+    Serial.println("Firebase send error: " + firebaseData.errorReason());
+  }
+}
