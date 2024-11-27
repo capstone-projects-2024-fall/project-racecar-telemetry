@@ -27,11 +27,11 @@ export const CANInput = ({ index, row, onRowChange }) => {
       Array.from({ length: numSignals }, (_, idx) => prev[idx] || {
         Index: idx + 1,
         DataChannel: "",
-        StartBit: "",
-        BitLength: "",
-        Adder: "",
-        Multiplier: "",
-        Unit: "",
+        startBit: "",
+        bitLength: "",
+        adder: "",
+        multiplier: "",
+        unit: "",
       })
     );
   }, [row.NumOfSignals]);
@@ -116,9 +116,9 @@ export const CANInput = ({ index, row, onRowChange }) => {
                   label="Start Bit"
                   variant="outlined"
                   fullWidth
-                  value={signal.StartBit}
+                  value={signal.startBit}
                   onChange={(e) =>
-                    handleSignalChange(idx, "StartBit", e.target.value)
+                    handleSignalChange(idx, "startBit", e.target.value)
                   }
                 />
               </Grid>
@@ -127,9 +127,9 @@ export const CANInput = ({ index, row, onRowChange }) => {
                   label="Bit Length"
                   variant="outlined"
                   fullWidth
-                  value={signal.BitLength}
+                  value={signal.bitLength}
                   onChange={(e) =>
-                    handleSignalChange(idx, "BitLength", e.target.value)
+                    handleSignalChange(idx, "bitLength", e.target.value)
                   }
                 />
               </Grid>
@@ -138,9 +138,9 @@ export const CANInput = ({ index, row, onRowChange }) => {
                   label="Adder"
                   variant="outlined"
                   fullWidth
-                  value={signal.Adder}
+                  value={signal.adder}
                   onChange={(e) =>
-                    handleSignalChange(idx, "Adder", e.target.value)
+                    handleSignalChange(idx, "adder", e.target.value)
                   }
                 />
               </Grid>
@@ -149,9 +149,9 @@ export const CANInput = ({ index, row, onRowChange }) => {
                   label="Multiplier"
                   variant="outlined"
                   fullWidth
-                  value={signal.Multiplier}
+                  value={signal.multiplier}
                   onChange={(e) =>
-                    handleSignalChange(idx, "Multiplier", e.target.value)
+                    handleSignalChange(idx, "multiplier", e.target.value)
                   }
                 />
               </Grid>
@@ -160,9 +160,9 @@ export const CANInput = ({ index, row, onRowChange }) => {
                   label="Unit"
                   variant="outlined"
                   fullWidth
-                  value={signal.Unit}
+                  value={signal.unit}
                   onChange={(e) =>
-                    handleSignalChange(idx, "Unit", e.target.value)
+                    handleSignalChange(idx, "unit", e.target.value)
                   }
                 />
               </Grid>
