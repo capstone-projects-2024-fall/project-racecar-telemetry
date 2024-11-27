@@ -3,8 +3,9 @@
 import React, { useState } from 'react'
 import CANDataAssignment from '@components/CANDataAssignment'
 import ConfigManager from '@components/ConfigManager'
-import Box from '@mui/material/Box';
+import {Box, ThemeProvider, CssBaseline} from "@mui/material"
 import CANDataView from '@components/CANDataView';
+import theme from "@theme";
 
 
 export default function CANConfigurationPage() {
@@ -12,7 +13,8 @@ export default function CANConfigurationPage() {
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
+      <CssBaseline/>
       <Box display="flex" flexDirection="column" gap={2} pb={4}>
         <ConfigManager onConfigSelect={setSelectedConfig} />
 
@@ -25,7 +27,7 @@ export default function CANConfigurationPage() {
           )
         )}
       </Box>
-    </>
+    </ThemeProvider>
   );
 }
 
