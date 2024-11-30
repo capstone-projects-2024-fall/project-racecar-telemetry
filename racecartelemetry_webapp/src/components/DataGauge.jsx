@@ -23,6 +23,26 @@ const DataGauge = ({
   // State to determine whether or not the settings modal is visible
   const [settingsVisible, setSettingsVisible] = useState(false);
 
+  // These are the config options for TimeSeries Graphs
+  const config = {
+    fields: [
+      {
+        label: "Data Name",
+        type: "text",
+      },
+      {
+        label: "Color",
+        type: "select",
+        options: ["Blue", "Red", "Green"],
+      },
+      {
+        label: "Min Value",
+        type: "number",
+      },
+      { label: "Max Value", type: "number" },
+    ],
+  };
+
   const handleSettingsClick = () => {
     setSettingsVisible((prevState) => !prevState);
   };
@@ -30,6 +50,8 @@ const DataGauge = ({
   const handleSettingsClose = () => {
     setSettingsVisible(false);
   };
+
+  const handleSave = () => {};
 
   useEffect(() => {
     if (!canID || !metricKey) return;
@@ -91,10 +113,13 @@ const DataGauge = ({
       >
         <div
           style={{
-            display: "flex",
-            alignItems: "left",
-            justifyContent: "left",
-            alignItems: "left",
+            fontSize: "1rem",
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "center",
+            lineHeight: 1.2,
+            marginBottom: "0.3rem",
+            alignItems: "s",
           }}
         >
           <IconButton onClick={handleSettingsClick}>
@@ -104,17 +129,6 @@ const DataGauge = ({
               }}
             />
           </IconButton>
-        </div>
-        <div
-          style={{
-            fontSize: "1rem",
-            color: "white",
-            fontWeight: "bold",
-            textAlign: "center",
-            lineHeight: 1.2,
-            marginBottom: "0.3rem",
-          }}
-        >
           {title} ({isSecondaryUnit ? secondaryUnit : primaryUnit})
         </div>
         {secondaryUnit && (
@@ -174,7 +188,7 @@ const DataGauge = ({
             layout={{
               autosize: true,
               responsive: true,
-              margin: { t: 0, b: 0, l: 10, r: 10 }, // Tight margins
+              margin: { t: 20, b: 20, l: 20, r: 20 }, // Add more space for labels
               font: { color: "white" },
               paper_bgcolor: "rgba(0, 0, 0, 0)",
               plot_bgcolor: "rgba(0, 0, 0, 0)",
