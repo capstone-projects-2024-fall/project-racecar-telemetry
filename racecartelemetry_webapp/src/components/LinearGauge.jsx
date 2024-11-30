@@ -33,6 +33,8 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
     setSettingsVisible(false);
   };
 
+  // These are the config options for LinearGauge Graphs
+
   const config = {
     fields: [
       {
