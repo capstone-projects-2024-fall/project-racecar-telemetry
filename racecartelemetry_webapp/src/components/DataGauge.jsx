@@ -13,8 +13,8 @@ const DataGauge = ({
   canID,
   metricKey,
   title,
-  maxPrimaryRange = 550,
-  maxSecondaryRange = 700,
+  maxPrimaryRange,
+  maxSecondaryRange,
   primaryUnit = "C",
   secondaryUnit,
 }) => {
@@ -23,7 +23,16 @@ const DataGauge = ({
   // State to determine whether or not the settings modal is visible
   const [settingsVisible, setSettingsVisible] = useState(false);
 
-  // These are the config options for TimeSeries Graphs
+  // Range of vals to display
+  const [range, setRange] = useState([0, maxPrimaryRange]);
+
+  // OriginalRange is the range in the primary unit
+  const [originalRange, setOriginalRange] = useState([0, maxPrimaryRange]);
+
+  const [dataName, setDataName] = useState(title);
+  const [color, setColor] = useState(`${theme.palette.primary.main}`);
+
+  // These are the config options for DataGauge Graphs
   const config = {
     fields: [
       {
@@ -36,10 +45,10 @@ const DataGauge = ({
         options: ["Blue", "Red", "Green"],
       },
       {
-        label: "Min Value",
+        label: "Min Value (C)",
         type: "number",
       },
-      { label: "Max Value", type: "number" },
+      { label: "Max Value (C)", type: "number" },
     ],
   };
 
@@ -51,7 +60,26 @@ const DataGauge = ({
     setSettingsVisible(false);
   };
 
-  const handleSave = () => {};
+  const handleSave = (data) => {
+    // We want to keep a copy of the Celsius range, so we can go back to it when switching between F and C
+    const newRange = [data["Min Value (C)"], data["Max Value (C)"]];
+    setOriginalRange(newRange);
+    setRange(newRange);
+    setDataName(data["Data Name"]);
+    setColor(data["Color"]);
+    setSettingsVisible(false);
+  };
+
+  // Whenever the range gets updated, check if we're doing it in celsius or fahrenheit
+  useEffect(() => {
+    const [min, max] = originalRange;
+
+    if (isSecondaryUnit) {
+      setRange([convertToFahrenheit(min), convertToFahrenheit(max)]);
+    } else {
+      setRange([min, max]);
+    }
+  }, [isSecondaryUnit, originalRange]);
 
   useEffect(() => {
     if (!canID || !metricKey) return;
@@ -71,6 +99,7 @@ const DataGauge = ({
 
   const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
   const convertToMPH = (kmh) => kmh * 0.621371;
+  const convertToCelsius = (fahrenheit) => ((fahrenheit - 32) * 5) / 9;
 
   const displayedValue =
     metricKey === "Temp" && isSecondaryUnit
@@ -79,7 +108,8 @@ const DataGauge = ({
       ? convertToMPH(metricValue)
       : metricValue;
 
-  const toggleUnit = () => setIsSecondaryUnit(!isSecondaryUnit);
+  const toggleUnit = () =>
+    setIsSecondaryUnit((isSecondaryUnit) => !isSecondaryUnit);
 
   return (
     <>
@@ -129,7 +159,7 @@ const DataGauge = ({
               }}
             />
           </IconButton>
-          {title} ({isSecondaryUnit ? secondaryUnit : primaryUnit})
+          {dataName} ({isSecondaryUnit ? secondaryUnit : primaryUnit})
         </div>
         {secondaryUnit && (
           <button
@@ -162,23 +192,17 @@ const DataGauge = ({
                 value: displayedValue,
                 gauge: {
                   axis: {
-                    range: isSecondaryUnit
-                      ? [0, maxSecondaryRange]
-                      : [0, maxPrimaryRange],
+                    range: range,
                     tickcolor: "white",
                   },
-                  bar: { color: `${theme.palette.primary.main}` },
+                  bar: { color: color },
                   steps: [
                     {
-                      range: isSecondaryUnit
-                        ? [maxSecondaryRange * 0.33, maxSecondaryRange * 0.66]
-                        : [maxPrimaryRange * 0.33, maxPrimaryRange * 0.66],
+                      range: [range[1] * 0.33, range[1] * 0.66],
                       color: "lightgray",
                     },
                     {
-                      range: isSecondaryUnit
-                        ? [maxSecondaryRange * 0.66, maxSecondaryRange]
-                        : [maxPrimaryRange * 0.66, maxPrimaryRange],
+                      range: [range[1] * 0.66, range[1]],
                       color: "gray",
                     },
                   ],
