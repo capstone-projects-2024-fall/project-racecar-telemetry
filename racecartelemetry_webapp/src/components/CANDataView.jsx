@@ -1,12 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { Button, Box, Typography, Grid, Paper, IconButton } from "@mui/material";
+import {
+  Button,
+  Box,
+  Typography,
+  Grid,
+  Paper,
+  IconButton,
+  Modal,
+} from "@mui/material";
 import { fetchCANData } from "@services/CANConfigurationService";
 import theme from "@app/theme";
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+
+const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "50%",
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  maxHeight: "80vh",
+  overflowY: "auto",
+};
 
 const CANDataView = ({ selectedConfig, setIsEditing }) => {
   const [configData, setConfigData] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedCanId, setSelectedCanId] = useState(null);
+  const [signals, setSignals] = useState([]);
 
   useEffect(() => {
     const getConfigData = async () => {
@@ -24,14 +49,29 @@ const CANDataView = ({ selectedConfig, setIsEditing }) => {
     getConfigData();
   }, [selectedConfig]);
 
-  // Convert configData into an array with canId
-  const configArray = configData && typeof configData === "object"
-    ? Object.entries(configData).map(([canId, itemData]) => ({ canId, ...itemData }))
-    : [];
+  // Convert configData into an array with CanID and parsed DataChannels
+  const configArray =
+    configData && typeof configData === "object"
+      ? Object.entries(configData).map(([canId, itemData]) => {
+          const signals =
+            itemData.DataChannels &&
+            typeof itemData.DataChannels === "object"
+              ? Object.entries(itemData.DataChannels).map(
+                  ([key, signalData]) => ({
+                    ...signalData,
+                    id: key,
+                  })
+                )
+              : [];
+          return { canId, NumOfSignals: signals.length, signals };
+        })
+      : [];
 
-  // Optionally, sort the configArray if needed
-  // For example, to sort by canId numerically
-  // configArray.sort((a, b) => parseInt(a.canId) - parseInt(b.canId));
+  const handleViewClick = (canId, signalsData) => {
+    setSelectedCanId(canId);
+    setSignals(signalsData || []);
+    setModalOpen(true);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -86,82 +126,43 @@ const CANDataView = ({ selectedConfig, setIsEditing }) => {
           >
             {configArray.map((item) => (
               <Grid container item spacing={1} key={item.canId}>
-                {/* CanID */}
                 <Grid item xs="auto">
                   <Paper
                     elevation={3}
-                    sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}
+                    sx={{
+                      padding: 2,
+                      display: "inline-block",
+                      backgroundColor: "secondary.gray",
+                    }}
                   >
                     <Typography variant="body1" color="white">
                       <strong>CanID:</strong> {item.canId}
                     </Typography>
                   </Paper>
                 </Grid>
-                {/* Data Channel */}
                 <Grid item xs="auto">
                   <Paper
                     elevation={3}
-                    sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}
+                    sx={{
+                      padding: 2,
+                      display: "inline-block",
+                      backgroundColor: "secondary.gray",
+                    }}
                   >
                     <Typography variant="body1" color="white">
-                      <strong>Data Channel:</strong> {item.DataChannel}
+                      <strong># of signals:</strong> {item.NumOfSignals}
                     </Typography>
                   </Paper>
                 </Grid>
-                {/* Message Length */}
                 <Grid item xs="auto">
-                  <Paper
-                    elevation={3}
-                    sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ height: 55 }}
+                    onClick={() => handleViewClick(item.canId, item.signals)}
                   >
-                    <Typography variant="body1" color="white">
-                      <strong>Message Length:</strong> {item.MessageLength}
-                    </Typography>
-                  </Paper>
-                </Grid>
-                {/* Offset Bytes */}
-                <Grid item xs="auto">
-                  <Paper
-                    elevation={3}
-                    sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}
-                  >
-                    <Typography variant="body1" color="white">
-                      <strong>Offset Bytes:</strong> {item.OffsetBytes}
-                    </Typography>
-                  </Paper>
-                </Grid>
-                {/* Adder */}
-                <Grid item xs="auto">
-                  <Paper
-                    elevation={3}
-                    sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}
-                  >
-                    <Typography variant="body1" color="white">
-                      <strong>Adder:</strong> {item.Adder}
-                    </Typography>
-                  </Paper>
-                </Grid>
-                {/* Multiplier */}
-                <Grid item xs="auto">
-                  <Paper
-                    elevation={3}
-                    sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}
-                  >
-                    <Typography variant="body1" color="white">
-                      <strong>Multiplier:</strong> {item.Multiplier}
-                    </Typography>
-                  </Paper>
-                </Grid>
-                {/* Unit */}
-                <Grid item xs="auto">
-                  <Paper
-                    elevation={3}
-                    sx={{ padding: 2, display: 'inline-block', backgroundColor: 'secondary.gray' }}
-                  >
-                    <Typography variant="body1" color="white">
-                      <strong>Unit:</strong> {item.Unit}
-                    </Typography>
-                  </Paper>
+                    <Typography variant="caption">View signal info</Typography>
+                  </Button>
                 </Grid>
               </Grid>
             ))}
@@ -171,6 +172,73 @@ const CANDataView = ({ selectedConfig, setIsEditing }) => {
             Loading configuration data...
           </Typography>
         )}
+
+        {/* Modal for viewing signals */}
+        <Modal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          aria-labelledby="view-signal-info-title"
+          aria-describedby="view-signal-info-description"
+        >
+          <Box sx={modalStyle}>
+            <Typography
+              id="view-signal-info-title"
+              variant="h6"
+              component="h2"
+              sx={{ mb: 3 }}
+            >
+              Signals for CanID: {selectedCanId}
+            </Typography>
+            {signals.length > 0 ? (
+              signals.map((signal, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: 1,
+                    marginBottom: 1,
+                    border: "1px solid #ccc",
+                    borderRadius: 1,
+                  }}
+                >
+                  <Typography variant="body2">
+                    <strong>Data Channel:</strong> {signal.id}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Start Bit:</strong> {signal.startBit}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Bit Length:</strong> {signal.bitLength}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Adder:</strong> {signal.adder}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Multiplier:</strong> {signal.multiplier}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Unit:</strong> {signal.unit}
+                  </Typography>
+                </Box>
+              ))
+            ) : (
+              <Typography variant="body2">
+                No signals available for this CanID.
+              </Typography>
+            )}
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => setModalOpen(false)}
+              sx={{ mt: 2 }}
+            >
+              Close
+            </Button>
+          </Box>
+        </Modal>
       </Box>
     </ThemeProvider>
   );

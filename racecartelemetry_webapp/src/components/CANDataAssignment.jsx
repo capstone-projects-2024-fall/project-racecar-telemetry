@@ -125,7 +125,7 @@ const CANDataAssignment = ({ selectedConfig, setIsEditing }) => {
   
         // Save the structure for the CANID
         dataToSave[CanID] = {
-          MessageLength: NumOfSignals,
+          NumOfSignals: NumOfSignals,
           DataChannels: dataChannels,
         };
       });
