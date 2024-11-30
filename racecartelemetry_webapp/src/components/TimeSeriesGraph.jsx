@@ -16,7 +16,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
   // State to determine whether or not the settings modal is visible
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [dataName, setDataName] = useState(title);
-  const [color, setColor] = useState("rgba(20, 20, 20, 0.9)");
+  const [color, setColor] = useState(`${theme.palette.primary.main}`);
   const [verticalMin, setVerticalMin] = useState();
   const [verticalMax, setVerticalMax] = useState();
 
@@ -91,7 +91,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
       y: axisToPlot,
       type: "scatter",
       mode: "lines+markers",
-      marker: { color: `${theme.palette.primary.main}`, size: 6 },
+      marker: { color: color, size: 6 },
       line: { width: 2 },
     },
   ];
@@ -131,8 +131,8 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
       gridwidth: 1,
       range: [verticalMin, verticalMax],
     },
-    paper_bgcolor: color,
-    plot_bgcolor: color,
+    paper_bgcolor: "rgba(20, 20, 20, 0.9)",
+    plot_bgcolor: "rgba(20, 20, 20, 0.9)",
   };
 
   return (
@@ -162,7 +162,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
           borderRadius: "12px",
           border: `2px solid ${theme.palette.primary.main}`,
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-          backgroundColor: "rgba(30, 30, 30, 0.8)",
+          backgroundColor: "rgba(30, 30, 30, 0.9)",
           margin: "0",
         }}
       >
@@ -172,7 +172,7 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
             alignItems: "left",
             justifyContent: "left",
             alignItems: "left",
-            backgroundColor: color,
+            backgroundColor: "rgba(20, 20, 20, 0.9)",
             height: "1.5rem",
           }}
         >
