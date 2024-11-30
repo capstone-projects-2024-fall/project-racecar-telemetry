@@ -13,6 +13,10 @@ import ComponentEditor from "@/components/ComponentEditor";
 const LinearGauge = ({ canID, valueToShow, title }) => {
   const [value, setValue] = useState();
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const [dataName, setDataName] = useState(title);
+  const [color, setColor] = useState(`${theme.palette.primary.main}`);
+  // Range of vals to display
+  const [range, setRange] = useState([0, 100]);
 
   const handleSettingsClick = () => {
     setSettingsVisible((prevState) => !prevState);
@@ -20,6 +24,32 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
 
   const handleSettingsClose = () => {
     setSettingsVisible(false);
+  };
+
+  const handleSave = (data) => {
+    setDataName(data["Data Name"]);
+    setColor(data["Color"]);
+    setRange([data["Min Value"], data["Max Value"]]);
+    setSettingsVisible(false);
+  };
+
+  const config = {
+    fields: [
+      {
+        label: "Data Name",
+        type: "text",
+      },
+      {
+        label: "Color",
+        type: "select",
+        options: ["Blue", "Red", "Green"],
+      },
+      {
+        label: "Min Value",
+        type: "number",
+      },
+      { label: "Max Value", type: "number" },
+    ],
   };
 
   useEffect(() => {
@@ -51,10 +81,10 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
       gauge: {
         shape: "bullet",
         axis: {
-          visible: false,
-          range: [-200, 200],
+          visible: true,
+          range: range,
         },
-        bar: { color: theme.palette.primary.main },
+        bar: { color: color },
       },
       domain: { x: [0.15, 0.75], y: [0.25, 0.65] },
       number: {
@@ -70,7 +100,7 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
     title: {
-      text: title,
+      text: dataName,
       font: { size: 18, color: theme.palette.primary.main },
       x: 0.5,
       xanchor: "center",
