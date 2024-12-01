@@ -9,40 +9,34 @@ import {
   Box,
   Typography,
   Grid,
+  FormHelperText,
 } from "@mui/material";
 
-const ComponentEditor = () => {
-  const [dropdown1, setDropdown1] = useState("");
-  const [dropdown2, setDropdown2] = useState("");
-  const [dropdown3, setDropdown3] = useState("");
-  const [dropdown4, setDropdown4] = useState("");
-  const [max, setMax] = useState("");
-  const [min, setMin] = useState("");
+const ComponentEditor = ({ config, onSave, onCancel }) => {
+  const [formState, setFormState] = useState({});
+  const [errors, setErrors] = useState({});
 
-  const handleDropdown1Change = (event) => setDropdown1(event.target.value);
-  const handleDropdown2Change = (event) => setDropdown2(event.target.value);
-  const handleDropdown3Change = (event) => setDropdown3(event.target.value);
-  const handleDropdown4Change = (event) => setDropdown4(event.target.value);
-  const handleMaxChange = (event) => setMax(event.target.value);
-  const handleMinChange = (event) => setMin(event.target.value);
-
-  const handleSubmit = () => {
-    console.log("Dropdown 1:", dropdown1);
-    console.log("Dropdown 2:", dropdown2);
-    console.log("Dropdown 3:", dropdown3);
-    console.log("Dropdown 4:", dropdown4);
-    console.log("Max:", max);
-    console.log("Min", min);
+  const handleChange = (field, value) => {
+    setFormState((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: false })); // Clear error when input changes
   };
 
-  const handleCancel = () => {
-    setDropdown1("");
-    setDropdown2("");
-    setDropdown3("");
-    setDropdown4("");
-    setMax("");
-    setMin("");
-    console.log("Cancelled editing");
+  const handleSubmit = () => {
+    const newErrors = {};
+    config.fields.forEach((field) => {
+      if (!formState[field.label]) {
+        newErrors[field.label] = "This field is required.";
+      }
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      console.log(errors);
+      return;
+    }
+
+    console.log("Form Data:", formState);
+    onSave(formState);
   };
 
   return (
@@ -69,74 +63,58 @@ const ComponentEditor = () => {
         Component Editor
       </Typography>
 
-      {/* Dropdown 1 */}
-      <FormControl fullWidth margin="normal">
-        <InputLabel>Data Channel</InputLabel>
-        <Select value={dropdown1} onChange={handleDropdown1Change}>
-          <MenuItem value="Data Channel 1">Data Channel 1</MenuItem>
-          <MenuItem value="Data Channel 2">Data Channel 2</MenuItem>
-          <MenuItem value="Data Channel 3">Data Channel 3</MenuItem>
-        </Select>
-      </FormControl>
+      {config.fields.map((field, index) => (
+        <FormControl
+          key={index}
+          fullWidth
+          margin="normal"
+          sx={{ marginBottom: 2 }}
+          error={!!errors[field.label]} // Highlight field if there's an error
+        >
+          {/* Render Select Input */}
+          {field.type === "select" && (
+            <>
+              <InputLabel>{field.label}</InputLabel>
+              <Select
+                value={formState[field.label] || ""}
+                onChange={(e) => handleChange(field.label, e.target.value)}
+              >
+                {field.options.map((option, idx) => (
+                  <MenuItem key={idx} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors[field.label] && (
+                <FormHelperText>{errors[field.label]}</FormHelperText>
+              )}
+            </>
+          )}
 
-      {/* Dropdown 2 */}
-      <FormControl fullWidth margin="normal">
-        <InputLabel>Data Label</InputLabel>
-        <Select value={dropdown2} onChange={handleDropdown2Change}>
-          <MenuItem value="Data Label 1">Data Label 1</MenuItem>
-          <MenuItem value="Data Label 2">Data Label 2</MenuItem>
-          <MenuItem value="Data Label 3">Data Label 3</MenuItem>
-        </Select>
-      </FormControl>
+          {/* Render TextField for Text or Number Input */}
+          {(field.type === "text" || field.type === "number") && (
+            <>
+              <TextField
+                type={field.type}
+                value={formState[field.label] || ""}
+                onChange={(e) => handleChange(field.label, e.target.value)}
+                label={field.label}
+                fullWidth
+                error={!!errors[field.label]} // Highlight TextField if there's an error
+                helperText={errors[field.label]} // Show error message below the input
+              />
+            </>
+          )}
+        </FormControl>
+      ))}
 
-      {/* Dropdown 3 */}
-      <FormControl fullWidth margin="normal">
-        <InputLabel>Display</InputLabel>
-        <Select value={dropdown3} onChange={handleDropdown3Change}>
-          <MenuItem value="Linear">Linear</MenuItem>
-          <MenuItem value="Radial">Radial</MenuItem>
-          <MenuItem value="Bar Graph">Bar Graph</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Dropdown 4 */}
-      <FormControl fullWidth margin="normal">
-        <InputLabel>Unit of measure</InputLabel>
-        <Select value={dropdown4} onChange={handleDropdown4Change}>
-          <MenuItem value="MPH">MPH</MenuItem>
-          <MenuItem value="KPH">KPH</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Max input */}
-
-      <TextField
-        label="Max"
-        variant="outlined"
-        value={max}
-        onChange={handleMaxChange}
-        fullWidth
-        margin="normal"
-      />
-
-      {/* Min input */}
-
-      <TextField
-        label="Min"
-        variant="outlined"
-        value={min}
-        onChange={handleMinChange}
-        fullWidth
-        margin="normal"
-      />
-
-      {/* Buttons: Submit and Cancel */}
+      {/* Buttons for Cancel and Save */}
       <Grid container spacing={2} sx={{ marginTop: 2 }}>
         <Grid item xs={6}>
           <Button
             variant="outlined"
             color="secondary"
-            onClick={handleCancel}
+            onClick={onCancel}
             fullWidth
           >
             Cancel

@@ -11,6 +11,9 @@ import theme from "@/app/theme";
 const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
   const [number, setNumber] = useState(0);
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const [dataName, setDataName] = useState(title);
+  const [color, setColor] = useState(`${theme.palette.primary.main}`);
+  const [unitShown, setUnitShown] = useState(unit);
 
   const handleSettingsClick = () => {
     setSettingsVisible((prevState) => !prevState);
@@ -18,6 +21,30 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
 
   const handleSettingsClose = () => {
     setSettingsVisible(false);
+  };
+
+  // These are the config options for LinearGauge Graphs
+
+  const config = {
+    fields: [
+      {
+        label: "Data Name",
+        type: "text",
+      },
+      {
+        label: "Color",
+        type: "select",
+        options: ["Blue", "Red", "Green"],
+      },
+      { label: "Unit", type: "select", options: ["C", "F", "V", "%"] },
+    ],
+  };
+
+  const handleSave = (data) => {
+    setDataName(data["Data Name"]);
+    setColor(data["Color"]);
+    setSettingsVisible(false);
+    setUnitShown(data["Unit"]);
   };
 
   useEffect(() => {
@@ -49,8 +76,20 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
   return (
     <>
       {settingsVisible && (
-        <Modal open={settingsVisible} onClose={handleSettingsClose}>
-          <ComponentEditor />
+        <Modal
+          open={settingsVisible}
+          onClose={handleSettingsClose}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ComponentEditor
+            config={config}
+            onCancel={handleSettingsClose}
+            onSave={handleSave}
+          />
         </Modal>
       )}
       <Box
@@ -58,7 +97,7 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
           width: 100,
           height: 100,
           borderRadius: "50%",
-          backgroundColor: "primary.main",
+          backgroundColor: color,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -85,11 +124,11 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
           </IconButton>
         </div>
         <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
-          {title}
+          {dataName}
         </Typography>
         <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
           {number}
-          {unit}
+          {unitShown}
         </Typography>
       </Box>
     </>
