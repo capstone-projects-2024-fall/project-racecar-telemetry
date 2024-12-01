@@ -6,23 +6,16 @@ import { db } from "@firebaseConfig"
 
 const telemetryConnectionStatus = () => {
   const [isConnected, setIsConnected] = useState(null)
-  const previousDataRef = useRef(null)
   const timeoutRef = useRef(null)
 
   useEffect(() => {
-    const connectedRef = ref(db, "CANdata/001")
+    const connectedRef = ref(db, "data")
 
     const unsubscribe = onValue(connectedRef, (snapshot) => {
       const currentData = snapshot.val()
-      const currentDataString = JSON.stringify(currentData)
 
-      if (previousDataRef.current === null) {
-        previousDataRef.current = currentDataString
-      }
-
-      if (currentData && previousDataRef.current !== currentDataString) {
+      if (currentData) {
         setIsConnected(true)
-        previousDataRef.current = currentDataString
 
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current)
@@ -34,7 +27,8 @@ const telemetryConnectionStatus = () => {
       } else {
         setIsConnected(false)
       }
-    })
+    }
+  );
 
     return () => {
       unsubscribe()
