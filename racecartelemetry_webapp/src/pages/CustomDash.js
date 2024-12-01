@@ -102,17 +102,28 @@ export default function CustomDash() {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <div className="custom-dash" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div
+          className="custom-dash"
+          style={{
+            display: "flex",
+            flexDirection: "column", // Stack rows vertically
+            gap: "1rem", // Adds space between rows
+          }}
+        >
           {rows.map((row, rowIndex) => (
-            <SortableContext key={rowIndex} items={row.filter(item => item !== null)} strategy={verticalListSortingStrategy}>
+            <SortableContext
+              key={rowIndex}
+              items={row.filter((item) => item !== null)}
+              strategy={verticalListSortingStrategy}
+            >
               <div
                 className="row"
                 style={{
                   display: "flex",
-                  gap: "1rem",
+                  gap: "1rem", // Adds space between components in a row
                   flexWrap: "nowrap", // Prevent wrapping
-                  height: "400px", // Fixed height for each row
                   width: "100%", // Ensure the row takes full width
+                  marginBottom: "1rem", // Adds space between rows
                 }}
               >
                 {row.map((_, index) => (
@@ -127,7 +138,9 @@ export default function CustomDash() {
                         alignItems: "center",
                       }}
                     >
-                      <Button variant="contained" size="small">+</Button>
+                      <Button variant="contained" size="small">
+                        +
+                      </Button>
                     </div>
                   </SortableItem>
                 ))}
@@ -153,7 +166,7 @@ function SortableItem({ id, children }) {
     borderRadius: 10,
     display: "flex",
     flexDirection: "column",
-    width: "30%",
+    width: "30%", // Set a fixed width for the sortable item
     height: "500px", // Set a fixed height to contain the components
     boxSizing: "border-box",
     overflow: "hidden", // Prevents overflow if component exceeds height
