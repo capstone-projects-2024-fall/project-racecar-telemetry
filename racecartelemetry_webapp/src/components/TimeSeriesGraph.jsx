@@ -3,13 +3,26 @@ import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
 import { db } from "@firebaseConfig"; // Firebase config file
 import theme from "@/app/theme";
+import SettingsIcon from "@mui/icons-material/Settings";
+import IconButton from "@mui/material/IconButton";
+import { Modal } from "@mui/material";
+import ComponentEditor from "@/components/ComponentEditor";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
   const [timestamps, setTimestamps] = useState([]);
   const [axisToPlot, setAxisToPlot] = useState([]);
+  // State to determine whether or not the settings modal is visible
+  const [settingsVisible, setSettingsVisible] = useState(false);
 
+  const handleSettingsClick = () => {
+    setSettingsVisible((prevState) => !prevState);
+  };
+
+  const handleSettingsClose = () => {
+    setSettingsVisible(false);
+  };
   useEffect(() => {
     if (!canID) return; // If no canID is provided, do nothing
 
@@ -88,24 +101,51 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        padding: "0",
-        borderRadius: "12px",
-        border: `2px solid ${theme.palette.primary.main}`,
-        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-        backgroundColor: "rgba(30, 30, 30, 0.8)",
-        margin: "0",
-      }}
-    >
-      <Plot
-        data={data}
-        layout={layout}
-        useResizeHandler={true}
-        style={{ width: "100%", height: "400px", margin: "0", padding: "0" }}
-      />
-    </div>
+    <>
+      {settingsVisible && (
+        <Modal open={settingsVisible} onClose={handleSettingsClose}>
+          <ComponentEditor />
+        </Modal>
+      )}
+
+      <div
+        style={{
+          width: "100%",
+          padding: "0",
+          borderRadius: "12px",
+          border: `2px solid ${theme.palette.primary.main}`,
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+          backgroundColor: "rgba(30, 30, 30, 0.8)",
+          margin: "0",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "left",
+            justifyContent: "left",
+            alignItems: "left",
+            backgroundColor: "rgba(20, 20, 20, 0.9)",
+            height: "1.5rem",
+          }}
+        >
+          <IconButton onClick={handleSettingsClick}>
+            <SettingsIcon
+              style={{
+                color: theme.palette.primary.main,
+              }}
+            />
+          </IconButton>
+        </div>
+
+        <Plot
+          data={data}
+          layout={layout}
+          useResizeHandler={true}
+          style={{ width: "100%", height: "400px", margin: "0", padding: "0" }}
+        />
+      </div>
+    </>
   );
 };
 
