@@ -130,7 +130,7 @@ export default function CustomDash() {
                   <SortableItem key={index} id={`row-${rowIndex}-box-${index}`}>
                     <div
                       style={{
-                        flex: `1 0 ${100 / row.length}%`, // Flexible width based on the number of components
+                        flex: `1 0 ${Math.max(100 / row.length, 25)}%`, // Ensures a minimum width of 25% for each component
                         height: "100%",
                         border: "2px dotted #ccc",
                         display: "flex",
@@ -155,7 +155,8 @@ export default function CustomDash() {
 
 // SortableItem component with Drag Handle
 function SortableItem({ id, children }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
