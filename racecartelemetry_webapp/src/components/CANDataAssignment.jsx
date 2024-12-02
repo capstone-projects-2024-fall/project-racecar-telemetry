@@ -55,15 +55,12 @@ const CANDataAssignment = ({ selectedConfig, setIsEditing }) => {
       {
         id: Date.now(), // Use a unique identifier
         CanID: "",
-        DataChannel: "",
-        MessageLength: "",
-        OffsetBytes: "",
-        Adder: "",
-        Multiplier: "",
-        Unit: ""
+        NumOfSignals: "",
+        Signals: [], // Ensure Signals is initialized
       }
     ]));
   };
+  
 
   // Updates a specific row by id
   const handleRowChange = (id, updatedRow) => {
@@ -106,21 +103,36 @@ const CANDataAssignment = ({ selectedConfig, setIsEditing }) => {
 
   // Saves all rows to Firestore
   const handleSubmit = async () => {
-    // Check if any CanID is empty
-    if (rows.some(row => !row.CanID)) {
-      showNotification("Please provide a CanID for each row", "warning");
+    // Validate that all CANIDs are provided
+    if (rows.some((row) => !row.CanID)) {
+      showNotification("Please provide a CANID for each row", "warning");
       return;
     }
-
+  
     try {
-      // Transform rows array into an object with CanID as keys
+      // Transform rows into the desired structure
       const dataToSave = {};
-      rows.forEach(row => {
-        dataToSave[row.CanID] = { ...row };
-        delete dataToSave[row.CanID].id; // Remove 'id' from saved data
+  
+      rows.forEach((row) => {
+        const { CanID, NumOfSignals, Signals } = row;
+  
+        // Prepare the DataChannels for the current CANID
+        const dataChannels = {};
+        Signals.forEach((signal) => {
+          const { DataChannel, startBit, bitLength, adder, multiplier, unit } = signal;
+          dataChannels[DataChannel] = { startBit, bitLength, adder, multiplier, unit };
+        });
+  
+        // Save the structure for the CANID
+        dataToSave[CanID] = {
+          NumOfSignals: NumOfSignals,
+          DataChannels: dataChannels,
+        };
       });
-
-      await saveCANData(selectedConfig, dataToSave); // Saves data with CanID as field keys
+  
+      // Call saveCANData with the transformed data
+      await saveCANData(selectedConfig, dataToSave);
+  
       showNotification("Data saved successfully");
       setTimeout(() => setIsEditing(false), 1500);
     } catch (error) {
@@ -128,6 +140,7 @@ const CANDataAssignment = ({ selectedConfig, setIsEditing }) => {
       showNotification(`Failed to save data: ${error.message}`, "error");
     }
   };
+  
 
   if (!selectedConfig) {
     return (

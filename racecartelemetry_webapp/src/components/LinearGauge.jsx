@@ -58,7 +58,7 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
     if (!canID) return; // If no canID is provided, do nothing
 
     // Create a reference to the 'CANdata/canID' node in the database
-    const dataRef = ref(db, `CANdata/${canID}`);
+    const dataRef = ref(db, `data/${canID}`);
 
     // Set up the real-time listener using `onValue`
     const unsubscribe = onValue(dataRef, (snapshot) => {
@@ -66,9 +66,13 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
         const data = snapshot.val();
         console.log("CAN data:", data);
 
-        if (valueToShow === "Throttle") {
-          setValue(data.Temp); // What is the throttle going to be under in the Db?
+        if (valueToShow === "steering") {
+          setValue(data.Steering); // What is the throttle going to be under in the Db?
         }
+        else if (valueToShow === "pack")
+          setValue(data.Pedal); // What is the throttle going to be under in the Db?
+        else if (valueToShow === "throttle")
+          setValue(data.Throttle);
       }
     });
 

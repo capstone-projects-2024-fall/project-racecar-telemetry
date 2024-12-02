@@ -67,6 +67,7 @@ const ConfigManager = ({ onConfigSelect }) => {
         }
     };
 
+    const filteredConfigs = configs.filter((config) => config.id !== "currentConfig");
 
     return (
         <Box
@@ -113,8 +114,8 @@ const ConfigManager = ({ onConfigSelect }) => {
                         <MenuItem value="" disabled>
                             Select Config
                         </MenuItem>
-                        {Array.isArray(configs) && configs.length > 0 ? (
-                            configs.map((config) => (
+                        {Array.isArray(filteredConfigs) && filteredConfigs.length > 0 ? (
+                            filteredConfigs.map((config) => (
                                 <MenuItem key={config.id} value={config.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <span>{config.id}</span>
                                     <IconButton onClick={(e) => {

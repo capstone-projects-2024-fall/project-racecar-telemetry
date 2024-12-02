@@ -84,7 +84,7 @@ const DataGauge = ({
   useEffect(() => {
     if (!canID || !metricKey) return;
 
-    const dataRef = ref(db, `CANdata/${canID}`);
+    const dataRef = ref(db, `data/${canID}`);
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const canData = snapshot.val();
