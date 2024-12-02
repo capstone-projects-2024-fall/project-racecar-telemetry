@@ -80,3 +80,21 @@ export const deleteConfigRow = async (selectedConfig, canId) => {
 
   return await response.json();
 };
+
+export const updateCurrentConfig = async (configName) => {
+  const response = await fetch('/api/CANConfigurationAPI', {
+    method: 'POST', 
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      docId: "currentConfig",
+      collectionName: "canConfigs",
+      data: { current: configName }, 
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to update current config: ${response.statusText}`);
+  }
+
+  return await response.json();
+};

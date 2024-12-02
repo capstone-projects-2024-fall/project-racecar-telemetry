@@ -227,12 +227,7 @@ export default function Home() {
             />
           </Box>
           <Box sx={{ width: "50%" }}>
-            <TimeSeriesGraph
-              canID={"210"}
-              yAxis={"X"}
-              title={"Break Pressure Front"}
-              unit={"%"}
-            />{" "}
+            <GGDiagram canID={"210"} title={"GG Diagram"} />
           </Box>
         </Box>
       </Box>

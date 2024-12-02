@@ -13,9 +13,14 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+<<<<<<< HEAD
     "@fontsource/josefin-sans": "^5.1.0",
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
+=======
+    "@mui/icons-material": "^6.1.7",
+    "@mui/material": "^6.1.7",
+>>>>>>> d4612bd4c5e4da2b42293945c1ac0633276eb83b
     "firebase": "^10.14.1",
     "next": "14.2.11",
     "plotly.js": "^2.35.2",
