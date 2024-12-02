@@ -21,20 +21,16 @@ import { CSS } from "@dnd-kit/utilities";
 
 // The Tooltip content for each parameter
 const parameterInfo = {
-  dataName: "Name of the data to be displayed in the Time Series Graph.",
-  unit: "Unit of measurement for the data.",
-  verticalMin: "Minimum value for the Y-axis in the graph.",
-  verticalMax: "Maximum value for the Y-axis in the graph.",
-  timeRange: "Time range to be shown on the X-axis.",
-  color: "Color for the graph lines or markers.",
-  min: "Minimum value for the Linear Gauge.",
-  max: "Maximum value for the Linear Gauge.",
-  currentValue: "Current value to display on the Linear Gauge.",
-  range: "Range of values for the Data Gauge.",
-  displayedValue: "Value displayed on the Data Gauge.",
-  primaryUnit: "Primary unit for the Data Gauge.",
-  secondaryUnit: "Secondary unit for the Data Gauge.",
-  isSecondaryUnit: "Flag to toggle between primary and secondary units.",
+  canID: "Unique identifier for the CAN bus data.",
+  metricKey: "The specific metric or variable to be measured (e.g., temperature, throttle).",
+  title: "Title displayed for the component.",
+  maxPrimaryRange: "Maximum range for the primary gauge.",
+  maxSecondaryRange: "Maximum range for the secondary gauge.",
+  primaryUnit: "Primary unit of measurement (e.g., Celsius, PSI).",
+  secondaryUnit: "Secondary unit for conversions (e.g., Fahrenheit, bar).",
+  yAxis: "The axis to be used for the time series graph.",
+  valueToShow: "The value to be displayed on the linear gauge.",
+  unit: "Unit of measurement for the time series graph or linear gauge.",
 };
 
 const componentsList = [
@@ -42,49 +38,47 @@ const componentsList = [
     id: "DataGauge",
     label: "Data Gauge",
     parameters: [
-      { name: "range", type: "number" },
-      { name: "displayedValue", type: "number" },
-      { name: "color", type: "string" },
+      { name: "canID", type: "string" },
+      { name: "metricKey", type: "string" },
+      { name: "title", type: "string" },
+      { name: "maxPrimaryRange", type: "number" },
+      { name: "maxSecondaryRange", type: "number" },
       { name: "primaryUnit", type: "string" },
       { name: "secondaryUnit", type: "string" },
-      { name: "isSecondaryUnit", type: "boolean" },
     ],
   },
   {
     id: "LinearGauge",
     label: "Linear Gauge",
     parameters: [
-      { name: "min", type: "number" },
-      { name: "max", type: "number" },
-      { name: "currentValue", type: "number" },
-      { name: "color", type: "string" },
+      { name: "canID", type: "string" },
+      { name: "valueToShow", type: "string" },
+      { name: "title", type: "string" },
     ],
   },
   {
     id: "TimeSeriesGraph",
     label: "Time Series Graph",
     parameters: [
-      { name: "dataName", type: "string" },
+      { name: "canID", type: "string" },
+      { name: "yAxis", type: "string" },
+      { name: "title", type: "string" },
       { name: "unit", type: "string" },
-      { name: "verticalMin", type: "number" },
-      { name: "verticalMax", type: "number" },
-      { name: "timeRange", type: "string" },
-      { name: "color", type: "string" },
     ],
   },
   {
     id: "GGDiagram",
     label: "GG Diagram",
     parameters: [
-      { name: "data", type: "string" },
-      { name: "unit", type: "string" },
-      { name: "colorScheme", type: "string" },
+      { name: "canID", type: "string" },
+      { name: "title", type: "string" },
     ],
   },
 ];
 
 export default function CustomDash() {
   const [open, setOpen] = useState(false);
+  const [modalStep, setModalStep] = useState("selectComponent"); // "selectComponent" or "inputParameters"
   const [selectedComponent, setSelectedComponent] = useState(null);
   const [params, setParams] = useState({});
   const [rows, setRows] = useState([]);
@@ -102,22 +96,33 @@ export default function CustomDash() {
     setNumComponents(""); // Reset input after adding row
   };
 
-  const handleOpen = (component, index) => {
-    setSelectedComponent({ ...component, index }); // Pass selected component and row index
-    setParams({});
-    setOpen(true);
+  const handleSelectComponent = (component) => {
+    setSelectedComponent(component);
+    setModalStep("inputParameters"); // Go to the input parameters step
+    setParams({}); // Reset previous parameters
   };
 
   const handleClose = () => {
     setOpen(false);
+    setModalStep("selectComponent"); // Reset modal step to select component
   };
 
   const handleSave = () => {
     const updatedRows = [...rows];
-    updatedRows[selectedComponent.index][selectedComponent.index] = selectedComponent;
+  
+    // Ensure the row exists and has an array to hold components
+    if (!updatedRows[selectedComponent.index]) {
+      updatedRows[selectedComponent.index] = []; // Initialize the row if it's undefined
+    }
+  
+    // Now, set the component at the correct position within the row
+    updatedRows[selectedComponent.index][selectedComponent.componentIndex] = selectedComponent;
+  
     setRowComponents(updatedRows); // Store updated components for that row
     setOpen(false);
+    setModalStep("selectComponent"); // Reset modal step to select component
   };
+  
 
   const handleChange = (event, paramName) => {
     setParams({ ...params, [paramName]: event.target.value });
@@ -185,7 +190,7 @@ export default function CustomDash() {
                       alignItems: "center",
                     }}
                   >
-                    <Button variant="contained" size="small" onClick={() => handleOpen(componentsList[index], index)}>
+                    <Button variant="contained" size="small" onClick={() => setOpen(true)}>
                       +
                     </Button>
                   </div>
@@ -198,43 +203,65 @@ export default function CustomDash() {
 
       {/* Modal for configuring component */}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Configure {selectedComponent?.label}</DialogTitle>
-        <DialogContent>
-          {selectedComponent?.parameters.map((param) => (
-            <div key={param.name} style={{ marginBottom: "10px" }}>
-              <FormControl fullWidth>
-                <TextField
-                  label={param.name}
-                  type={param.type === "number" ? "number" : "text"}
-                  value={params[param.name] || ""}
-                  onChange={(e) => handleChange(e, param.name)}
-                  variant="outlined"
-                  fullWidth
-                  required
-                />
-                <Tooltip title={parameterInfo[param.name]} placement="top">
-                  <IconButton
-                    style={{
-                      position: "absolute",
-                      right: "10px",
-                      top: "10px",
-                    }}
-                  >
-                    <InfoIcon />
-                  </IconButton>
-                </Tooltip>
-              </FormControl>
-            </div>
-          ))}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleSave} color="primary">
-            Save
-          </Button>
-        </DialogActions>
+        {modalStep === "selectComponent" && (
+          <>
+            <DialogTitle>Select Component</DialogTitle>
+            <DialogContent>
+              {componentsList.map((component) => (
+                <Button
+                  key={component.id}
+                  variant="contained"
+                  onClick={() => handleSelectComponent(component)}
+                  style={{ margin: "10px" }}
+                >
+                  {component.label}
+                </Button>
+              ))}
+            </DialogContent>
+          </>
+        )}
+
+        {modalStep === "inputParameters" && selectedComponent && (
+          <>
+            <DialogTitle>Configure {selectedComponent.label}</DialogTitle>
+            <DialogContent>
+              {selectedComponent.parameters.map((param) => (
+                <div key={param.name} style={{ marginBottom: "10px" }}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label={param.name}
+                      type={param.type === "number" ? "number" : "text"}
+                      value={params[param.name] || ""}
+                      onChange={(e) => handleChange(e, param.name)}
+                      variant="outlined"
+                      fullWidth
+                      required
+                    />
+                    <Tooltip title={parameterInfo[param.name]} placement="top">
+                      <IconButton
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "10px",
+                        }}
+                      >
+                        <InfoIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </FormControl>
+                </div>
+              ))}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleSave} color="primary">
+                Save
+              </Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
     </div>
   );
