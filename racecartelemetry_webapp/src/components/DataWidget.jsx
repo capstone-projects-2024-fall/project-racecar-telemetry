@@ -51,21 +51,28 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
     if (!canID) return; // If no canID is provided, do nothing
 
     // Create a reference to the 'CANdata/canID' node in the database
-    const dataRef = ref(db, `CANdata/${canID}`);
+    const dataRef = ref(db, `data/${canID}`);
 
     // Set up the real-time listener using `onValue`
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
 
-        // Append new data points to history arrays
-        if (valueToDisplay === "X") {
-          setNumber(data.X);
-        } else if (valueToDisplay === "Y") {
-          setNumber(data.Y);
-        } else if (valueToDisplay === "Z") {
-          setNumber(data.Z);
-        }
+        // // Append new data points to history arrays
+        // if (valueToDisplay === "X") {
+        //   setNumber(data.X);
+        // } else if (valueToDisplay === "Y") {
+        //   setNumber(data.Y);
+        // } else if (valueToDisplay === "Z") {
+        //   setNumber(data.Z);
+        // }
+
+        if (valueToDisplay === "Battery")
+          setNumber(data.Battery); // todo
+        else if (valueToDisplay === "Throttle")
+          setNumber(data.Throttle);
+        else if (valueToDisplay === "Timestamp")
+          setNumber(data.timestamp);
       }
     });
 

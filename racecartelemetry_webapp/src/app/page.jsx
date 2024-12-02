@@ -86,8 +86,8 @@ export default function Home() {
       id: "batteryVoltage",
       component: (
         <DataGauge
-          canID="210"
-          metricKey="X"
+          canID="200"
+          metricKey="Battery"
           title="Battery Voltage"
           maxPrimaryRange={15}
           primaryUnit="V"
@@ -95,22 +95,22 @@ export default function Home() {
       ),
     },
     {
-      id: "breakPressureFront",
+      id: "steering",
       component: (
         <LinearGauge
-          canID="210"
-          valueToShow="Throttle"
-          title="Break Pressure Front"
+          canID="100"
+          valueToShow="steering"
+          title="Steering Rack Position"
         />
       ),
     },
     {
-      id: "breakPressureRear",
+      id: "pdeal",
       component: (
         <LinearGauge
-          canID="210"
-          valueToShow="Throttle"
-          title="Break Pressure Rear"
+          canID="100"
+          valueToShow="pdeal"
+          title="Pedal Position"
         />
       ),
     },
@@ -118,7 +118,7 @@ export default function Home() {
       id: "throttlePosGauge",
       component: (
         <LinearGauge
-          canID="210"
+          canID="200"
           valueToShow="Throttle"
           title="Throttle Position"
         />
@@ -165,22 +165,22 @@ export default function Home() {
           }}
         >
           <DataWidget
-            canID={"210"}
-            valueToDisplay={"X"}
-            title="Battery Voltage (V)"
+            canID={"200"}
+            valueToDisplay={"Battery"}
+            title="Battery Voltage"
             unit="V"
           />
           <DataWidget
-            canID={"210"}
-            valueToDisplay={"Y"}
+            canID={"200"}
+            valueToDisplay={"Throttle"}
             title="Throttle Position"
             unit="%"
           />
           <DataWidget
-            canID={"210"}
-            valueToDisplay={"Z"}
-            title="Engine Temp (C)"
-            unit="C"
+            canID={"200"}
+            valueToDisplay={"Timestamp"}
+            title="Timestamp"
+            unit="s"
           />
         </Box>
 
