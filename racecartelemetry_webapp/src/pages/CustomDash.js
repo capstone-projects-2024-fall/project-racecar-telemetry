@@ -15,8 +15,21 @@ import {
   MenuItem,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+
 import { CSS } from "@dnd-kit/utilities";
 
 // The Tooltip content for each parameter
@@ -109,20 +122,20 @@ export default function CustomDash() {
 
   const handleSave = () => {
     const updatedRows = [...rows];
-  
+
     // Ensure the row exists and has an array to hold components
     if (!updatedRows[selectedComponent.index]) {
       updatedRows[selectedComponent.index] = []; // Initialize the row if it's undefined
     }
-  
+
     // Now, set the component at the correct position within the row
-    updatedRows[selectedComponent.index][selectedComponent.componentIndex] = selectedComponent;
-  
+    updatedRows[selectedComponent.index][selectedComponent.componentIndex] =
+      selectedComponent;
+
     setRowComponents(updatedRows); // Store updated components for that row
     setOpen(false);
     setModalStep("selectComponent"); // Reset modal step to select component
   };
-  
 
   const handleChange = (event, paramName) => {
     setParams({ ...params, [paramName]: event.target.value });
@@ -142,22 +155,27 @@ export default function CustomDash() {
   return (
     <div>
       {/* Input for adding rows */}
-      <div style={{ marginBottom: "1rem" }}>
+      <div style={{ marginBottom: "1rem", color: "orange" }}>
         <TextField
-          label="Number of Components"
+          variant="filled"
+          label="Num. of Components"
           type="number"
           value={numComponents}
           onChange={(e) => setNumComponents(e.target.value)}
-          variant="outlined"
           style={{ marginRight: "1rem" }}
+          sx={{ color: "blue" }}
         />
-        <Button variant="contained" onClick={handleAddRow}>
+        <Button variant="outlined" onClick={handleAddRow}>
           Add Row
         </Button>
       </div>
 
       {/* Drag and Drop Context */}
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
         <div
           className="custom-dash"
           style={{
@@ -167,7 +185,11 @@ export default function CustomDash() {
           }}
         >
           {rows.map((row, rowIndex) => (
-            <SortableContext key={rowIndex} items={row.filter((item) => item !== null)} strategy={verticalListSortingStrategy}>
+            <SortableContext
+              key={rowIndex}
+              items={row.filter((item) => item !== null)}
+              strategy={verticalListSortingStrategy}
+            >
               <div
                 className="row"
                 style={{
@@ -190,9 +212,9 @@ export default function CustomDash() {
                       alignItems: "center",
                     }}
                   >
-                    <Button variant="contained" size="small" onClick={() => setOpen(true)}>
-                      +
-                    </Button>
+                    <IconButton onClick={() => setOpen(true)}>
+                      <AddCircleIcon sx={{ color: "blue" }} />
+                    </IconButton>
                   </div>
                 ))}
               </div>
