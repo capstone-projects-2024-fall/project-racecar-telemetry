@@ -21,13 +21,13 @@ import { CSS } from "@dnd-kit/utilities";
 
 // The Tooltip content for each parameter
 const parameterInfo = {
-  canID: "Unique identifier for the CAN bus data.",
-  metricKey: "The specific metric or variable to be measured (e.g., temperature, throttle).",
+  canID: "Identifier for the CAN bus data.",
+  metricKey: "The specific from the db ex: temp.",
   title: "Title displayed for the component.",
-  maxPrimaryRange: "Maximum range for the primary gauge.",
-  maxSecondaryRange: "Maximum range for the secondary gauge.",
-  primaryUnit: "Primary unit of measurement (e.g., Celsius, PSI).",
-  secondaryUnit: "Secondary unit for conversions (e.g., Fahrenheit, bar).",
+  maxPrimaryRange: "Maximum range for the primary unit.",
+  maxSecondaryRange: "Maximum range for the secondary unit.",
+  primaryUnit: "Primary unit of measurement (e.g., c, f).",
+  secondaryUnit: "Secondary unit for conversions (e.g., c, f).",
   yAxis: "The axis to be used for the time series graph.",
   valueToShow: "The value to be displayed on the linear gauge.",
   unit: "Unit of measurement for the time series graph or linear gauge.",
