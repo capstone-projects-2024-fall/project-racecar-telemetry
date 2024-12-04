@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Button, Box, IconButton, Tooltip, Slider } from "@mui/material";
+import { Button, Box, IconButton, Tooltip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import Crop169Icon from '@mui/icons-material/Crop169';
+import CropDinIcon from '@mui/icons-material/CropDin';
 
 export default function CustomDash() {
   const [rows, setRows] = useState([]);
@@ -22,9 +24,12 @@ export default function CustomDash() {
     setRowHeights([...rowHeights, 450]); // Default height for new rows
   };
 
-  const handleHeightChange = (rowIndex, newHeight) => {
+  const adjustRowHeight = (rowIndex, increment) => {
     const updatedHeights = [...rowHeights];
-    updatedHeights[rowIndex] = newHeight;
+    updatedHeights[rowIndex] = Math.max(
+      250,
+      Math.min(550, updatedHeights[rowIndex] + increment)
+    ); // Clamp the height between 250 and 550
     setRowHeights(updatedHeights);
   };
 
@@ -56,15 +61,16 @@ export default function CustomDash() {
               marginBottom: "20px",
             }}
           >
+            {/* Controls on the left */}
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                marginRight: "10px",
                 alignItems: "center",
+                marginRight: "10px",
               }}
             >
-              <Tooltip title="Add Placeholder">
+              <Tooltip title="Add Placeholder" placement="right">
                 <IconButton
                   color="primary"
                   onClick={() => {
@@ -81,13 +87,17 @@ export default function CustomDash() {
                   <AddIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Remove Row">
+              <Tooltip title="Remove Row" placement="right">
                 <IconButton
                   color="secondary"
                   onClick={() => {
-                    const updatedRows = rows.filter((_, index) => index !== rowIndex);
+                    const updatedRows = rows.filter(
+                      (_, index) => index !== rowIndex
+                    );
                     setRows(updatedRows);
-                    const updatedHeights = rowHeights.filter((_, index) => index !== rowIndex);
+                    const updatedHeights = rowHeights.filter(
+                      (_, index) => index !== rowIndex
+                    );
                     setRowHeights(updatedHeights);
                   }}
                   sx={{
@@ -99,25 +109,35 @@ export default function CustomDash() {
                   <RemoveIcon />
                 </IconButton>
               </Tooltip>
-              <Slider
-                orientation="vertical"
-                value={rowHeights[rowIndex]}
-                min={250}
-                max={550}
-                step={100}
-                onChange={(_, newValue) => handleHeightChange(rowIndex, newValue)}
-                sx={{
-                  height: "150px",
-                  color: "white",
-                  "& .MuiSlider-thumb": {
-                    backgroundColor: "white",
-                  },
-                  "& .MuiSlider-track": {
-                    backgroundColor: "gray",
-                  },
-                }}
-              />
+              <Tooltip title="Increase Row Height" placement="right">
+                <IconButton
+                  color="primary"
+                  onClick={() => adjustRowHeight(rowIndex, 50)}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "rgb(40,40,40)",
+                    },
+                  }}
+                >
+                  <CropDinIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Decrease Row Height" placement="right">
+                <IconButton
+                  color="secondary"
+                  onClick={() => adjustRowHeight(rowIndex, -50)}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "rgb(40,40,40)",
+                    },
+                  }}
+                >
+                  <Crop169Icon  />
+                </IconButton>
+              </Tooltip>
             </Box>
+
+            {/* Placeholders */}
             <Box
               sx={{
                 display: "flex",
@@ -125,6 +145,7 @@ export default function CustomDash() {
                 gap: "10px",
                 justifyContent: "space-between",
                 height: `${rowHeights[rowIndex]}px`, // Dynamically set height
+                width: "100%",
               }}
             >
               {row.map((_, placeholderIndex) => (
