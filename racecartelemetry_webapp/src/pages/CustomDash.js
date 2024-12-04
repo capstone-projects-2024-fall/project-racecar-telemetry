@@ -40,7 +40,7 @@ export default function CustomDash() {
   return (
     <Box
       sx={{
-        backgroundColor: "black",
+        backgroundColor: "",
         minHeight: "100vh",
         padding: "20px",
         color: "white",
@@ -54,9 +54,7 @@ export default function CustomDash() {
       >
         Add Row
       </Button>
-      {error && (
-        <Box sx={{ color: "red", marginBottom: "10px" }}>{error}</Box>
-      )}
+      {error && <Box sx={{ color: "red", marginBottom: "10px" }}>{error}</Box>}
       <Box>
         {rows.map((row, rowIndex) => (
           <Box
@@ -67,11 +65,22 @@ export default function CustomDash() {
               marginBottom: "20px",
             }}
           >
-            <Box sx={{ display: "flex", flexDirection: "column", marginRight: "10px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                marginRight: "10px",
+              }}
+            >
               <Tooltip title="Add Placeholder">
                 <IconButton
                   color="primary"
                   onClick={() => handleAddPlaceholder(rowIndex)}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "rgb(40,40,40)",
+                    },
+                  }}
                 >
                   <AddIcon />
                 </IconButton>
@@ -80,6 +89,11 @@ export default function CustomDash() {
                 <IconButton
                   color="secondary"
                   onClick={() => handleRemoveRow(rowIndex)}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "rgb(40,40,40)",
+                    },
+                  }}
                 >
                   <RemoveIcon />
                 </IconButton>
@@ -110,6 +124,9 @@ export default function CustomDash() {
                       left: "50%",
                       transform: "translate(-50%, -50%)",
                       color: "white",
+                      "&:hover": {
+                        backgroundColor: "rgb(40,40,40)",
+                      },
                     }}
                   >
                     <AddIcon />
@@ -120,8 +137,14 @@ export default function CustomDash() {
                       top: "10px",
                       right: "10px",
                       color: "red",
+
+                      "&:hover": {
+                        backgroundColor: "rgb(40,40,40)",
+                      },
                     }}
-                    onClick={() => handleRemovePlaceholder(rowIndex, placeholderIndex)}
+                    onClick={() =>
+                      handleRemovePlaceholder(rowIndex, placeholderIndex)
+                    }
                   >
                     <RemoveIcon />
                   </IconButton>
@@ -134,4 +157,3 @@ export default function CustomDash() {
     </Box>
   );
 }
-
