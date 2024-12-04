@@ -19,7 +19,7 @@ const TimeSeriesGraph = ({ canID, channel, yMin, yMax, color }) => {
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [dataName, setDataName] = useState(channel);
 
-  const [lineColor, setColor] = useState(color);
+  const [lineColor, setLineColor] = useState(color);
   const [verticalMin, setVerticalMin] = useState(yMin);
   const [verticalMax, setVerticalMax] = useState(yMax);
 
@@ -54,7 +54,7 @@ const TimeSeriesGraph = ({ canID, channel, yMin, yMax, color }) => {
   const handleSave = (data) => {
     // Set the new settings
     setDataName(data["Data Name"]);
-    setColor(data["Color"]);
+    setLineColor(data["Color"]);
     setVerticalMin(data["Y Axis Min Value"]);
     setVerticalMax(data["Y Axis Max Value"]);
     setSettingsVisible(false);

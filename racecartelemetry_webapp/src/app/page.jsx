@@ -17,7 +17,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import NavBar from "@components/NavBar";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
-import GGDiagram from "@components/GGDiagram";
+import XYGraph from "@components/XYGraph";
 import LinearGauge from "@components/LinearGauge";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@app/theme";
@@ -232,7 +232,16 @@ export default function Home() {
             />
           </Box>
           <Box sx={{ width: "50%" }}>
-            <GGDiagram canID={"210"} title={"GG Diagram"} />
+            <XYGraph
+              canID={"100"}
+              xChannel="Steering"
+              yChannel="Pedal"
+              xMin={0}
+              xMax={100}
+              yMin={0}
+              yMax={100}
+              color={theme.palette.primary.main}
+            />
           </Box>
         </Box>
       </Box>
