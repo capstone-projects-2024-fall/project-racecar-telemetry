@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -11,10 +11,31 @@ import {
   Grid,
   FormHelperText,
 } from "@mui/material";
+import { getCurrentConfig, fetchDataChannels } from "@/services/CANConfigurationService";
 
 const ComponentEditor = ({ config, onSave, onCancel }) => {
   const [formState, setFormState] = useState({});
   const [errors, setErrors] = useState({});
+  const [dataChannels, setDataChannels] = useState([]);
+
+  useEffect(() => {
+    const loadDataChannels = async () => {
+      try {
+        const currentConfig = await getCurrentConfig();
+        console.log(" Current Config:", currentConfig); // Debug
+
+        if (currentConfig) {
+          const channels = await fetchDataChannelsWithCanID(currentConfig);
+          console.log("Fetched Data Channels:", channels); // Debug
+          setDataChannels(channels.map(({ channel }) => channel)); // Only set channel names
+        }
+      } catch (error) {
+        console.error("Error loading data channels:", error);
+      }
+    };
+
+    loadDataChannels();
+  }, []);
 
   const handleChange = (field, value) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
@@ -28,6 +49,10 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
         newErrors[field.label] = "This field is required.";
       }
     });
+    
+    if (!formState.dataChannel) {
+      newErrors.dataChannel = "Please select a data channel.";
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -62,6 +87,28 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
       >
         Component Editor
       </Typography>
+
+      <FormControl
+        fullWidth
+        margin="normal"
+        sx={{ marginBottom: 2 }}
+        error={!!errors.dataChannel}
+      >
+        <InputLabel>Data Channel</InputLabel>
+        <Select
+          value={formState.dataChannel || ""}
+          onChange={(e) => handleChange("dataChannel", e.target.value)}
+        >
+          {dataChannels.map((channel, idx) => (
+            <MenuItem key={idx} value={channel}>
+              {channel}
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.dataChannel && (
+          <FormHelperText>{errors.dataChannel}</FormHelperText>
+        )}
+      </FormControl>
 
       {config.fields.map((field, index) => (
         <FormControl

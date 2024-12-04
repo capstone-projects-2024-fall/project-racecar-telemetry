@@ -19,23 +19,23 @@ const Navbar = () => {
   const [loading, setLoading] = useState(true);
 
   const isConnected = telemetryConnectionStatus();
-  console.log(isConnected);
+  // console.log(isConnected);
 
   useEffect(() => {
     const fetchAllConfigs = async () => {
       try {
         const data = await fetchConfigs();
-        console.log("Raw configurations:", data);
+        // console.log("Raw configurations:", data);
 
         const filteredConfigs = data.filter((config) => config.id !== "currentConfig");
-        console.log("Filtered configurations:", filteredConfigs);
+        // console.log("Filtered configurations:", filteredConfigs);
 
         setConfigs(filteredConfigs);
 
         const currentConfigData = data.find((config) => config.id === "currentConfig");
         if (currentConfigData && currentConfigData.current) {
           setCurrentConfig(currentConfigData.current);
-          console.log("Fetched current configuration:", currentConfigData.current);
+          // console.log("Fetched current configuration:", currentConfigData.current);
         } else {
           setCurrentConfig(null);
           console.log("No current configuration set");
