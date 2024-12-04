@@ -11,23 +11,24 @@ import {
   Grid,
   FormHelperText,
 } from "@mui/material";
-import { getCurrentConfig, fetchDataChannels } from "@/services/CANConfigurationService";
+import { getCurrentConfig, fetchDataChannelsGroupedByCanID  } from "@/services/CANConfigurationService";
 
 const ComponentEditor = ({ config, onSave, onCancel }) => {
   const [formState, setFormState] = useState({});
   const [errors, setErrors] = useState({});
-  const [dataChannels, setDataChannels] = useState([]);
+  const [groupedDataChannels, setGroupedDataChannels] = useState({});
+  const [selectedCanID, setSelectedCanID] = useState("");
 
   useEffect(() => {
     const loadDataChannels = async () => {
       try {
         const currentConfig = await getCurrentConfig();
-        console.log(" Current Config:", currentConfig); // Debug
+        // console.log("Current Config:", currentConfig);
 
         if (currentConfig) {
-          const channels = await fetchDataChannelsWithCanID(currentConfig);
-          console.log("Fetched Data Channels:", channels); // Debug
-          setDataChannels(channels.map(({ channel }) => channel)); // Only set channel names
+          const groupedChannels = await fetchDataChannelsGroupedByCanID(currentConfig);
+          console.log("Grouped Data Channels:", groupedChannels);
+          setGroupedDataChannels(groupedChannels);
         }
       } catch (error) {
         console.error("Error loading data channels:", error);
@@ -87,28 +88,6 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
       >
         Component Editor
       </Typography>
-
-      <FormControl
-        fullWidth
-        margin="normal"
-        sx={{ marginBottom: 2 }}
-        error={!!errors.dataChannel}
-      >
-        <InputLabel>Data Channel</InputLabel>
-        <Select
-          value={formState.dataChannel || ""}
-          onChange={(e) => handleChange("dataChannel", e.target.value)}
-        >
-          {dataChannels.map((channel, idx) => (
-            <MenuItem key={idx} value={channel}>
-              {channel}
-            </MenuItem>
-          ))}
-        </Select>
-        {errors.dataChannel && (
-          <FormHelperText>{errors.dataChannel}</FormHelperText>
-        )}
-      </FormControl>
 
       {config.fields.map((field, index) => (
         <FormControl
