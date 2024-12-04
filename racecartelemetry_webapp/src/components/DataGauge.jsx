@@ -9,28 +9,24 @@ import IconButton from "@mui/material/IconButton";
 import { Modal } from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";
 
-const DataGauge = ({
-  canID,
-  metricKey,
-  title,
-  maxPrimaryRange,
-  maxSecondaryRange,
-  primaryUnit = "C",
-  secondaryUnit,
-}) => {
+const DataGauge = ({ canID, channel, min, max, color }) => {
+  const [unit, setUnit] = useState("(UNIT)");
+
+  // This is called metricValue instead of Value because need to figure out unit conversions
   const [metricValue, setMetricValue] = useState(0);
   const [isSecondaryUnit, setIsSecondaryUnit] = useState(false);
+
   // State to determine whether or not the settings modal is visible
   const [settingsVisible, setSettingsVisible] = useState(false);
 
   // Range of vals to display
-  const [range, setRange] = useState([0, maxPrimaryRange]);
+  const [range, setRange] = useState([min, max]);
 
   // OriginalRange is the range in the primary unit
-  const [originalRange, setOriginalRange] = useState([0, maxPrimaryRange]);
+  const [originalRange, setOriginalRange] = useState([min, max]);
 
-  const [dataName, setDataName] = useState(title);
-  const [color, setColor] = useState(`${theme.palette.primary.main}`);
+  const [dataName, setDataName] = useState(channel);
+  const [barColor, setBarColor] = useState(color);
 
   // These are the config options for DataGauge Graphs
   const config = {
@@ -66,7 +62,7 @@ const DataGauge = ({
     setOriginalRange(newRange);
     setRange(newRange);
     setDataName(data["Data Name"]);
-    setColor(data["Color"]);
+    setBarColor(data["Color"]);
     setSettingsVisible(false);
   };
 
@@ -82,34 +78,36 @@ const DataGauge = ({
   }, [isSecondaryUnit, originalRange]);
 
   useEffect(() => {
-    if (!canID || !metricKey) return;
+    if (!canID || !channel) return;
 
     const dataRef = ref(db, `data/${canID}`);
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const canData = snapshot.val();
-        if (canData[metricKey] !== undefined) {
-          setMetricValue(canData[metricKey]);
+        if (canData[channel] !== undefined) {
+          // TODO: GRAB UNIT FROM FIRESTORE
+          // setUnit(canData[unit])
+          setMetricValue(canData[channel]);
         }
       }
     });
 
     return () => unsubscribe();
-  }, [canID, metricKey]);
+  }, [canID, channel]);
 
   const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
   const convertToMPH = (kmh) => kmh * 0.621371;
   const convertToCelsius = (fahrenheit) => ((fahrenheit - 32) * 5) / 9;
 
   const displayedValue =
-    metricKey === "Temp" && isSecondaryUnit
+    channel === "Temp" && isSecondaryUnit
       ? convertToFahrenheit(metricValue)
-      : metricKey === "Speed" && isSecondaryUnit
+      : channel === "Speed" && isSecondaryUnit
       ? convertToMPH(metricValue)
       : metricValue;
 
-  const toggleUnit = () =>
-    setIsSecondaryUnit((isSecondaryUnit) => !isSecondaryUnit);
+  // const toggleUnit = () =>
+  //   setIsSecondaryUnit((isSecondaryUnit) => !isSecondaryUnit);
 
   return (
     <>
@@ -159,9 +157,11 @@ const DataGauge = ({
               }}
             />
           </IconButton>
-          {dataName} ({isSecondaryUnit ? secondaryUnit : primaryUnit})
+          {dataName} {unit}
+          {/* TODO: FIGURE OUT HOW WE ARE GOING TO DO UNIT CONVERSION */}
+          {/* ({isSecondaryUnit ? secondaryUnit : primaryUnit}) */}
         </div>
-        {secondaryUnit && (
+        {/* {secondaryUnit && (
           <button
             onClick={toggleUnit}
             style={{
@@ -172,7 +172,7 @@ const DataGauge = ({
           >
             Show in {isSecondaryUnit ? primaryUnit : secondaryUnit}
           </button>
-        )}
+        )} */}
         <div
           style={{
             width: "100%",
@@ -180,7 +180,7 @@ const DataGauge = ({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            transform: "scale(0.85)", // Slightly smaller to fit more comfortably
+            transform: "scale(0.85)",
             transformOrigin: "center",
           }}
         >
@@ -195,7 +195,7 @@ const DataGauge = ({
                     range: range,
                     tickcolor: "white",
                   },
-                  bar: { color: color },
+                  bar: { color: barColor },
                   steps: [
                     {
                       range: [range[1] * 0.33, range[1] * 0.66],
@@ -212,7 +212,7 @@ const DataGauge = ({
             layout={{
               autosize: true,
               responsive: true,
-              margin: { t: 20, b: 20, l: 20, r: 20 }, // Add more space for labels
+              margin: { t: 20, b: 20, l: 20, r: 20 },
               font: { color: "white" },
               paper_bgcolor: "rgba(0, 0, 0, 0)",
               plot_bgcolor: "rgba(0, 0, 0, 0)",

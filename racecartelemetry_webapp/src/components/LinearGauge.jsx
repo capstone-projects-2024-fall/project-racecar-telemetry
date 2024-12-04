@@ -10,13 +10,15 @@ import IconButton from "@mui/material/IconButton";
 import { Modal } from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";
 
-const LinearGauge = ({ canID, valueToShow, title }) => {
+const LinearGauge = ({ canID, channel, min, max, color }) => {
   const [value, setValue] = useState();
+  const [unit, setUnit] = useState("(UNIT)");
+
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const [dataName, setDataName] = useState(title);
-  const [color, setColor] = useState(`${theme.palette.primary.main}`);
+  const [dataName, setDataName] = useState(channel);
+  const [barColor, setColor] = useState(color);
   // Range of vals to display
-  const [range, setRange] = useState([0, 100]);
+  const [range, setRange] = useState([min, max]);
 
   const handleSettingsClick = () => {
     setSettingsVisible((prevState) => !prevState);
@@ -55,30 +57,22 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
   };
 
   useEffect(() => {
-    if (!canID) return; // If no canID is provided, do nothing
+    if (!canID || !channel) return;
 
-    // Create a reference to the 'CANdata/canID' node in the database
     const dataRef = ref(db, `data/${canID}`);
-
-    // Set up the real-time listener using `onValue`
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val();
-        console.log("CAN data:", data);
-
-        if (valueToShow === "steering") {
-          setValue(data.Steering); // What is the throttle going to be under in the Db?
+        const canData = snapshot.val();
+        if (canData[channel] !== undefined) {
+          // TODO: GRAB UNIT FROM FIRESTORE
+          // setUnit(canData[unit])
+          setValue(canData[channel]);
         }
-        else if (valueToShow === "pack")
-          setValue(data.Pedal); // What is the throttle going to be under in the Db?
-        else if (valueToShow === "throttle")
-          setValue(data.Throttle);
       }
     });
 
-    // Clean up the listener when the component unmounts or canID changes
     return () => unsubscribe();
-  }, [canID, valueToShow]); // Re-run effect when canID or yAxis changes
+  }, [canID, channel]);
 
   var data = [
     {
@@ -90,7 +84,7 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
           visible: true,
           range: range,
         },
-        bar: { color: color },
+        bar: { color: barColor },
       },
       domain: { x: [0.15, 0.75], y: [0.25, 0.65] },
       number: {
@@ -106,7 +100,7 @@ const LinearGauge = ({ canID, valueToShow, title }) => {
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
     title: {
-      text: dataName,
+      text: `${dataName} ${unit}`,
       font: { size: 18, color: theme.palette.primary.main },
       x: 0.5,
       xanchor: "center",

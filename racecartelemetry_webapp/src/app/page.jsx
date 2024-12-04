@@ -17,7 +17,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import NavBar from "@components/NavBar";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
-import GGDiagram from "@components/GGDiagram";
+import XYGraph from "@components/XYGraph";
 import LinearGauge from "@components/LinearGauge";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@app/theme";
@@ -69,16 +69,14 @@ function SortableItem({ id, children }) {
 export default function Home() {
   const [layout, setLayout] = useState([
     {
-      id: "engineTempGauge",
+      id: "ThrottleGauge",
       component: (
         <DataGauge
           canID="210"
-          metricKey="Temp"
-          title="Engine Temperature"
-          maxPrimaryRange={200}
-          maxSecondaryRange={300}
-          primaryUnit="C"
-          secondaryUnit="F"
+          channel="Throttle"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
         />
       ),
     },
@@ -87,10 +85,10 @@ export default function Home() {
       component: (
         <DataGauge
           canID="200"
-          metricKey="Battery"
-          title="Battery Voltage"
-          maxPrimaryRange={15}
-          primaryUnit="V"
+          channel="Battery"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
         />
       ),
     },
@@ -99,8 +97,10 @@ export default function Home() {
       component: (
         <LinearGauge
           canID="100"
-          valueToShow="steering"
-          title="Steering Rack Position"
+          channel="Steering"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
         />
       ),
     },
@@ -109,8 +109,10 @@ export default function Home() {
       component: (
         <LinearGauge
           canID="100"
-          valueToShow="pdeal"
-          title="Pedal Position"
+          channel="Pedal"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
         />
       ),
     },
@@ -119,8 +121,10 @@ export default function Home() {
       component: (
         <LinearGauge
           canID="200"
-          valueToShow="Throttle"
-          title="Throttle Position"
+          channel="Throttle"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
         />
       ),
     },
@@ -220,14 +224,24 @@ export default function Home() {
         >
           <Box sx={{ width: "50%" }}>
             <TimeSeriesGraph
-              canID={"210"}
-              yAxis={"X"}
-              title={"Throttle Position"}
-              unit={"%"}
+              canID="200"
+              channel="Throttle"
+              yMin={0}
+              yMax={100}
+              color={theme.palette.primary.main}
             />
           </Box>
           <Box sx={{ width: "50%" }}>
-            <GGDiagram canID={"210"} title={"GG Diagram"} />
+            <XYGraph
+              canID={"100"}
+              xChannel="Steering"
+              yChannel="Pedal"
+              xMin={0}
+              xMax={100}
+              yMin={0}
+              yMax={100}
+              color={theme.palette.primary.main}
+            />
           </Box>
         </Box>
       </Box>
