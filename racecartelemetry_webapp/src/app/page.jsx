@@ -69,16 +69,14 @@ function SortableItem({ id, children }) {
 export default function Home() {
   const [layout, setLayout] = useState([
     {
-      id: "engineTempGauge",
+      id: "ThrottleGauge",
       component: (
         <DataGauge
           canID="210"
-          metricKey="Temp"
-          title="Engine Temperature"
-          maxPrimaryRange={200}
-          maxSecondaryRange={300}
-          primaryUnit="C"
-          secondaryUnit="F"
+          channel="Throttle"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
         />
       ),
     },
@@ -87,10 +85,10 @@ export default function Home() {
       component: (
         <DataGauge
           canID="200"
-          metricKey="Battery"
-          title="Battery Voltage"
-          maxPrimaryRange={15}
-          primaryUnit="V"
+          channel="Battery"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
         />
       ),
     },
@@ -99,19 +97,17 @@ export default function Home() {
       component: (
         <LinearGauge
           canID="100"
-          valueToShow="steering"
-          title="Steering Rack Position"
+          channel="Steering"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
         />
       ),
     },
     {
       id: "pdeal",
       component: (
-        <LinearGauge
-          canID="100"
-          valueToShow="pdeal"
-          title="Pedal Position"
-        />
+        <LinearGauge canID="100" valueToShow="pdeal" title="Pedal Position" />
       ),
     },
     {
