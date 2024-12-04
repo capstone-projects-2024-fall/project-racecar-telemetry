@@ -107,7 +107,13 @@ export default function Home() {
     {
       id: "pdeal",
       component: (
-        <LinearGauge canID="100" valueToShow="pdeal" title="Pedal Position" />
+        <LinearGauge
+          canID="100"
+          channel="Pedal"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
+        />
       ),
     },
     {
@@ -115,8 +121,10 @@ export default function Home() {
       component: (
         <LinearGauge
           canID="200"
-          valueToShow="Throttle"
-          title="Throttle Position"
+          channel="Throttle"
+          min={0}
+          max={100}
+          color={theme.palette.primary.main}
         />
       ),
     },
@@ -216,10 +224,11 @@ export default function Home() {
         >
           <Box sx={{ width: "50%" }}>
             <TimeSeriesGraph
-              canID={"210"}
-              yAxis={"X"}
-              title={"Throttle Position"}
-              unit={"%"}
+              canID="200"
+              channel="Throttle"
+              yMin={0}
+              yMax={100}
+              color={theme.palette.primary.main}
             />
           </Box>
           <Box sx={{ width: "50%" }}>

@@ -10,15 +10,18 @@ import ComponentEditor from "@/components/ComponentEditor";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
+const TimeSeriesGraph = ({ canID, channel, yMin, yMax, color }) => {
+  const [unit, setUnit] = useState("(UNIT)");
   const [timestamps, setTimestamps] = useState([]);
-  const [axisToPlot, setAxisToPlot] = useState([]);
+  const [valsToPlot, setValsToPlot] = useState([]);
+
   // State to determine whether or not the settings modal is visible
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const [dataName, setDataName] = useState(title);
-  const [color, setColor] = useState(`${theme.palette.primary.main}`);
-  const [verticalMin, setVerticalMin] = useState();
-  const [verticalMax, setVerticalMax] = useState();
+  const [dataName, setDataName] = useState(channel);
+
+  const [lineColor, setColor] = useState(color);
+  const [verticalMin, setVerticalMin] = useState(yMin);
+  const [verticalMax, setVerticalMax] = useState(yMax);
 
   // These are the config options for TimeSeries Graphs
   const config = {
@@ -33,10 +36,10 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
         options: ["Blue", "Red", "Green"],
       },
       {
-        label: "Vertical Axis Min Value",
+        label: "Y Axis Min Value",
         type: "number",
       },
-      { label: "Vertical Axis Max Value", type: "number" },
+      { label: "Y Axis Max Value", type: "number" },
     ],
   };
 
@@ -52,8 +55,8 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
     // Set the new settings
     setDataName(data["Data Name"]);
     setColor(data["Color"]);
-    setVerticalMin(data["Vertical Axis Min Value"]);
-    setVerticalMax(data["Vertical Axis Max Value"]);
+    setVerticalMin(data["Y Axis Min Value"]);
+    setVerticalMax(data["Y Axis Max Value"]);
     setSettingsVisible(false);
   };
 
@@ -61,37 +64,33 @@ const TimeSeriesGraph = ({ canID, yAxis, title, unit }) => {
     if (!canID) return; // If no canID is provided, do nothing
 
     // Create a reference to the 'CANdata/canID' node in the database
-    const dataRef = ref(db, `CANdata/${canID}`);
+    const dataRef = ref(db, `data/${canID}`);
 
     // Set up the real-time listener using `onValue`
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val();
-        console.log("CAN data:", data);
+        const canData = snapshot.val();
 
         // Append new data points to history arrays
-        setTimestamps((prev) => [...prev, data.Time / 1000]); // Add new time data
-        if (yAxis === "X") {
-          setAxisToPlot((prev) => [...prev, data.X]);
-        } else if (yAxis === "Y") {
-          setAxisToPlot((prev) => [...prev, data.Y]);
-        } else if (yAxis === "Z") {
-          setAxisToPlot((prev) => [...prev, data.Z]);
+        if (canData[channel] !== undefined && canData.timestamp !== undefined) {
+          setTimestamps((prev) => [...prev, canData.timestamp / 1000]); // Add new time data
+          setValsToPlot((prev) => [...prev, canData[channel]]);
+          // setUnit(canData[unit])
         }
       }
     });
 
     // Clean up the listener when the component unmounts or canID changes
     return () => unsubscribe();
-  }, [canID, yAxis]); // Re-run effect when canID or yAxis changes
+  }, [canID, channel]); // Re-run effect when canID or channel changes
 
   const data = [
     {
       x: timestamps,
-      y: axisToPlot,
+      y: valsToPlot,
       type: "scatter",
       mode: "lines+markers",
-      marker: { color: color, size: 6 },
+      marker: { color: lineColor, size: 6 },
       line: { width: 2 },
     },
   ];
