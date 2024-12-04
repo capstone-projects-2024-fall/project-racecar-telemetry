@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -11,15 +11,43 @@ import {
   Grid,
   FormHelperText,
 } from "@mui/material";
+import { getCurrentConfig, fetchDataChannelsGroupedByCanID  } from "@/services/CANConfigurationService";
 
 const ComponentEditor = ({ config, onSave, onCancel }) => {
   const [formState, setFormState] = useState({});
   const [errors, setErrors] = useState({});
+  const [groupedDataChannels, setGroupedDataChannels] = useState({});
+  const [selectedCanID, setSelectedCanID] = useState("");
+
+  useEffect(() => {
+    const loadDataChannels = async () => {
+      try {
+        const currentConfig = await getCurrentConfig();
+        console.log("Current Config:", currentConfig);
+
+        if (currentConfig) {
+          const groupedChannels = await fetchDataChannelsGroupedByCanID(currentConfig);
+          console.log("Grouped Data Channels:", groupedChannels);
+          setGroupedDataChannels(groupedChannels);
+        }
+      } catch (error) {
+        console.error("Error loading data channels:", error);
+      }
+    };
+
+    loadDataChannels();
+  }, []);
 
   const handleChange = (field, value) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => ({ ...prev, [field]: false })); // Clear error when input changes
   };
+
+  const handleCanIDChange = (canID) => {
+    setSelectedCanID(canID);
+    setFormState((prev) => ({ ...prev, dataChannel: "" })); // Clear the selected data channel when CAN ID changes
+  };
+
 
   const handleSubmit = () => {
     const newErrors = {};
@@ -28,6 +56,10 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
         newErrors[field.label] = "This field is required.";
       }
     });
+    
+    if (!formState.dataChannel) {
+      newErrors.dataChannel = "Please select a data channel.";
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -62,6 +94,52 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
       >
         Component Editor
       </Typography>
+
+      {/* CAN ID Selector */}
+      <FormControl
+        fullWidth
+        margin="normal"
+        sx={{ marginBottom: 2 }}
+        error={!!errors.canID}
+      >
+        <InputLabel>CAN ID</InputLabel>
+        <Select
+          value={selectedCanID}
+          onChange={(e) => handleCanIDChange(e.target.value)}
+        >
+          {Object.keys(groupedDataChannels).map((canID) => (
+            <MenuItem key={canID} value={canID}>
+              {canID}
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.canID && <FormHelperText>{errors.canID}</FormHelperText>}
+      </FormControl>
+
+      {/* Data Channel Selector */}
+      <FormControl
+        fullWidth
+        margin="normal"
+        sx={{ marginBottom: 2 }}
+        error={!!errors.dataChannel}
+        disabled={!selectedCanID} // Disable if no CAN ID is selected
+      >
+        <InputLabel>Data Channel</InputLabel>
+        <Select
+          value={formState.dataChannel || ""}
+          onChange={(e) => handleChange("dataChannel", e.target.value)}
+        >
+          {(groupedDataChannels[selectedCanID] || []).map((channel, idx) => (
+            <MenuItem key={idx} value={channel}>
+              {channel}
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.dataChannel && (
+          <FormHelperText>{errors.dataChannel}</FormHelperText>
+        )}
+      </FormControl>
+
 
       {config.fields.map((field, index) => (
         <FormControl
