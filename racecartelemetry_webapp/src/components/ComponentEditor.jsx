@@ -23,7 +23,7 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
     const loadDataChannels = async () => {
       try {
         const currentConfig = await getCurrentConfig();
-        // console.log("Current Config:", currentConfig);
+        console.log("Current Config:", currentConfig);
 
         if (currentConfig) {
           const groupedChannels = await fetchDataChannelsGroupedByCanID(currentConfig);
@@ -42,6 +42,12 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => ({ ...prev, [field]: false })); // Clear error when input changes
   };
+
+  const handleCanIDChange = (canID) => {
+    setSelectedCanID(canID);
+    setFormState((prev) => ({ ...prev, dataChannel: "" })); // Clear the selected data channel when CAN ID changes
+  };
+
 
   const handleSubmit = () => {
     const newErrors = {};
@@ -88,6 +94,52 @@ const ComponentEditor = ({ config, onSave, onCancel }) => {
       >
         Component Editor
       </Typography>
+
+      {/* CAN ID Selector */}
+      <FormControl
+        fullWidth
+        margin="normal"
+        sx={{ marginBottom: 2 }}
+        error={!!errors.canID}
+      >
+        <InputLabel>CAN ID</InputLabel>
+        <Select
+          value={selectedCanID}
+          onChange={(e) => handleCanIDChange(e.target.value)}
+        >
+          {Object.keys(groupedDataChannels).map((canID) => (
+            <MenuItem key={canID} value={canID}>
+              {canID}
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.canID && <FormHelperText>{errors.canID}</FormHelperText>}
+      </FormControl>
+
+      {/* Data Channel Selector */}
+      <FormControl
+        fullWidth
+        margin="normal"
+        sx={{ marginBottom: 2 }}
+        error={!!errors.dataChannel}
+        disabled={!selectedCanID} // Disable if no CAN ID is selected
+      >
+        <InputLabel>Data Channel</InputLabel>
+        <Select
+          value={formState.dataChannel || ""}
+          onChange={(e) => handleChange("dataChannel", e.target.value)}
+        >
+          {(groupedDataChannels[selectedCanID] || []).map((channel, idx) => (
+            <MenuItem key={idx} value={channel}>
+              {channel}
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.dataChannel && (
+          <FormHelperText>{errors.dataChannel}</FormHelperText>
+        )}
+      </FormControl>
+
 
       {config.fields.map((field, index) => (
         <FormControl

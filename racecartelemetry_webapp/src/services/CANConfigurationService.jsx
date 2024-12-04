@@ -129,8 +129,6 @@ export const fetchDataChannelsGroupedByCanID = async (selectedConfig) => {
 };
 
 
-
-
 export const getCurrentConfig = async () => {
   const response = await fetch(`/api/CANConfigurationAPI?collectionName=canConfigs&docId=currentConfig`, {
     method: 'GET',
@@ -142,5 +140,6 @@ export const getCurrentConfig = async () => {
   }
 
   const data = await response.json();
+  console.log("!1111", data);
   return data?.current || null; // Return the current config name
 };
