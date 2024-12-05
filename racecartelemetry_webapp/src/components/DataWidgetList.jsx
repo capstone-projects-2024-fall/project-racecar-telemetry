@@ -67,8 +67,8 @@ const DataWidgetList = () => {
 
   return (
     <Stack
-      direction="row" //Sets the items to align horizontally
-      spacing={2} //Adds space between items
+      direction="row" 
+      spacing={2}
       sx={{
         overflowX: "auto", 
         padding: 2, 
@@ -87,6 +87,7 @@ const DataWidgetList = () => {
         ))
       )}
 
+      <Box sx={{ flexGrow: 1 }} />
       {/* Elapsed Time Widget */}
       <DataWidget
         canID="elapsedTime"
