@@ -13,18 +13,38 @@ const DataGauge = ({uniqueID}) => {
   const [metricValue, setMetricValue] = useState(0);
   const [settingsVisible, setSettingsVisible] = useState(false);
 
-  const initialConfig = JSON.parse(localStorage.getItem(`DataGauge-${uniqueID}`)) || {
-    canID: "CAN ID",
-    dataChannel: "Data Channel",
-    color: "Red",
-    min: 0,
-    max: 100,
-  };
+  const storedConfig = JSON.parse(localStorage.getItem(`DataGauge-${uniqueID}`));
 
-  const [config, setConfig] = useState(initialConfig);
+  const initialConfig = storedConfig
+  ? {
+      canID: storedConfig.canID || "CAN ID",
+      dataChannel: storedConfig.dataChannel || "Data Channel",
+      color: storedConfig.config?.Color || "Red", // Access nested `Color`
+      min: storedConfig.config?.["Min Value"] || 0, // Access nested `Min Value`
+      max: storedConfig.config?.["Max Value"] || 100, // Access nested `Max Value`
+    }
+  : {
+      canID: "CAN ID",
+      dataChannel: "Data Channel",
+      color: "Red",
+      min: 0,
+      max: 100,
+    };
+
+const [config, setConfig] = useState(initialConfig);
 
   // State for range calculations
   const [range, setRange] = useState([config.min, config.max]);
+
+  useEffect(() => {
+    setConfig(initialConfig);
+    setRange([initialConfig.min, initialConfig.max]);
+    console.log("Config:", config);
+    console.log("Color:", config.color);
+    console.log("Min:", config.min);
+    console.log("Max:", config.max);
+
+  }, [uniqueID]);
 
   // Save configuration to localStorage on change
   useEffect(() => {

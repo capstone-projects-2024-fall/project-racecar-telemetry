@@ -105,6 +105,13 @@ export default function CustomDash() {
 
   const handleRemovePlaceholder = (rowIndex, placeholderIndex) => {
     const updatedRows = [...rows];
+
+    const placeholder = updatedRows[rowIndex][placeholderIndex];
+    if (placeholder && placeholder.id) {
+      localStorage.removeItem(`DataGauge-${placeholder.id}`);
+      console.log("removed");
+    }
+
     updatedRows[rowIndex].splice(placeholderIndex, 1); // Remove the placeholder box
     setRows(updatedRows);
   };

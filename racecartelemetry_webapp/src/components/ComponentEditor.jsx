@@ -16,8 +16,8 @@ const componentConfigs = {
   Gauge: {
     fields: [
       { label: "Color", type: "select", options: ["Blue", "Red", "Green"] },
-      { label: "Min Value (C)", type: "number" },
-      { label: "Max Value (C)", type: "number" },
+      { label: "Min Value", type: "number" },
+      { label: "Max Value", type: "number" },
     ],
   },
   "Linear Gauge": {
