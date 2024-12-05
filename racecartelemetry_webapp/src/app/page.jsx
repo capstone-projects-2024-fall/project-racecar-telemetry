@@ -69,16 +69,7 @@ function SortableItem({ id, children }) {
 export default function Home() {
   const [layout, setLayout] = useState([
     {
-      id: "ThrottleGauge",
-      component: (
-        <DataGauge
-          canID="210"
-          channel="Throttle"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+     id: "dataGauge1", component: <DataGauge /> 
     },
     {
       id: "batteryVoltage",
@@ -143,6 +134,28 @@ export default function Home() {
         return arrayMove(items, oldIndex, newIndex);
       });
     }
+  };
+
+  const handleUpdateComponent = (oldId, newId, config) => {
+    setLayout((prevLayout) =>
+      prevLayout.map((item) =>
+        item.id === oldId
+          ? {
+              id: newId,
+              component: (
+                <DataGauge
+                  canID={config.canID}
+                  dataChannel={config.dataChannel}
+                  color={config.Color}
+                  min={config["Min Value"]}
+                  max={config["Max Value"]}
+                  onSave={(newConfig) => handleUpdateComponent(newId, newConfig.dataChannel, newConfig)}
+                />
+              ),
+            }
+          : item
+      )
+    );
   };
 
   return (
