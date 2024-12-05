@@ -31,17 +31,16 @@ const DataGauge = ({ canID, channel, min, max, color }) => {
   // These are the config options for DataGauge Graphs
   const config = {
     fields: [
-    
       {
         label: "Color",
         type: "select",
         options: ["Blue", "Red", "Green"],
       },
       {
-        label: "Min Value (C)",
+        label: "Min Value ",
         type: "number",
       },
-      { label: "Max Value (C)", type: "number" },
+      { label: "Max Value", type: "number" },
     ],
   };
 
