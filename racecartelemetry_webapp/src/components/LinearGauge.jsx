@@ -109,11 +109,11 @@ const LinearGauge = () => {
           }}
         >
           <IconButton onClick={handleSettingsClick}>
-            <SettingsIcon
+            {/* <SettingsIcon
               style={{
                 color: theme.palette.primary.main,
               }}
-            />
+            /> */}
           </IconButton>
         </div>
         <Plot

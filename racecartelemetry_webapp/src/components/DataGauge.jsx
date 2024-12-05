@@ -123,7 +123,7 @@ const DataGauge = () => {
           }}
         >
           <IconButton onClick={handleSettingsClick}>
-            <SettingsIcon style={{ color: theme.palette.primary.main }} />
+            {/* <SettingsIcon style={{ color: theme.palette.primary.main }} /> */}
           </IconButton>
           {`${config.canID} / ${config.dataChannel}`}
         </div>
