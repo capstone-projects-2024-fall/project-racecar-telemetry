@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Box, IconButton, Tooltip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -8,6 +8,7 @@ import LinearGauge from "@components/LinearGauge";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import DataGauge from "@components/DataGauge";
 import ComponentEditor from "@components/ComponentEditor";
+import { getCurrentConfig, fetchDataChannelsGroupedByCanID } from "@/services/CANConfigurationService";
 
 export default function CustomDash() {
   const [rows, setRows] = useState([]);
@@ -15,7 +16,24 @@ export default function CustomDash() {
   const [rowHeights, setRowHeights] = useState([]); // Track heights for each row
   const [editorOpen, setEditorOpen] = useState(false); // Modal open state
   const [currentEdit, setCurrentEdit] = useState(null); // Track current row and placeholder
-  const [components, setComponents] = useState([]); // Store configured components
+  const [groupedDataChannels, setGroupedDataChannels] = useState({}); // Store CAN data channels
+
+  // Fetch CAN data channels on load
+  useEffect(() => {
+    const fetchCanData = async () => {
+      try {
+        const currentConfig = await getCurrentConfig(); // Fetch current config
+        if (currentConfig) {
+          const data = await fetchDataChannelsGroupedByCanID(currentConfig); // Fetch grouped channels
+          setGroupedDataChannels(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch CAN data:", err);
+      }
+    };
+
+    fetchCanData();
+  }, []);
 
   const handleAddRow = () => {
     const input = prompt("Enter a number between 1 and 6 for placeholders:");
@@ -53,7 +71,6 @@ export default function CustomDash() {
     updatedRows[rowIndex][placeholderIndex] = config;
     setRows(updatedRows);
 
-    setComponents([...components, config]); // Optionally track all added components
     setEditorOpen(false); // Close the editor modal
     setCurrentEdit(null); // Reset current edit state
   };
@@ -211,9 +228,7 @@ export default function CustomDash() {
                           backgroundColor: "rgb(40,40,40)",
                         },
                       }}
-                      onClick={() =>
-                        handleOpenEditor(rowIndex, placeholderIndex)
-                      }
+                      onClick={() => handleOpenEditor(rowIndex, placeholderIndex)}
                     >
                       <AddIcon />
                     </IconButton>
@@ -229,9 +244,7 @@ export default function CustomDash() {
                         backgroundColor: "rgb(40,40,40)",
                       },
                     }}
-                    onClick={() =>
-                      handleRemovePlaceholder(rowIndex, placeholderIndex)
-                    }
+                    onClick={() => handleRemovePlaceholder(rowIndex, placeholderIndex)}
                   >
                     <RemoveIcon />
                   </IconButton>
@@ -243,10 +256,10 @@ export default function CustomDash() {
       </Box>
 
       {/* Component Editor Modal */}
-      {/* Component Editor Modal */}
       {editorOpen && (
         <ComponentEditor
           open={editorOpen}
+          groupedDataChannels={groupedDataChannels} // Pass CAN data
           onSave={handleSaveComponent}
           onCancel={() => setEditorOpen(false)}
         />

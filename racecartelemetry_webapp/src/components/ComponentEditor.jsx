@@ -1,5 +1,16 @@
-import React, { useState } from "react";
-import { Modal, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, Grid } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  Box,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  TextField,
+  Grid,
+} from "@mui/material";
 
 const componentConfigs = {
   Gauge: {
@@ -25,10 +36,20 @@ const componentConfigs = {
   },
 };
 
-const ComponentEditor = ({ open, onSave, onCancel }) => {
+const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
   const [componentType, setComponentType] = useState("");
   const [formState, setFormState] = useState({});
   const [errors, setErrors] = useState({});
+  const [selectedCanID, setSelectedCanID] = useState("");
+  const [dataChannels, setDataChannels] = useState([]);
+
+  // When CAN ID changes, update Data Channel options
+  useEffect(() => {
+    if (selectedCanID) {
+      setDataChannels(groupedDataChannels[selectedCanID] || []);
+      setFormState((prev) => ({ ...prev, dataChannel: "" })); // Reset Data Channel selection
+    }
+  }, [selectedCanID, groupedDataChannels]);
 
   const handleTypeChange = (type) => {
     setComponentType(type);
@@ -46,6 +67,12 @@ const ComponentEditor = ({ open, onSave, onCancel }) => {
     if (!componentType) {
       newErrors.componentType = "Please select a component type.";
     }
+    if (!selectedCanID) {
+      newErrors.canID = "Please select a CAN ID.";
+    }
+    if (!formState.dataChannel) {
+      newErrors.dataChannel = "Please select a data channel.";
+    }
 
     const configFields = componentConfigs[componentType]?.fields || [];
     configFields.forEach((field) => {
@@ -59,7 +86,12 @@ const ComponentEditor = ({ open, onSave, onCancel }) => {
       return;
     }
 
-    onSave({ type: componentType, config: formState });
+    onSave({
+      type: componentType,
+      canID: selectedCanID,
+      dataChannel: formState.dataChannel,
+      config: formState,
+    });
   };
 
   return (
@@ -96,6 +128,40 @@ const ComponentEditor = ({ open, onSave, onCancel }) => {
           </Select>
           {errors.componentType && (
             <Typography color="error">{errors.componentType}</Typography>
+          )}
+        </FormControl>
+
+        {/* CAN ID Selector */}
+        <FormControl fullWidth margin="normal" error={!!errors.canID}>
+          <InputLabel>CAN ID</InputLabel>
+          <Select
+            value={selectedCanID}
+            onChange={(e) => setSelectedCanID(e.target.value)}
+          >
+            {Object.keys(groupedDataChannels || {}).map((canID) => (
+              <MenuItem key={canID} value={canID}>
+                {canID}
+              </MenuItem>
+            ))}
+          </Select>
+          {errors.canID && <Typography color="error">{errors.canID}</Typography>}
+        </FormControl>
+
+        {/* Data Channel Selector */}
+        <FormControl fullWidth margin="normal" error={!!errors.dataChannel} disabled={!selectedCanID}>
+          <InputLabel>Data Channel</InputLabel>
+          <Select
+            value={formState.dataChannel || ""}
+            onChange={(e) => handleChange("dataChannel", e.target.value)}
+          >
+            {dataChannels.map((channel, idx) => (
+              <MenuItem key={idx} value={channel}>
+                {channel}
+              </MenuItem>
+            ))}
+          </Select>
+          {errors.dataChannel && (
+            <Typography color="error">{errors.dataChannel}</Typography>
           )}
         </FormControl>
 
