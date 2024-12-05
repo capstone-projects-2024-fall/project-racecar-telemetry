@@ -40,10 +40,6 @@ const LinearGauge = ({ canID, channel, min, max, color }) => {
   const config = {
     fields: [
       {
-        label: "Data Name",
-        type: "text",
-      },
-      {
         label: "Color",
         type: "select",
         options: ["Blue", "Red", "Green"],
