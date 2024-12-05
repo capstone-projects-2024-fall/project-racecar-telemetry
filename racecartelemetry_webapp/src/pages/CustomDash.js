@@ -211,7 +211,9 @@ export default function CustomDash() {
                           backgroundColor: "rgb(40,40,40)",
                         },
                       }}
-                      onClick={() => handleOpenEditor(rowIndex, placeholderIndex)}
+                      onClick={() =>
+                        handleOpenEditor(rowIndex, placeholderIndex)
+                      }
                     >
                       <AddIcon />
                     </IconButton>
@@ -227,7 +229,9 @@ export default function CustomDash() {
                         backgroundColor: "rgb(40,40,40)",
                       },
                     }}
-                    onClick={() => handleRemovePlaceholder(rowIndex, placeholderIndex)}
+                    onClick={() =>
+                      handleRemovePlaceholder(rowIndex, placeholderIndex)
+                    }
                   >
                     <RemoveIcon />
                   </IconButton>
@@ -239,14 +243,12 @@ export default function CustomDash() {
       </Box>
 
       {/* Component Editor Modal */}
+      {/* Component Editor Modal */}
       {editorOpen && (
         <ComponentEditor
-          config={{
-            fields: [], // Add default fields for initial testing
-            ...(currentEdit && currentEdit.config), // Pass dynamic fields if applicable
-          }}
-          onSave={handleSaveComponent} // Handle save action
-          onCancel={() => setEditorOpen(false)} // Close modal on cancel
+          open={editorOpen}
+          onSave={handleSaveComponent}
+          onCancel={() => setEditorOpen(false)}
         />
       )}
     </Box>
