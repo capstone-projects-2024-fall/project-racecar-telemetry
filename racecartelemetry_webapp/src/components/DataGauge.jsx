@@ -15,8 +15,8 @@ const DataGauge = () => {
 
   // Config for gauge visualization
   const [config, setConfig] = useState({
-    canID: "default",
-    dataChannel: "default",
+    canID: "CAN ID",
+    dataChannel: "Data Channel",
     color: "Red",
     min: 0,
     max: 100,

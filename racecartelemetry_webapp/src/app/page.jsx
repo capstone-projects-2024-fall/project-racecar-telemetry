@@ -69,55 +69,19 @@ function SortableItem({ id, children }) {
 export default function Home() {
   const [layout, setLayout] = useState([
     {
-     id: "dataGauge1", component: <DataGauge /> 
+      id: "r11", component: <DataGauge /> 
     },
     {
-      id: "batteryVoltage",
-      component: (
-        <DataGauge
-          canID="200"
-          channel="Battery"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+      id: "r12", component: <DataGauge /> 
     },
     {
-      id: "steering",
-      component: (
-        <LinearGauge
-          canID="100"
-          channel="Steering"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+      id: "r13", component: <LinearGauge /> 
     },
     {
-      id: "pdeal",
-      component: (
-        <LinearGauge
-          canID="100"
-          channel="Pedal"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+      id: "r14", component: <LinearGauge /> 
     },
     {
-      id: "throttlePosGauge",
-      component: (
-        <LinearGauge
-          canID="200"
-          channel="Throttle"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+      id: "r15", component: <LinearGauge /> 
     },
   ]);
 
