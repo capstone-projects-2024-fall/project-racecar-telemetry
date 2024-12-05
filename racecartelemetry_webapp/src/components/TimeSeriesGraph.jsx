@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
-import { db } from "@firebaseConfig"; // Firebase config file
+import { ref, onValue } from "firebase/database";
+import { db } from "@firebaseConfig";
 import theme from "@/app/theme";
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
@@ -50,7 +50,6 @@ const TimeSeriesGraph = () => {
     setSettingsVisible(false);
   };
 
-
   useEffect(() => {
     if (!config.canID || !config.dataChannel) return;
 
@@ -68,7 +67,6 @@ const TimeSeriesGraph = () => {
     return () => unsubscribe();
   }, [config.canID, config.dataChannel]);
 
-
   const data = [
     {
       x: timestamps,
@@ -82,7 +80,7 @@ const TimeSeriesGraph = () => {
 
   const layout = {
     title: {
-      text: config.dataChannel,
+      text: config.title || "Time Series Data",
       font: {
         size: 24,
         color: theme.palette.primary.main,
@@ -117,6 +115,8 @@ const TimeSeriesGraph = () => {
     },
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
+    autosize: true,
+    responsive: true, // Enable responsiveness
   };
 
   return (
@@ -154,24 +154,24 @@ const TimeSeriesGraph = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
           backgroundColor: "rgba(30, 30, 30, 0.9)",
           margin: "0",
+          height: "100%", // Allow the container to scale
         }}
       >
         <div
           style={{
             display: "flex",
-            alignItems: "left",
+            alignItems: "center",
             justifyContent: "left",
-            alignItems: "left",
             backgroundColor: "rgba(20, 20, 20, 0.9)",
             height: "1.5rem",
           }}
         >
           <IconButton onClick={handleSettingsClick}>
-            <SettingsIcon
+            {/* <SettingsIcon
               style={{
                 color: theme.palette.primary.main,
               }}
-            />
+            /> */}
           </IconButton>
         </div>
 
@@ -179,7 +179,7 @@ const TimeSeriesGraph = () => {
           data={data}
           layout={layout}
           useResizeHandler={true}
-          style={{ width: "100%", height: "400px", margin: "0", padding: "0" }}
+          style={{ width: "100%", height: "100%" }}
         />
       </div>
     </>
