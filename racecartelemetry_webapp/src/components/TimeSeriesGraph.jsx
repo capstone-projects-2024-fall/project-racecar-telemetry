@@ -25,8 +25,7 @@ const TimeSeriesGraph = ({ canID, channel, yMin, yMax, color }) => {
 
   // These are the config options for TimeSeries Graphs
   const config = {
-    fields: [
-      
+    fields: [  
       {
         label: "Color",
         type: "select",

@@ -4,6 +4,10 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Crop169Icon from '@mui/icons-material/Crop169';
 import CropDinIcon from '@mui/icons-material/CropDin';
+import LinearGauge from "@components/LinearGauge";
+import TimeSeriesGraph from "@components/TimeSeriesGraph";
+import DataGauge from "@components/DataGauge";
+import ComponentEditor from "@components/ComponentEditor"
 
 export default function CustomDash() {
   const [rows, setRows] = useState([]);
