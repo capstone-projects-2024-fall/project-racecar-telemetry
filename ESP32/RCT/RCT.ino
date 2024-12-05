@@ -1,15 +1,18 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+#include <Wire.h>
+
 
 // WiFi credentials
-const char *ssid = "DSH 1";
-const char *password = "1633Diamond";
+const char *ssid = "AndroidAP_8198";
+const char *password = "alohamora";
 
 // Firestore Configuration
 const String PROJECT_ID = "race-car-telemetry";
 const String FIREBASE_BASE_URL = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID + "/databases/(default)/documents/";
 const String RTDB_BASE_URL = "https://race-car-telemetry-default-rtdb.firebaseio.com/data/";
+const String TEST_URL = "https://race-car-telemetry-default-rtdb.firebaseio.com/test/";
 
 // Structure for CAN messages
 struct CANMessage {
@@ -23,6 +26,8 @@ CANMessage simulatedMessages[] = {
     {100, {0x37, 0x05, 0x41, 0xC8, 0x79, 0x25, 0x3C, 0xD2}, 12345000},
     {200, {0x45, 0x12, 0x34, 0xA0, 0x56, 0x78, 0xDE, 0xF0}, 12346000}
 };
+
+CANMessage currentMessage;
 
 const int numMessages = sizeof(simulatedMessages) / sizeof(CANMessage);
 
@@ -38,7 +43,7 @@ void setup() {
   // Connect to WiFi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
+    delay(2000);
     Serial.println("Connecting to Wi-Fi...");
   }
   Serial.println("Connected to Wi-Fi");
@@ -54,16 +59,73 @@ void setup() {
     Serial.println("Failed to fetch configuration. Retrying...");
     delay(5000);
   }
+
+  sendInitial();
+
+  // Initialize i2C comms
+  Wire.begin(8);          // Join the I2C bus with address 8 as a slave
+  Wire.onReceive(receiveEvent); // Register the receive event callback
 }
 
 void loop() {
-  // Process each simulated CAN message
-  for (int i = 0; i < numMessages; i++) {
-    decodeAndSend(simulatedMessages[i]);
-    delay(1000); // Optional delay between messages
+  // // Process each simulated CAN message
+  // for (int i = 0; i < numMessages; i++) {
+  //   decodeAndSend(simulatedMessages[i]);
+  //   delay(1000); // Optional delay between messages
+  // }
+
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    WiFi.begin(ssid, password);
+    delay(2000);
+    Serial.println("Re-connecting to Wi-Fi...");
+  } else
+  {
+    decodeAndSend(currentMessage);
+  }
+  //delay(1000); // Delay before repeating the loop
+}
+
+// Callback function executed when data is received from feather 
+void receiveEvent(int numBytes) {
+
+  String token;
+  int count = 0;
+  // data is received in the format "[id] [timestamp] [data]"
+  // Read and print each byte of the received data
+  while (Wire.available() > 0) {
+    char c = Wire.read();  // Read a byte from the I2C bus 
+    if (c == ' ')
+    {
+      //Serial.println("Count: " + String(count) + " Token: '" + String(token) + "'");
+      if (count == 0)
+      {
+        currentMessage.canId = token.toInt();
+      }
+      else if (count == 1)
+      {
+        currentMessage.timestamp = strtoul(token.c_str(), NULL, 10);
+      }
+      else
+      {
+        currentMessage.rawMessage[count - 2] = strtol(token.c_str(), NULL, 16);
+      }
+      token = "";
+      count++;
+    }
+    else
+    {
+      token += c;
+    }
   }
 
-  delay(5000); // Delay before repeating the loop
+  //Serial.println("ID: "+ String(currentMessage.canId) + "\tTime: " + String(currentMessage.timestamp));
+  // for (int i = 0; i < 8; i++)
+  // {
+  //   Serial.println("Message[" + String(i) + "]: " + String(currentMessage.rawMessage[i]));
+  // }
+
+  //delay(1000); // optional - not sure where to put this
 }
 
 // Fetch the current configuration name
@@ -136,14 +198,13 @@ bool fetchConfig() {
     }
 
     Serial.println("Parsed config successfully");
-    // serializeJsonPretty(configJson, Serial);
+    serializeJsonPretty(configJson, Serial);
     return true;
   } else {
     Serial.println("Error fetching configuration: HTTP Code " + String(httpCode));
     return false;
   }
 }
-
 
 // Extract bits from raw CAN message
 uint32_t extractBits(const uint8_t *rawMessage, int startBit, int bitLength) {
@@ -168,6 +229,68 @@ uint32_t extractBits(const uint8_t *rawMessage, int startBit, int bitLength) {
 
 
 // Decode a CAN message and send the decoded data to Realtime Database
+void sendInitial() {
+  JsonObject wholeConfig = configJson["fields"].as<JsonObject>();
+  for (JsonPair kv1 : wholeConfig)
+  {
+    String canIdStr = kv1.key().c_str();
+    Serial.println("CAN ID Str: " + canIdStr);
+
+    // Find the CAN ID object in the configuration
+    JsonObject canConfig = configJson["fields"][canIdStr]["mapValue"]["fields"]["DataChannels"]["mapValue"]["fields"].as<JsonObject>();
+
+    if (!canConfig) {
+      Serial.println("No DataChannels found for CAN ID: " + canIdStr);
+      return;
+    }
+
+    // Clear the decoded JSON buffer
+    decodedJson.clear();
+
+    // Add the timestamp in seconds
+    decodedJson["timestamp"] = 0;
+
+    // Decode each channel
+    for (JsonPair kv : canConfig) {
+      const char *channelName = kv.key().c_str();
+      JsonObject channelConfig = kv.value()["mapValue"]["fields"].as<JsonObject>();
+
+      if (!channelConfig) {
+        Serial.println("Invalid channel configuration for " + String(channelName));
+        continue;
+      }
+
+      // Store the decoded value with the unit
+      String key = String(channelName);
+      decodedJson[key] = 0;
+    }
+
+    // Send decoded data to Realtime Database
+    String jsonString;
+    serializeJson(decodedJson, jsonString);
+
+    String url = TEST_URL + canIdStr + ".json";
+    HTTPClient http;
+    http.begin(url);
+    http.addHeader("Content-Type", "application/json");
+    Serial.println("JSON:'" + jsonString + "'");
+
+    int httpCode = http.PUT(jsonString);
+    
+    if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
+      Serial.println("Decoded data sent to Realtime Database:");
+    } else {
+      Serial.println("Error sending data to Realtime Database: HTTP Code " + String(httpCode));
+      Serial.println(http.getString());
+    }
+
+    http.end();
+    delay(10);
+
+  }
+}
+
+// Send initial HTTP put to database for each channel
 void decodeAndSend(const CANMessage &message) {
   String canIdStr = String(message.canId);
 
@@ -183,7 +306,7 @@ void decodeAndSend(const CANMessage &message) {
   decodedJson.clear();
 
   // Add the timestamp in seconds
-  decodedJson["timestamp (s)"] = message.timestamp / 1000.0;
+  decodedJson["timestamp"] = message.timestamp / 1000.0;
 
   // Decode each channel
   for (JsonPair kv : canConfig) {
@@ -206,16 +329,15 @@ void decodeAndSend(const CANMessage &message) {
     uint32_t rawValue = extractBits(message.rawMessage, startBit, bitLength);
 
     // Apply scaling
-    // float scaledValue = rawValue * multiplier + adder;
-    float scaledValue = rawValue;
+    float scaledValue = rawValue / (float)multiplier - adder;
 
     // Debugging each value
     Serial.println("Channel: " + String(channelName));
     Serial.println("  Raw Value: " + String(rawValue));
-    // Serial.println("  Scaled Value: " + String(scaledValue));
+    Serial.println("  Scaled Value: " + String(scaledValue));
 
     // Store the decoded value with the unit
-    String key = String(channelName) + " (" + unit + ")";
+    String key = String(channelName);
     decodedJson[key] = scaledValue;
   }
 
@@ -223,12 +345,12 @@ void decodeAndSend(const CANMessage &message) {
   String jsonString;
   serializeJson(decodedJson, jsonString);
 
-  String url = RTDB_BASE_URL + canIdStr + ".json";
+  String url = TEST_URL + canIdStr + ".json";
   HTTPClient http;
   http.begin(url);
   http.addHeader("Content-Type", "application/json");
-
-  int httpCode = http.PUT(jsonString);
+  Serial.println("JSON:'" + jsonString + "'");
+  int httpCode = http.PATCH(jsonString);
   if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
     Serial.println("Decoded data sent to Realtime Database:");
   } else {
@@ -237,6 +359,5 @@ void decodeAndSend(const CANMessage &message) {
   }
 
   http.end();
+  //delay(10);
 }
-
-
