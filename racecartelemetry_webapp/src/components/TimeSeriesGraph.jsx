@@ -10,38 +10,23 @@ import ComponentEditor from "@/components/ComponentEditor";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const TimeSeriesGraph = ({ canID, channel, yMin, yMax, color }) => {
+const TimeSeriesGraph = () => {
   const [unit, setUnit] = useState("(UNIT)");
   const [timestamps, setTimestamps] = useState([]);
   const [valsToPlot, setValsToPlot] = useState([]);
 
+  // Config for time series visualization
+  const [config, setConfig] = useState({
+    canID: "CAN ID",
+    dataChannel: "Data Channel",
+    color: "Blue",
+    yMin: 0,
+    yMax: 0,
+    title: "Time Series Data",
+  });
+
   // State to determine whether or not the settings modal is visible
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const [dataName, setDataName] = useState(channel);
-
-  const [lineColor, setLineColor] = useState(color);
-  const [verticalMin, setVerticalMin] = useState(yMin);
-  const [verticalMax, setVerticalMax] = useState(yMax);
-
-  // These are the config options for TimeSeries Graphs
-  const config = {
-    fields: [
-      {
-        label: "Data Name",
-        type: "text",
-      },
-      {
-        label: "Color",
-        type: "select",
-        options: ["Blue", "Red", "Green"],
-      },
-      {
-        label: "Y Axis Min Value",
-        type: "number",
-      },
-      { label: "Y Axis Max Value", type: "number" },
-    ],
-  };
 
   const handleSettingsClick = () => {
     setSettingsVisible((prevState) => !prevState);
@@ -51,38 +36,38 @@ const TimeSeriesGraph = ({ canID, channel, yMin, yMax, color }) => {
     setSettingsVisible(false);
   };
 
-  const handleSave = (data) => {
-    // Set the new settings
-    setDataName(data["Data Name"]);
-    setLineColor(data["Color"]);
-    setVerticalMin(data["Y Axis Min Value"]);
-    setVerticalMax(data["Y Axis Max Value"]);
+  const handleSave = (formState) => {
+    const updatedConfig = {
+      canID: formState.canID || config.canID,
+      dataChannel: formState.dataChannel || config.dataChannel,
+      color: formState.Color || config.color,
+      yMin: parseFloat(formState["Y Axis Min Value"]) || config.yMin,
+      yMax: parseFloat(formState["Y Axis Max Value"]) || config.yMax,
+      title: formState["Title"] || config.title,
+    };
+    console.log("Saving timeseries configuration:", updatedConfig);
+    setConfig(updatedConfig);
     setSettingsVisible(false);
   };
 
+
   useEffect(() => {
-    if (!canID) return; // If no canID is provided, do nothing
+    if (!config.canID || !config.dataChannel) return;
 
-    // Create a reference to the 'CANdata/canID' node in the database
-    const dataRef = ref(db, `data/${canID}`);
-
-    // Set up the real-time listener using `onValue`
+    const dataRef = ref(db, `data/${config.canID}`);
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
-        const canData = snapshot.val();
-
-        // Append new data points to history arrays
-        if (canData[channel] !== undefined && canData.timestamp !== undefined) {
-          setTimestamps((prev) => [...prev, canData.timestamp / 1000]); // Add new time data
-          setValsToPlot((prev) => [...prev, canData[channel]]);
-          // setUnit(canData[unit])
+        const data = snapshot.val();
+        if (data[config.dataChannel] !== undefined && data.timestamp !== undefined) {
+          setTimestamps((prev) => [...prev, data.timestamp / 1000]); // Convert timestamp to seconds
+          setValsToPlot((prev) => [...prev, data[config.dataChannel]]);
         }
       }
     });
 
-    // Clean up the listener when the component unmounts or canID changes
     return () => unsubscribe();
-  }, [canID, channel]); // Re-run effect when canID or channel changes
+  }, [config.canID, config.dataChannel]);
+
 
   const data = [
     {
@@ -90,14 +75,14 @@ const TimeSeriesGraph = ({ canID, channel, yMin, yMax, color }) => {
       y: valsToPlot,
       type: "scatter",
       mode: "lines+markers",
-      marker: { color: lineColor, size: 6 },
+      marker: { color: config.color, size: 6 },
       line: { width: 2 },
     },
   ];
 
   const layout = {
     title: {
-      text: dataName,
+      text: config.dataChannel,
       font: {
         size: 24,
         color: theme.palette.primary.main,
@@ -128,7 +113,7 @@ const TimeSeriesGraph = ({ canID, channel, yMin, yMax, color }) => {
       zerolinewidth: 2,
       gridcolor: "rgba(255, 255, 255, 0.1)",
       gridwidth: 1,
-      range: [verticalMin, verticalMax],
+      range: [config.yMin, config.yMax],
     },
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
@@ -147,7 +132,13 @@ const TimeSeriesGraph = ({ canID, channel, yMin, yMax, color }) => {
           }}
         >
           <ComponentEditor
-            config={config}
+            config={{
+              fields: [
+                { label: "Color", type: "select", options: ["Red", "Green", "Blue"] },
+                { label: "Y Axis Min Value", type: "number" },
+                { label: "Y Axis Max Value", type: "number" },
+              ],
+            }}
             onCancel={handleSettingsClose}
             onSave={handleSave}
           />

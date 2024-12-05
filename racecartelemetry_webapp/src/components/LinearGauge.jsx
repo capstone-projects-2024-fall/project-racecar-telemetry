@@ -45,31 +45,11 @@ const LinearGauge = () => {
       min: parseFloat(formState["Min Value"]) || config.min,
       max: parseFloat(formState["Max Value"]) || config.max,
     };
-    console.log("Saving configuration:", updatedConfig);
+    console.log("Saving LinearGuage configuration:", updatedConfig);
     setConfig(updatedConfig);
     setRange([updatedConfig.min, updatedConfig.max]);
     setSettingsVisible(false);
   };
-  // // These are the config options for LinearGauge Graphs
-
-  // const config = {
-  //   fields: [
-  //     {
-  //       label: "Data Name",
-  //       type: "text",
-  //     },
-  //     {
-  //       label: "Color",
-  //       type: "select",
-  //       options: ["Blue", "Red", "Green"],
-  //     },
-  //     {
-  //       label: "Min Value",
-  //       type: "number",
-  //     },
-  //     { label: "Max Value", type: "number" },
-  //   ],
-  // };
 
   useEffect(() => {
     if (!config.canID || !config.dataChannel) return;

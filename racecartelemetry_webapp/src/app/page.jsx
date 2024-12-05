@@ -200,13 +200,7 @@ export default function Home() {
           sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}
         >
           <Box sx={{ width: "50%" }}>
-            <TimeSeriesGraph
-              canID="200"
-              channel="Throttle"
-              yMin={0}
-              yMax={100}
-              color={theme.palette.primary.main}
-            />
+            <TimeSeriesGraph />
           </Box>
           <Box sx={{ width: "50%" }}>
             <XYGraph
