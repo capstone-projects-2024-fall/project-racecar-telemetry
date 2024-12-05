@@ -10,15 +10,24 @@ import IconButton from "@mui/material/IconButton";
 import { Modal } from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";
 
-const LinearGauge = ({ canID, channel, min, max, color }) => {
-  const [value, setValue] = useState();
+const LinearGauge = () => {
+
+  // Config for gauge visualization
+  const [config, setConfig] = useState({
+    canID: "CAN ID",
+    dataChannel: "Data Channel",
+    color: "Blue",
+    min: 0,
+    max: 100,
+  });
+
+  const [value, setValue] = useState(0);
   const [unit, setUnit] = useState("(UNIT)");
 
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const [dataName, setDataName] = useState(channel);
-  const [barColor, setColor] = useState(color);
   // Range of vals to display
-  const [range, setRange] = useState([min, max]);
+  const [range, setRange] = useState([config.min, config.max]);
+
 
   const handleSettingsClick = () => {
     setSettingsVisible((prevState) => !prevState);
@@ -28,47 +37,35 @@ const LinearGauge = ({ canID, channel, min, max, color }) => {
     setSettingsVisible(false);
   };
 
-  const handleSave = (data) => {
-    setDataName(data["Data Name"]);
-    setColor(data["Color"]);
-    setRange([data["Min Value"], data["Max Value"]]);
+  const handleSave = (formState) => {
+    const updatedConfig = {
+      canID: formState.canID || config.canID,
+      dataChannel: formState.dataChannel || config.dataChannel,
+      color: formState.Color || config.color,
+      min: parseFloat(formState["Min Value"]) || config.min,
+      max: parseFloat(formState["Max Value"]) || config.max,
+    };
+    console.log("Saving LinearGuage configuration:", updatedConfig);
+    setConfig(updatedConfig);
+    setRange([updatedConfig.min, updatedConfig.max]);
     setSettingsVisible(false);
   };
-
-  // These are the config options for LinearGauge Graphs
-
-  const config = {
-    fields: [
-      {
-        label: "Color",
-        type: "select",
-        options: ["Blue", "Red", "Green"],
-      },
-      {
-        label: "Min Value",
-        type: "number",
-      },
-      { label: "Max Value", type: "number" },
-    ],
-  };
-
   useEffect(() => {
-    if (!canID || !channel) return;
+    if (!config.canID || !config.dataChannel) return;
 
-    const dataRef = ref(db, `data/${canID}`);
+    console.log(`Subscribing to Firebase path: data/${config.canID}`);
+    const dataRef = ref(db, `data/${config.canID}`);
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
-        const canData = snapshot.val();
-        if (canData[channel] !== undefined) {
-          // TODO: GRAB UNIT FROM FIRESTORE
-          // setUnit(canData[unit])
-          setValue(canData[channel]);
+        const data = snapshot.val();
+        if (data[config.dataChannel] !== undefined) {
+          setValue(data[config.dataChannel]);
         }
       }
     });
 
     return () => unsubscribe();
-  }, [canID, channel]);
+  }, [config.canID, config.dataChannel]);
 
   var data = [
     {
@@ -80,7 +77,7 @@ const LinearGauge = ({ canID, channel, min, max, color }) => {
           visible: true,
           range: range,
         },
-        bar: { color: barColor },
+        bar: { color: config.color },
       },
       domain: { x: [0.15, 0.75], y: [0.25, 0.65] },
       number: {
@@ -96,7 +93,7 @@ const LinearGauge = ({ canID, channel, min, max, color }) => {
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
     title: {
-      text: `${dataName} ${unit}`,
+      text: `${config.dataChannel} ${unit}`,
       font: { size: 18, color: theme.palette.primary.main },
       x: 0.5,
       xanchor: "center",
@@ -128,7 +125,13 @@ const LinearGauge = ({ canID, channel, min, max, color }) => {
           }}
         >
           <ComponentEditor
-            config={config}
+          config={{
+            fields: [
+              { label: "Color", type: "select", options: ["Red", "Green", "Blue"] },
+              { label: "Min Value", type: "number" },
+              { label: "Max Value", type: "number" },
+            ],
+          }}
             onCancel={handleSettingsClose}
             onSave={handleSave}
           />

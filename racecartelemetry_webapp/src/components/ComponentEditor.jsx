@@ -62,6 +62,12 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
     setErrors((prev) => ({ ...prev, [field]: false })); // Clear error when input changes
   };
 
+  const handleCanIDChange = (canID) => {
+    setSelectedCanID(canID);
+    setFormState((prev) => ({ ...prev, canID })); // Save CAN ID in formState
+    setFormState((prev) => ({ ...prev, dataChannel: "" })); // Clear the selected data channel when CAN ID changes
+  };
+
   const handleSubmit = () => {
     const newErrors = {};
     if (!componentType) {

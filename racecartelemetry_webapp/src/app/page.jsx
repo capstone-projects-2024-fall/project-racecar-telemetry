@@ -69,64 +69,19 @@ function SortableItem({ id, children }) {
 export default function Home() {
   const [layout, setLayout] = useState([
     {
-      id: "ThrottleGauge",
-      component: (
-        <DataGauge
-          canID="210"
-          channel="Throttle"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+      id: "r11", component: <DataGauge /> 
     },
     {
-      id: "batteryVoltage",
-      component: (
-        <DataGauge
-          canID="200"
-          channel="Battery"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+      id: "r12", component: <DataGauge /> 
     },
     {
-      id: "steering",
-      component: (
-        <LinearGauge
-          canID="100"
-          channel="Steering"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+      id: "r13", component: <LinearGauge /> 
     },
     {
-      id: "pdeal",
-      component: (
-        <LinearGauge
-          canID="100"
-          channel="Pedal"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+      id: "r14", component: <LinearGauge /> 
     },
     {
-      id: "throttlePosGauge",
-      component: (
-        <LinearGauge
-          canID="200"
-          channel="Throttle"
-          min={0}
-          max={100}
-          color={theme.palette.primary.main}
-        />
-      ),
+      id: "r15", component: <LinearGauge /> 
     },
   ]);
 
@@ -143,6 +98,28 @@ export default function Home() {
         return arrayMove(items, oldIndex, newIndex);
       });
     }
+  };
+
+  const handleUpdateComponent = (oldId, newId, config) => {
+    setLayout((prevLayout) =>
+      prevLayout.map((item) =>
+        item.id === oldId
+          ? {
+              id: newId,
+              component: (
+                <DataGauge
+                  canID={config.canID}
+                  dataChannel={config.dataChannel}
+                  color={config.Color}
+                  min={config["Min Value"]}
+                  max={config["Max Value"]}
+                  onSave={(newConfig) => handleUpdateComponent(newId, newConfig.dataChannel, newConfig)}
+                />
+              ),
+            }
+          : item
+      )
+    );
   };
 
   return (
@@ -223,13 +200,7 @@ export default function Home() {
           sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}
         >
           <Box sx={{ width: "50%" }}>
-            <TimeSeriesGraph
-              canID="200"
-              channel="Throttle"
-              yMin={0}
-              yMax={100}
-              color={theme.palette.primary.main}
-            />
+            <TimeSeriesGraph />
           </Box>
           <Box sx={{ width: "50%" }}>
             <XYGraph
