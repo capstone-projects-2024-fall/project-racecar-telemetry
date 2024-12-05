@@ -1,14 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Box, IconButton, Tooltip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import Crop169Icon from '@mui/icons-material/Crop169';
-import CropDinIcon from '@mui/icons-material/CropDin';
+import Crop169Icon from "@mui/icons-material/Crop169";
+import CropDinIcon from "@mui/icons-material/CropDin";
+import LinearGauge from "@components/LinearGauge";
+import TimeSeriesGraph from "@components/TimeSeriesGraph";
+import DataGauge from "@components/DataGauge";
+import ComponentEditor from "@components/ComponentEditor";
+import { getCurrentConfig, fetchDataChannelsGroupedByCanID } from "@/services/CANConfigurationService";
 
 export default function CustomDash() {
   const [rows, setRows] = useState([]);
   const [error, setError] = useState([]);
   const [rowHeights, setRowHeights] = useState([]); // Track heights for each row
+  const [editorOpen, setEditorOpen] = useState(false); // Modal open state
+  const [currentEdit, setCurrentEdit] = useState(null); // Track current row and placeholder
+  const [groupedDataChannels, setGroupedDataChannels] = useState({}); // Store CAN data channels
+
+  // Fetch CAN data channels on load
+  useEffect(() => {
+    const fetchCanData = async () => {
+      try {
+        const currentConfig = await getCurrentConfig(); // Fetch current config
+        if (currentConfig) {
+          const data = await fetchDataChannelsGroupedByCanID(currentConfig); // Fetch grouped channels
+          setGroupedDataChannels(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch CAN data:", err);
+      }
+    };
+
+    fetchCanData();
+  }, []);
 
   const handleAddRow = () => {
     const input = prompt("Enter a number between 1 and 6 for placeholders:");
@@ -31,6 +56,29 @@ export default function CustomDash() {
       Math.min(550, updatedHeights[rowIndex] + increment)
     ); // Clamp the height between 250 and 550
     setRowHeights(updatedHeights);
+  };
+
+  const handleOpenEditor = (rowIndex, placeholderIndex) => {
+    setCurrentEdit({ rowIndex, placeholderIndex }); // Track the current placeholder being edited
+    setEditorOpen(true); // Open the editor modal
+  };
+
+  const handleSaveComponent = (config) => {
+    const updatedRows = [...rows];
+    const { rowIndex, placeholderIndex } = currentEdit;
+
+    // Replace placeholder with the configured component
+    updatedRows[rowIndex][placeholderIndex] = config;
+    setRows(updatedRows);
+
+    setEditorOpen(false); // Close the editor modal
+    setCurrentEdit(null); // Reset current edit state
+  };
+
+  const handleRemovePlaceholder = (rowIndex, placeholderIndex) => {
+    const updatedRows = [...rows];
+    updatedRows[rowIndex].splice(placeholderIndex, 1); // Remove the placeholder box
+    setRows(updatedRows);
   };
 
   return (
@@ -132,7 +180,7 @@ export default function CustomDash() {
                     },
                   }}
                 >
-                  <Crop169Icon  />
+                  <Crop169Icon />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -148,7 +196,7 @@ export default function CustomDash() {
                 width: "100%",
               }}
             >
-              {row.map((_, placeholderIndex) => (
+              {row.map((placeholder, placeholderIndex) => (
                 <Box
                   key={placeholderIndex}
                   sx={{
@@ -158,20 +206,34 @@ export default function CustomDash() {
                     position: "relative",
                   }}
                 >
-                  <IconButton
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "rgb(40,40,40)",
-                      },
-                    }}
-                  >
-                    <AddIcon />
-                  </IconButton>
+                  {placeholder ? (
+                    // Render the configured component
+                    placeholder.type === "Gauge" ? (
+                      <DataGauge {...placeholder.config} />
+                    ) : placeholder.type === "Linear Gauge" ? (
+                      <LinearGauge {...placeholder.config} />
+                    ) : (
+                      <TimeSeriesGraph {...placeholder.config} />
+                    )
+                  ) : (
+                    // Render the add button for placeholders
+                    <IconButton
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "rgb(40,40,40)",
+                        },
+                      }}
+                      onClick={() => handleOpenEditor(rowIndex, placeholderIndex)}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  )}
+                  {/* Remove placeholder/component button */}
                   <IconButton
                     sx={{
                       position: "absolute",
@@ -182,11 +244,7 @@ export default function CustomDash() {
                         backgroundColor: "rgb(40,40,40)",
                       },
                     }}
-                    onClick={() => {
-                      const updatedRows = [...rows];
-                      updatedRows[rowIndex].splice(placeholderIndex, 1);
-                      setRows(updatedRows);
-                    }}
+                    onClick={() => handleRemovePlaceholder(rowIndex, placeholderIndex)}
                   >
                     <RemoveIcon />
                   </IconButton>
@@ -196,6 +254,16 @@ export default function CustomDash() {
           </Box>
         ))}
       </Box>
+
+      {/* Component Editor Modal */}
+      {editorOpen && (
+        <ComponentEditor
+          open={editorOpen}
+          groupedDataChannels={groupedDataChannels} // Pass CAN data
+          onSave={handleSaveComponent}
+          onCancel={() => setEditorOpen(false)}
+        />
+      )}
     </Box>
   );
 }

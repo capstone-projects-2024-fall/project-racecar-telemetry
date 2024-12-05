@@ -50,7 +50,6 @@ const LinearGauge = () => {
     setRange([updatedConfig.min, updatedConfig.max]);
     setSettingsVisible(false);
   };
-
   useEffect(() => {
     if (!config.canID || !config.dataChannel) return;
 

@@ -34,14 +34,7 @@ const XYGraph = ({
   // These are the config options for TimeSeries Graphs
   const config = {
     fields: [
-      {
-        label: "X Axis Data Name",
-        type: "text",
-      },
-      {
-        label: "X Axis Min Value",
-        type: "number",
-      },
+      
       {
         label: "X Axis Max Value",
         type: "number",

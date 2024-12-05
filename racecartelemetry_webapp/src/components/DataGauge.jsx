@@ -26,6 +26,7 @@ const DataGauge = () => {
   const [range, setRange] = useState([config.min, config.max]);
   const [originalRange, setOriginalRange] = useState([config.min, config.max]);
 
+
   // Handle opening and closing of settings modal
   const handleSettingsClick = () => {
     setSettingsVisible(true);
