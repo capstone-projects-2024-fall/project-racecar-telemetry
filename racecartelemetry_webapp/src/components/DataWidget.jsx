@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, IconButton, Modal } from "@mui/material";
-import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
 import SettingsIcon from "@mui/icons-material/Settings";
 import ComponentEditor from "@/components/ComponentEditor";
-import { db } from "@firebaseConfig"; // Firebase config file
 import theme from "@/app/theme";
+import { ref, onValue } from "firebase/database";
+import { db } from "@firebaseConfig"; // Firebase config file
 
-const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
+const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false, isConnected }) => {
   const [number, setNumber] = useState(0);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [dataName, setDataName] = useState(title);
@@ -27,27 +27,38 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
   };
 
   useEffect(() => {
-    if (!canID || !valueToDisplay) return; // canID and valueTosDisplay must be present
+    if (isElapsedTime) {
+      let timer;
+      if (isConnected) {
+        timer = setInterval(() => {
+          setNumber((prev) => prev + 1); // Increment elapsed time in seconds
+        }, 1000);
+      } else {
+        setNumber(0); // Reset elapsed time when disconnected
+        clearInterval(timer);
+      }
 
-    // reference to the 'CANdata/data/{canID}' node in realtime database
+      return () => clearInterval(timer); // Clean up the timer
+    }
+
+    if (!canID || !valueToDisplay) return; // For non-elapsed-time widgets, ensure required props
+
+    // Realtime Database reference for normal DataWidget
     const dataRef = ref(db, `data/${canID}`);
-
-    // real-time listener using onValue
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         if (data[valueToDisplay] !== undefined) {
-          setNumber(data[valueToDisplay]); //fetch value based on valueToDisplay
+          setNumber(data[valueToDisplay]);
         } else {
-          console.warn(`Key "${valueToDisplay}" not found in Realtime Database for CAN ID ${canID}`);
-          setNumber(0); // Default to 0 if key doesn't exist
+          console.warn(`Key "${valueToDisplay}" not found for CAN ID ${canID}`);
+          setNumber(0); // Default to 0 if the key is not found
         }
       }
     });
 
-    // Clean up the listener when the component unmounts or `canID` changes
     return () => unsubscribe();
-  }, [canID, valueToDisplay]);
+  }, [canID, valueToDisplay, isElapsedTime, isConnected]); // Update based on props and connection status
 
   return (
     <>
