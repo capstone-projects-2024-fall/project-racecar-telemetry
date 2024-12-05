@@ -4,7 +4,7 @@ import { ref, onValue } from "firebase/database"; // Firebase Realtime Database 
 import { db } from "@firebaseConfig"; // Firebase config file
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
-import { Modal } from "@mui/material";
+import { Modal, Chip, useTheme} from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";
 import theme from "@/app/theme";
 
@@ -68,7 +68,7 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
         // }
 
         if (valueToDisplay === "Battery")
-          setNumber(data.Battery); // todo
+          setNumber(data.Battery); 
         else if (valueToDisplay === "Throttle")
           setNumber(data.Throttle);
         else if (valueToDisplay === "Timestamp")
@@ -100,44 +100,38 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
         </Modal>
       )}
       <Box
-        sx={{
-          width: 100,
-          height: 100,
-          borderRadius: "50%",
-          backgroundColor: color,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          color: "white",
-          textAlign: "center",
-          padding: 1,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "left",
-            justifyContent: "left",
-            alignItems: "left",
-            height: "1.5rem",
-          }}
-        >
-          <IconButton onClick={handleSettingsClick}>
-            <SettingsIcon
-              style={{
-                color: "white",
-              }}
-            />
-          </IconButton>
-        </div>
-        <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
-          {dataName}
-        </Typography>
-        <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-          {number}
-          {unitShown}
-        </Typography>
-      </Box>
+  sx={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "primary.main",
+    color: "white",
+    borderRadius: "16px",
+    padding: "0.5rem",
+    border: "1px solid",
+    borderColor: "primary.light",
+  }}
+>
+  <IconButton
+    onClick={handleSettingsClick}
+    sx={{
+      color: "white",
+    }}
+  >
+    <SettingsIcon />
+  </IconButton>
+
+  <Box sx={{ textAlign: "left", ml: 1 }}>
+    <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
+      {dataName}
+    </Typography>
+    <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+      {number}
+      {unitShown}
+    </Typography>
+  </Box>
+</Box>
+
     </>
   );
 };

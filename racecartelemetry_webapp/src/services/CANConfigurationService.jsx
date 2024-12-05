@@ -98,3 +98,18 @@ export const updateCurrentConfig = async (configName) => {
 
   return await response.json();
 };
+
+export const getCurrentConfig = async () => {
+  const response = await fetch(`/api/CANConfigurationAPI?collectionName=canConfigs&docId=currentConfig`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch current config: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  console.log("1: ",data)
+  return data?.current || null; // Return the current config name
+};
