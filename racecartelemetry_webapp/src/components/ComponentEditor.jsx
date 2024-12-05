@@ -92,6 +92,8 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
       return;
     }
 
+    console.log("Form Data:", formState);
+    
     onSave({
       type: componentType,
       canID: selectedCanID,
@@ -142,7 +144,7 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
           <InputLabel>CAN ID</InputLabel>
           <Select
             value={selectedCanID}
-            onChange={(e) => setSelectedCanID(e.target.value)}
+            onChange={(e) => handleCanIDChange(e.target.value)}
           >
             {Object.keys(groupedDataChannels || {}).map((canID) => (
               <MenuItem key={canID} value={canID}>

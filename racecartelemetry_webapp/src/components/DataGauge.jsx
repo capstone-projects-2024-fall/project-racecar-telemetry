@@ -9,23 +9,27 @@ import theme from "@/app/theme";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const DataGauge = () => {
+const DataGauge = ({uniqueID}) => {
   const [metricValue, setMetricValue] = useState(0);
   const [settingsVisible, setSettingsVisible] = useState(false);
 
-  // Config for gauge visualization
-  const [config, setConfig] = useState({
+  const initialConfig = JSON.parse(localStorage.getItem(`DataGauge-${uniqueID}`)) || {
     canID: "CAN ID",
     dataChannel: "Data Channel",
     color: "Red",
     min: 0,
     max: 100,
-  });
+  };
+
+  const [config, setConfig] = useState(initialConfig);
 
   // State for range calculations
   const [range, setRange] = useState([config.min, config.max]);
-  const [originalRange, setOriginalRange] = useState([config.min, config.max]);
 
+  // Save configuration to localStorage on change
+  useEffect(() => {
+    localStorage.setItem(`DataGauge-${uniqueID}`, JSON.stringify(config));
+  }, [config, uniqueID]);
 
   // Handle opening and closing of settings modal
   const handleSettingsClick = () => {
@@ -46,7 +50,6 @@ const DataGauge = () => {
     };
     console.log("Saving configuration:", updatedConfig);
     setConfig(updatedConfig);
-    setOriginalRange([updatedConfig.min, updatedConfig.max]);
     setRange([updatedConfig.min, updatedConfig.max]);
     setSettingsVisible(false);
   };
@@ -55,7 +58,7 @@ const DataGauge = () => {
   useEffect(() => {
     if (!config.canID || !config.dataChannel) return;
 
-    console.log(`Subscribing to Firebase path: data/${config.canID}`);
+    // console.log(`Subscribing to Firebase path: data/${config.canID}`);
     const dataRef = ref(db, `data/${config.canID}`);
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {

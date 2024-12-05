@@ -9,6 +9,7 @@ import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import DataGauge from "@components/DataGauge";
 import ComponentEditor from "@components/ComponentEditor";
 import { getCurrentConfig, fetchDataChannelsGroupedByCanID } from "@/services/CANConfigurationService";
+import { v4 as uuidv4 } from "uuid";
 
 export default function CustomDash() {
   const [rows, setRows] = useState([]);
@@ -20,7 +21,7 @@ export default function CustomDash() {
 
   // Fetch CAN data channels on load
   useEffect(() => {
-    const fetchCanData = async () => {
+    const fetchCanDataChannels = async () => {
       try {
         const currentConfig = await getCurrentConfig(); // Fetch current config
         if (currentConfig) {
@@ -32,8 +33,22 @@ export default function CustomDash() {
       }
     };
 
-    fetchCanData();
+    fetchCanDataChannels();
   }, []);
+
+  // Load dashboard state from localStorage
+  useEffect(() => {
+    const storedRows = JSON.parse(localStorage.getItem("dashboardRows") || "[]");
+    const storedHeights = JSON.parse(localStorage.getItem("dashboardRowHeights") || "[]");
+    setRows(storedRows);
+    setRowHeights(storedHeights);
+  }, []);
+
+  // Save dashboard state to localStorage
+  useEffect(() => {
+    localStorage.setItem("dashboardRows", JSON.stringify(rows));
+    localStorage.setItem("dashboardRowHeights", JSON.stringify(rowHeights));
+  }, [rows, rowHeights]);
 
   const handleAddRow = () => {
     const input = prompt("Enter a number between 1 and 6 for placeholders:");
@@ -45,8 +60,13 @@ export default function CustomDash() {
     }
 
     setError(""); // Clear any previous errors
-    setRows([...rows, Array(numPlaceholders).fill(null)]); // Add a new row
-    setRowHeights([...rowHeights, 450]); // Default height for new rows
+
+    const newPlaceholders = Array(numPlaceholders)
+      .fill(null)
+      .map(() => ({ id: uuidv4(), type: null }));
+
+    setRows([...rows, newPlaceholders]); // Add a new row
+    setRowHeights([...rowHeights, 450]);
   };
 
   const adjustRowHeight = (rowIndex, increment) => {
@@ -67,9 +87,17 @@ export default function CustomDash() {
     const updatedRows = [...rows];
     const { rowIndex, placeholderIndex } = currentEdit;
 
+    // Ensure the config has a unique ID
+    const updatedConfig = {
+      ...config,
+      id: config.id || uuidv4(), // If `id` doesn't exist, assign a new UUID
+    };
+
     // Replace placeholder with the configured component
-    updatedRows[rowIndex][placeholderIndex] = config;
+    updatedRows[rowIndex][placeholderIndex] = updatedConfig;
     setRows(updatedRows);
+
+    localStorage.setItem(`DataGauge-${updatedConfig.id}`, JSON.stringify(updatedConfig));
 
     setEditorOpen(false); // Close the editor modal
     setCurrentEdit(null); // Reset current edit state
@@ -79,6 +107,21 @@ export default function CustomDash() {
     const updatedRows = [...rows];
     updatedRows[rowIndex].splice(placeholderIndex, 1); // Remove the placeholder box
     setRows(updatedRows);
+  };
+
+  const renderGraph = (config) => {
+    if (!config.type) return null;
+
+    switch (config.type) {
+      case "Gauge":
+        return <DataGauge uniqueID={config.id} />;
+      case "LinearGauge":
+        return <LinearGauge uniqueID={config.id} />;
+      case "TimeSeriesGraph":
+        return <TimeSeriesGraph uniqueID={config.id} />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -123,7 +166,7 @@ export default function CustomDash() {
                   color="primary"
                   onClick={() => {
                     const updatedRows = [...rows];
-                    updatedRows[rowIndex].push(null);
+                    updatedRows[rowIndex].push({ id: uuidv4(), type: null });
                     setRows(updatedRows);
                   }}
                   sx={{
@@ -198,7 +241,7 @@ export default function CustomDash() {
             >
               {row.map((placeholder, placeholderIndex) => (
                 <Box
-                  key={placeholderIndex}
+                  key={placeholder.id}
                   sx={{
                     flex: 1,
                     height: "100%", // Match row height
@@ -206,15 +249,8 @@ export default function CustomDash() {
                     position: "relative",
                   }}
                 >
-                  {placeholder ? (
-                    // Render the configured component
-                    placeholder.type === "Gauge" ? (
-                      <DataGauge {...placeholder.config} />
-                    ) : placeholder.type === "Linear Gauge" ? (
-                      <LinearGauge {...placeholder.config} />
-                    ) : (
-                      <TimeSeriesGraph {...placeholder.config} />
-                    )
+                  {placeholder.type ? (
+                    renderGraph(placeholder)
                   ) : (
                     // Render the add button for placeholders
                     <IconButton
@@ -260,7 +296,7 @@ export default function CustomDash() {
         <ComponentEditor
           open={editorOpen}
           groupedDataChannels={groupedDataChannels} // Pass CAN data
-          onSave={handleSaveComponent}
+          onSave={(config) => handleSaveComponent({ type: config.type, ...config })}
           onCancel={() => setEditorOpen(false)}
         />
       )}
