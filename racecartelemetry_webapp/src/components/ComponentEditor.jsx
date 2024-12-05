@@ -16,8 +16,8 @@ const componentConfigs = {
   Gauge: {
     fields: [
       { label: "Color", type: "select", options: ["Blue", "Red", "Green"] },
-      { label: "Min Value (C)", type: "number" },
-      { label: "Max Value (C)", type: "number" },
+      { label: "Min Value", type: "number" },
+      { label: "Max Value", type: "number" },
     ],
   },
   "Linear Gauge": {
@@ -92,6 +92,8 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
       return;
     }
 
+    console.log("Form Data:", formState);
+    
     onSave({
       type: componentType,
       canID: selectedCanID,
@@ -142,7 +144,7 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
           <InputLabel>CAN ID</InputLabel>
           <Select
             value={selectedCanID}
-            onChange={(e) => setSelectedCanID(e.target.value)}
+            onChange={(e) => handleCanIDChange(e.target.value)}
           >
             {Object.keys(groupedDataChannels || {}).map((canID) => (
               <MenuItem key={canID} value={canID}>
