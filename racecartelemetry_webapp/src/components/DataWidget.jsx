@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton, Modal } from "@mui/material";
 import { ref, onValue } from "firebase/database"; // Firebase Realtime Database functions
-import { db } from "@firebaseConfig"; // Firebase config file
 import SettingsIcon from "@mui/icons-material/Settings";
-import IconButton from "@mui/material/IconButton";
-import { Modal, Chip, useTheme} from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";
+import { db } from "@firebaseConfig"; // Firebase config file
 import theme from "@/app/theme";
 
 const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
@@ -23,62 +21,33 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
     setSettingsVisible(false);
   };
 
-  // These are the config options for LinearGauge Graphs
-
-  const config = {
-    fields: [
-      {
-        label: "Data Name",
-        type: "text",
-      },
-      {
-        label: "Color",
-        type: "select",
-        options: ["Blue", "Red", "Green"],
-      },
-      { label: "Unit", type: "select", options: ["C", "F", "V", "%"] },
-    ],
-  };
-
   const handleSave = (data) => {
-    setDataName(data["Data Name"]);
     setColor(data["Color"]);
     setSettingsVisible(false);
-    setUnitShown(data["Unit"]);
   };
 
   useEffect(() => {
-    if (!canID) return; // If no canID is provided, do nothing
+    if (!canID || !valueToDisplay) return; // canID and valueTosDisplay must be present
 
-    // Create a reference to the 'CANdata/canID' node in the database
+    // reference to the 'CANdata/data/{canID}' node in realtime database
     const dataRef = ref(db, `data/${canID}`);
 
-    // Set up the real-time listener using `onValue`
+    // real-time listener using onValue
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
-
-        // // Append new data points to history arrays
-        // if (valueToDisplay === "X") {
-        //   setNumber(data.X);
-        // } else if (valueToDisplay === "Y") {
-        //   setNumber(data.Y);
-        // } else if (valueToDisplay === "Z") {
-        //   setNumber(data.Z);
-        // }
-
-        if (valueToDisplay === "Battery")
-          setNumber(data.Battery); 
-        else if (valueToDisplay === "Throttle")
-          setNumber(data.Throttle);
-        else if (valueToDisplay === "Timestamp")
-          setNumber(data.timestamp);
+        if (data[valueToDisplay] !== undefined) {
+          setNumber(data[valueToDisplay]); //fetch value based on valueToDisplay
+        } else {
+          console.warn(`Key "${valueToDisplay}" not found in Realtime Database for CAN ID ${canID}`);
+          setNumber(0); // Default to 0 if key doesn't exist
+        }
       }
     });
 
-    // Clean up the listener when the component unmounts or canID changes
+    // Clean up the listener when the component unmounts or `canID` changes
     return () => unsubscribe();
-  }, [canID, valueToDisplay]); // Re-run effect when canID or yAxis changes
+  }, [canID, valueToDisplay]);
 
   return (
     <>
@@ -93,45 +62,48 @@ const DataWidget = ({ canID, valueToDisplay, title, unit }) => {
           }}
         >
           <ComponentEditor
-            config={config}
+            config={{
+              fields: [
+                { label: "Color", type: "select", options: ["Blue", "Red", "Green"] },
+              ],
+            }}
             onCancel={handleSettingsClose}
             onSave={handleSave}
           />
         </Modal>
       )}
       <Box
-  sx={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "primary.main",
-    color: "white",
-    borderRadius: "16px",
-    padding: "0.5rem",
-    border: "1px solid",
-    borderColor: "primary.light",
-  }}
->
-  <IconButton
-    onClick={handleSettingsClick}
-    sx={{
-      color: "white",
-    }}
-  >
-    <SettingsIcon />
-  </IconButton>
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: color,
+          color: "white",
+          borderRadius: "16px",
+          padding: "0.5rem",
+          border: "1px solid",
+          borderColor: "primary.light",
+        }}
+      >
+        <IconButton
+          onClick={handleSettingsClick}
+          sx={{
+            color: "white",
+          }}
+        >
+          <SettingsIcon />
+        </IconButton>
 
-  <Box sx={{ textAlign: "left", ml: 1 }}>
-    <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
-      {dataName}
-    </Typography>
-    <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-      {number}
-      {unitShown}
-    </Typography>
-  </Box>
-</Box>
-
+        <Box sx={{ textAlign: "left", ml: 1 }}>
+          <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
+            {dataName}
+          </Typography>
+          <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+            {number}
+            {unitShown}
+          </Typography>
+        </Box>
+      </Box>
     </>
   );
 };
