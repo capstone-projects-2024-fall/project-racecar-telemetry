@@ -9,30 +9,32 @@ import { Modal } from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const GGDiagram = ({ canID, title }) => {
-  const [lateral, setLat] = useState([]); // Array to store lateral acceleration history
-  const [longitudinal, setLong] = useState([]); // Array to store longitudinal acceleration history
+const XYGraph = ({
+  canID,
+  xChannel,
+  yChannel,
+  xMin,
+  xMax,
+  yMin,
+  yMax,
+  color,
+}) => {
+  const [lateral, setLat] = useState([]);
+  const [longitudinal, setLong] = useState([]);
 
   const [settingsVisible, setSettingsVisible] = useState(false);
 
-  const [color, setColor] = useState(`${theme.palette.primary.main}`);
+  const [lineColor, setLineColor] = useState(color);
 
-  const [xDataName, setXDataName] = useState(title);
-  const [yDataName, setYDataName] = useState(title);
-  const [xRange, setXRange] = useState([0, 100]);
-  const [yRange, setYRange] = useState([0, 100]);
+  const [xDataName, setXDataName] = useState(xChannel);
+  const [yDataName, setYDataName] = useState(yChannel);
+  const [xRange, setXRange] = useState([xMin, xMax]);
+  const [yRange, setYRange] = useState([yMin, yMax]);
 
   // These are the config options for TimeSeries Graphs
   const config = {
     fields: [
-      {
-        label: "X Axis Data Name",
-        type: "text",
-      },
-      {
-        label: "X Axis Min Value",
-        type: "number",
-      },
+      
       {
         label: "X Axis Max Value",
         type: "number",
@@ -72,41 +74,46 @@ const GGDiagram = ({ canID, title }) => {
     setXRange([data["X Axis Min Value"], data["X Axis Max Value"]]);
     setYRange([data["Y Axis Min Value"], data["Y Axis Max Value"]]);
 
-    setColor(data["Color"]);
+    setLineColor(data["Color"]);
     setSettingsVisible(false);
   };
 
   useEffect(() => {
     if (!canID) return;
 
-    const dataRef = ref(db, `CANdata/${canID}`);
+    const dataRef = ref(db, `data/${canID}`);
 
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val();
-        console.log("CAN data:", data);
+        const canData = snapshot.val();
 
-        setLat((prev) => [...prev, data.Y]);
-        setLong((prev) => [...prev, data.X]);
+        if (
+          canData[yChannel] !== undefined &&
+          canData[xChannel] !== undefined
+        ) {
+          setLat((prev) => [...prev, canData[yChannel]]);
+          setLong((prev) => [...prev, canData[xChannel]]);
+          // setUnit(canData[unit])
+        }
       }
     });
 
     return () => unsubscribe();
-  }, [canID]);
+  }, [canID, xChannel, yChannel]);
 
   const data = [
     {
-      x: lateral,
-      y: longitudinal,
+      x: longitudinal,
+      y: lateral,
       type: "scatter",
       mode: "markers",
-      marker: { color: color },
+      marker: { color: lineColor },
     },
   ];
 
   const layout = {
     title: {
-      text: `${xDataName} ${yDataName}`,
+      text: `${xDataName} x ${yDataName}`,
       font: {
         size: 24,
         color: theme.palette.primary.main,
@@ -114,7 +121,7 @@ const GGDiagram = ({ canID, title }) => {
     },
     xaxis: {
       title: {
-        text: "Timestamp (s)",
+        text: xDataName,
         font: { color: "white" },
       },
       tickfont: { color: "white" },
@@ -127,7 +134,7 @@ const GGDiagram = ({ canID, title }) => {
     },
     yaxis: {
       title: {
-        text: "G",
+        text: yDataName,
         font: { color: "white" },
         standoff: 15,
       },
@@ -203,4 +210,4 @@ const GGDiagram = ({ canID, title }) => {
   );
 };
 
-export default GGDiagram;
+export default XYGraph;

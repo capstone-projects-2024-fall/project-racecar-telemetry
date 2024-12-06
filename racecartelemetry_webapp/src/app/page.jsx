@@ -17,7 +17,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import NavBar from "@components/NavBar";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
-import GGDiagram from "@components/GGDiagram";
+import XYGraph from "@components/XYGraph";
 import LinearGauge from "@components/LinearGauge";
 import { ThemeProvider, CssBaseline, Box, Typography, Stack } from "@mui/material";
 import theme from "@app/theme";
@@ -70,60 +70,19 @@ function SortableItem({ id, children }) {
 export default function Home() {
   const [layout, setLayout] = useState([
     {
-      id: "engineTempGauge",
-      component: (
-        <DataGauge
-          canID="210"
-          metricKey="Temp"
-          title="Engine Temperature"
-          maxPrimaryRange={200}
-          maxSecondaryRange={300}
-          primaryUnit="C"
-          secondaryUnit="F"
-        />
-      ),
+      id: "r11", component: <DataGauge /> 
     },
     {
-      id: "batteryVoltage",
-      component: (
-        <DataGauge
-          canID="200"
-          metricKey="Battery"
-          title="Battery Voltage"
-          maxPrimaryRange={15}
-          primaryUnit="V"
-        />
-      ),
+      id: "r12", component: <DataGauge /> 
     },
     {
-      id: "steering",
-      component: (
-        <LinearGauge
-          canID="100"
-          valueToShow="steering"
-          title="Steering Rack Position"
-        />
-      ),
+      id: "r13", component: <LinearGauge /> 
     },
     {
-      id: "pdeal",
-      component: (
-        <LinearGauge
-          canID="100"
-          valueToShow="pdeal"
-          title="Pedal Position"
-        />
-      ),
+      id: "r14", component: <LinearGauge /> 
     },
     {
-      id: "throttlePosGauge",
-      component: (
-        <LinearGauge
-          canID="200"
-          valueToShow="Throttle"
-          title="Throttle Position"
-        />
-      ),
+      id: "r15", component: <LinearGauge /> 
     },
   ]);
 
@@ -140,6 +99,28 @@ export default function Home() {
         return arrayMove(items, oldIndex, newIndex);
       });
     }
+  };
+
+  const handleUpdateComponent = (oldId, newId, config) => {
+    setLayout((prevLayout) =>
+      prevLayout.map((item) =>
+        item.id === oldId
+          ? {
+              id: newId,
+              component: (
+                <DataGauge
+                  canID={config.canID}
+                  dataChannel={config.dataChannel}
+                  color={config.Color}
+                  min={config["Min Value"]}
+                  max={config["Max Value"]}
+                  onSave={(newConfig) => handleUpdateComponent(newId, newConfig.dataChannel, newConfig)}
+                />
+              ),
+            }
+          : item
+      )
+    );
   };
 
   return (
@@ -196,15 +177,19 @@ export default function Home() {
           sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}
         >
           <Box sx={{ width: "50%" }}>
-            <TimeSeriesGraph
-              canID={"210"}
-              yAxis={"X"}
-              title={"Throttle Position"}
-              unit={"%"}
-            />
+            <TimeSeriesGraph />
           </Box>
           <Box sx={{ width: "50%" }}>
-            <GGDiagram canID={"210"} title={"GG Diagram"} />
+            <XYGraph
+              canID={"100"}
+              xChannel="Steering"
+              yChannel="Pedal"
+              xMin={0}
+              xMax={100}
+              yMin={0}
+              yMax={100}
+              color={theme.palette.primary.main}
+            />
           </Box>
         </Box>
       </Box>
