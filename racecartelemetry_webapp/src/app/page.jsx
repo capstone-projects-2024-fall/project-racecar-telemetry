@@ -19,10 +19,11 @@ import NavBar from "@components/NavBar";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import XYGraph from "@components/XYGraph";
 import LinearGauge from "@components/LinearGauge";
-import { ThemeProvider, CssBaseline, Box } from "@mui/material";
+import { ThemeProvider, CssBaseline, Box, Typography, Stack } from "@mui/material";
 import theme from "@app/theme";
 import DataGauge from "@components/DataGauge";
 import DataWidget from "@components/DataWidget";
+import DataWidgetList from "@components/DataWidgetList";
 
 function SortableItem({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -126,6 +127,10 @@ export default function Home() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <NavBar />
+      {/* <Typography color="white">
+      testing
+      </Typography> */}
+      
       <Box
         sx={{
           display: "flex",
@@ -134,36 +139,8 @@ export default function Home() {
           padding: 2,
         }}
       >
-        {/* Data Widgets */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            gap: 2,
-            marginBottom: 2,
-            flexWrap: "wrap",
-          }}
-        >
-          <DataWidget
-            canID={"200"}
-            valueToDisplay={"Battery"}
-            title="Battery Voltage"
-            unit="V"
-          />
-          <DataWidget
-            canID={"200"}
-            valueToDisplay={"Throttle"}
-            title="Throttle Position"
-            unit="%"
-          />
-          <DataWidget
-            canID={"200"}
-            valueToDisplay={"Timestamp"}
-            title="Timestamp"
-            unit="s"
-          />
-        </Box>
+        {/*Data Widgets*/}
+          <DataWidgetList/> 
 
         {/* Draggable Row of Components */}
         <DndContext
