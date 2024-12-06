@@ -3,6 +3,7 @@ import { Box, CircularProgress, Typography, Stack } from "@mui/material";
 import DataWidget from "./DataWidget";
 import telemetryConnectionStatus from "@hooks/telemetryConnectionStatus";
 import { fetchCANData, getCurrentConfig } from "@services/CANConfigurationService";
+import ConfigWidget from "@components/ConfigWidget";
 
 const DataWidgetList = () => {
   const [currentConfig, setCurrentConfig] = useState(null);
@@ -72,23 +73,45 @@ const DataWidgetList = () => {
       sx={{
         overflowX: "auto", 
         padding: 2, 
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "space-in-between",
       }}
     >
-      {/* Render DataWidgets for DataChannels */}
-      {Object.entries(configData).map(([canID, canData]) =>
-        Object.entries(canData.DataChannels || {}).map(([channelKey, channelData]) => (
-          <DataWidget
-            key={`${canID}-${channelKey}`}
-            canID={canID} 
-            valueToDisplay={channelKey} //channel key (e.g., "Battery")
-            title={channelKey} //channel key as the title
-            unit={channelData.unit || ""} 
-          />
-        ))
-      )}
+      <Box>
+        <ConfigWidget title={"Select a configuration"} />
+      </Box>
 
-      <Box sx={{ flexGrow: 1 }} />
+      <Box
+      sx={{
+        display: "flex", 
+        gap: 2, 
+        justifyContent: "center", 
+        flexGrow: 1, 
+      }}
+      >
+        {/*DataWidgets for DataChannels*/}
+        {Object.entries(configData).map(([canID, canData]) =>
+          Object.entries(canData.DataChannels || {}).map(([channelKey, channelData]) => (
+            <DataWidget
+              key={`${canID}-${channelKey}`}
+              canID={canID} 
+              valueToDisplay={channelKey} //channel key (e.g., "Battery")
+              title={channelKey} //channel key as the title
+              unit={channelData.unit || ""} 
+            />
+          ))
+        )}
+      </Box>
+
+      <Box
+      sx={{
+        display: "flex",
+        justifyContent: "flex-end", // Ensure the elapsed time widget is on the far right
+      }}
+    >
       {/* Elapsed Time Widget */}
+      
       <DataWidget
         canID="elapsedTime"
         valueToDisplay="Elapsed Time"
@@ -97,6 +120,7 @@ const DataWidgetList = () => {
         isElapsedTime={true}
         isConnected={isConnected}
       />
+      </Box>
     </Stack>
   );
 };

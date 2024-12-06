@@ -32,7 +32,7 @@ const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false,
       if (isConnected) {
         timer = setInterval(() => {
           setNumber((prev) => prev + 1); // Increment elapsed time in seconds
-        }, 5000);
+        }, 1000);
       } else {
         setNumber(0); // Reset elapsed time when disconnected
         clearInterval(timer);
