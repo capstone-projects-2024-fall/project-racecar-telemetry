@@ -52,11 +52,11 @@ sidebar_position: 3
 - typescript@^4.9.5
 
 ### Microcontroller Libraries
-Arduino Wire (2.1): facilitates serial communication between two i2c devices
-Adafruit_CAN (0.2.1): enables CAN communication for Adafruit M4 Feather CAN
-Arduino WiFi (1.2.7): enables WiFi communication for ESP32
-Arduino HttpClient (2.2.0): facilitates communication between ESP32 and web server
-ArduinoJson (2.7.1): handles JSON object creation/interpretation on ESP32
+- Arduino Wire (2.1): facilitates serial communication between two i2c devices
+- Adafruit_CAN (0.2.1): enables CAN communication for Adafruit M4 Feather CAN
+- Arduino WiFi (1.2.7): enables WiFi communication for ESP32
+- Arduino HttpClient (2.2.0): facilitates communication between ESP32 and web server
+- ArduinoJson (2.7.1): handles JSON object creation/interpretation on ESP32
 
 ### Database
 Firebase: for storing telemetry data. 
