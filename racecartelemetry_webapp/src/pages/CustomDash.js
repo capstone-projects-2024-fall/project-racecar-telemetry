@@ -178,7 +178,7 @@ export default function CustomDash() {
         variant="contained"
         color="primary"
         onClick={handleAddRow}
-        sx={{ marginBottom: "20px" }}
+        sx={{ marginBottom: "10px" }}
       >
         Add Row
       </Button>
