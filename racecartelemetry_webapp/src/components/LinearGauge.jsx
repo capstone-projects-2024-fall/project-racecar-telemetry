@@ -1,50 +1,71 @@
-import React, { useState, useEffect } from "react";
+import React, { use } from "react";
 import dynamic from "next/dynamic";
+import { useState, useEffect } from "react";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
-import SettingsIcon from "@mui/icons-material/Settings";
-import IconButton from "@mui/material/IconButton";
-import { Modal } from "@mui/material";
-import ComponentEditor from "@/components/ComponentEditor";
-import theme from "@/app/theme";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const LinearGauge = () => {
-  const [config, setConfig] = useState({
-    canID: "CAN ID",
-    dataChannel: "Data Channel",
-    color: "Blue",
-    min: 0,
-    max: 100,
-  });
+// import SettingsIcon from "@mui/icons-material/Settings";
+// import IconButton from "@mui/material/IconButton";
+// import { Modal } from "@mui/material";
+// import ComponentEditor from "@/components/ComponentEditor";
+import theme from "@/app/theme";
 
+const LinearGauge = ({ uniqueID }) => {
+  const storedConfig = JSON.parse(localStorage.getItem(`Linear Gauge-${uniqueID}`));
+
+  // console.log(`Linear Gauge-${uniqueID}`);
+
+  const initialConfig = {
+    canID: storedConfig.canID || "CAN ID",
+    dataChannel: storedConfig.dataChannel || "Data Channel",
+    color: storedConfig.config?.Color || "Red",
+    min: storedConfig.config?.["Y Axis Min Value"] || 0,
+    max: storedConfig.config?.["Y Axis Max Value"] || 100,
+  }
+
+
+  const [config, setConfig] = useState(initialConfig);
   const [value, setValue] = useState(0);
   const [unit, setUnit] = useState("(UNIT)");
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  // const [settingsVisible, setSettingsVisible] = useState(false);
+  // Range of vals to display
   const [range, setRange] = useState([config.min, config.max]);
 
-  const handleSettingsClick = () => {
-    setSettingsVisible((prevState) => !prevState);
-  };
+  useEffect(() => {
+    const updatedStoredConfig = { ...initialConfig, ...storedConfig };
+    localStorage.setItem(`Linear Gauge-${uniqueID}`, JSON.stringify(updatedStoredConfig));
+    // console.log("Linear Color:", config.color);
+    // console.log("Linear Min:", config.min);
+    // console.log("Linear Max:", config.max);
+  }, [uniqueID, initialConfig]);
 
-  const handleSettingsClose = () => {
-    setSettingsVisible(false);
-  };
 
-  const handleSave = (formState) => {
-    const updatedConfig = {
-      canID: formState.canID || config.canID,
-      dataChannel: formState.dataChannel || config.dataChannel,
-      color: formState.Color || config.color,
-      min: parseFloat(formState["Min Value"]) || config.min,
-      max: parseFloat(formState["Max Value"]) || config.max,
-    };
-    console.log("Saving LinearGauge configuration:", updatedConfig);
-    setConfig(updatedConfig);
-    setRange([updatedConfig.min, updatedConfig.max]);
-    setSettingsVisible(false);
-  };
+
+
+
+  // const handleSettingsClick = () => {
+  //   setSettingsVisible((prevState) => !prevState);
+  // };
+
+  // const handleSettingsClose = () => {
+  //   setSettingsVisible(false);
+  // };
+
+  // const handleSave = (formState) => {
+  //   const updatedConfig = {
+  //     canID: formState.canID || config.canID,
+  //     dataChannel: formState.dataChannel || config.dataChannel,
+  //     color: formState.Color || config.color,
+  //     min: parseFloat(formState["Min Value"]) || config.min,
+  //     max: parseFloat(formState["Max Value"]) || config.max,
+  //   };
+  //   console.log("Saving LinearGuage configuration:", updatedConfig);
+  //   setConfig(updatedConfig);
+  //   setRange([updatedConfig.min, updatedConfig.max]);
+  //   setSettingsVisible(false);
+  // };
 
   useEffect(() => {
     if (!config.canID || !config.dataChannel) return;
@@ -64,7 +85,7 @@ const LinearGauge = () => {
 
   return (
     <>
-      {settingsVisible && (
+      {/* {settingsVisible && (
         <Modal
           open={settingsVisible}
           onClose={handleSettingsClose}
@@ -86,7 +107,7 @@ const LinearGauge = () => {
             onSave={handleSave}
           />
         </Modal>
-      )}
+      )} */}
       <div
         style={{
           display: "flex",
@@ -108,13 +129,14 @@ const LinearGauge = () => {
             height: "1.5rem",
           }}
         >
-          <IconButton onClick={handleSettingsClick}>
-            {/* <SettingsIcon
+          {/* <IconButton onClick={handleSettingsClick}>
+            <SettingsIcon
               style={{
                 color: theme.palette.primary.main,
               }}
-            /> */}
-          </IconButton>
+            />
+          </IconButton> */}
+
         </div>
         <Plot
           data={[

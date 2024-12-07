@@ -84,20 +84,27 @@ export default function CustomDash() {
   };
 
   const handleSaveComponent = (config) => {
-    const updatedRows = [...rows];
     const { rowIndex, placeholderIndex } = currentEdit;
+
+    const uniqueID = config.id || uuidv4();
 
     // Ensure the config has a unique ID
     const updatedConfig = {
       ...config,
-      id: config.id || uuidv4(), // If `id` doesn't exist, assign a new UUID
+      id: uniqueID,
     };
 
-    // Replace placeholder with the configured component
-    updatedRows[rowIndex][placeholderIndex] = updatedConfig;
+    // console.log("save component:", updatedConfig.id);
+
+    const updatedRows = [...rows];
+    updatedRows[rowIndex] = [...updatedRows[rowIndex]];
+    updatedRows[rowIndex][placeholderIndex] = { ...updatedConfig };
+
     setRows(updatedRows);
 
-    localStorage.setItem(`DataGauge-${updatedConfig.id}`, JSON.stringify(updatedConfig));
+    const graphTypePrefix = config.type;
+    localStorage.setItem(`${graphTypePrefix}-${updatedConfig.id}`, JSON.stringify(updatedConfig));
+
 
     setEditorOpen(false); // Close the editor modal
     setCurrentEdit(null); // Reset current edit state
@@ -108,23 +115,50 @@ export default function CustomDash() {
 
     const placeholder = updatedRows[rowIndex][placeholderIndex];
     if (placeholder && placeholder.id) {
-      localStorage.removeItem(`DataGauge-${placeholder.id}`);
-      console.log("removed");
+      const graphTypePrefix = placeholder.type;
+      console.log("placeholderType:", graphTypePrefix);
+      localStorage.removeItem(`${graphTypePrefix}-${placeholder.id}`);
     }
 
     updatedRows[rowIndex].splice(placeholderIndex, 1); // Remove the placeholder box
     setRows(updatedRows);
   };
 
+  const handleRemoveRow = (rowIndex) => {
+    // Clone rows for modification
+    const updatedRows = [...rows];
+    const rowToRemove = updatedRows[rowIndex];
+  
+    // Remove localStorage entries for all placeholders in the row
+    if (rowToRemove) {
+      rowToRemove.forEach((placeholder) => {
+        if (placeholder && placeholder.id && placeholder.type) {
+          const graphTypePrefix = placeholder.type;
+          localStorage.removeItem(`${graphTypePrefix}-${placeholder.id}`);
+        }
+      });
+    }
+  
+    // Remove the row and update state
+    updatedRows.splice(rowIndex, 1);
+    setRows(updatedRows);
+  
+    // Update the heights
+    const updatedHeights = [...rowHeights];
+    updatedHeights.splice(rowIndex, 1);
+    setRowHeights(updatedHeights);
+  };
+
   const renderGraph = (config) => {
     if (!config.type) return null;
 
+    // console.log("select: ", config.type)
     switch (config.type) {
       case "Gauge":
         return <DataGauge uniqueID={config.id} />;
-      case "LinearGauge":
+      case "Linear Gauge":
         return <LinearGauge uniqueID={config.id} />;
-      case "TimeSeriesGraph":
+      case "Time Series Graph":
         return <TimeSeriesGraph uniqueID={config.id} />;
       default:
         return null;
@@ -188,16 +222,7 @@ export default function CustomDash() {
               <Tooltip title="Remove Row" placement="right">
                 <IconButton
                   color="secondary"
-                  onClick={() => {
-                    const updatedRows = rows.filter(
-                      (_, index) => index !== rowIndex
-                    );
-                    setRows(updatedRows);
-                    const updatedHeights = rowHeights.filter(
-                      (_, index) => index !== rowIndex
-                    );
-                    setRowHeights(updatedHeights);
-                  }}
+                  onClick={() => handleRemoveRow(rowIndex)}
                   sx={{
                     "&:hover": {
                       backgroundColor: "rgb(40,40,40)",
