@@ -111,6 +111,7 @@ const DataGauge = ({ uniqueID }) => {
           {/* <IconButton onClick={handleSettingsClick}>
             <SettingsIcon style={{ color: theme.palette.primary.main }} />
           </IconButton> */}
+
           {`${config.canID} / ${config.dataChannel}`}
         </div>
         <div

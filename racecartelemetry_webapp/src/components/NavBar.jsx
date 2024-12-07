@@ -63,7 +63,7 @@ const Navbar = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar position="sticky" sx={{ marginBottom: 5 }}>
+      <AppBar position="sticky" sx={{  }}>
         <Toolbar
           sx={{
             background: "linear-gradient(45deg, #A32036 40%, #010000fa 60%)",
@@ -94,34 +94,6 @@ const Navbar = () => {
                   ? "Telemetry Connected"
                   : "Telemetry Disconnected"}
             </Typography>
-            <Select
-              value={currentConfig || ""}
-              onChange={(e) => handleConfigChange(e.target.value)}
-              displayEmpty
-              sx={{
-                marginLeft: "8px",
-                backgroundColor: "white",
-                borderRadius: "4px",
-                padding: "0 8px",
-                fontSize: "0.9rem",
-                color: "black",
-                fontWeight: "500",
-                minWidth: "120px",
-                height: "32px",
-              }}
-              disabled={loading}
-              renderValue={(selected) => {
-                if (!selected) return "No configuration selected"; // Placeholder when no config is selected
-                const selectedConfig = configs.find((config) => config.id === selected);
-                return selectedConfig ? selectedConfig.id : "No configuration selected";
-              }}
-            >
-              {configs.map((config) => (
-                <MenuItem key={config.id} value={config.id}>
-                  {config.id}
-                </MenuItem>
-              ))}
-            </Select>
           </Box>
 
           <Link href="/">
