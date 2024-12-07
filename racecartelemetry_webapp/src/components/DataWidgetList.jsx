@@ -79,7 +79,7 @@ const DataWidgetList = () => {
       }}
     >
       <Box>
-        <ConfigWidget title={"Select a configuration"} />
+        <ConfigWidget title={"Selected configuration"} />
       </Box>
 
       <Box

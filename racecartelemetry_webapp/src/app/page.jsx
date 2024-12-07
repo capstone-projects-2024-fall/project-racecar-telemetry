@@ -133,10 +133,11 @@ export default function Home() {
       
       <Box
         sx={{
+          backgroundColor: "black",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: 2,
+          padding: 0.5,
         }}
       >
         {/*Data Widgets*/}

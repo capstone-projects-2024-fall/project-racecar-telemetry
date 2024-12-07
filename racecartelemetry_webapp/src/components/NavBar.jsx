@@ -63,7 +63,7 @@ const Navbar = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar position="sticky" sx={{ marginBottom: 5 }}>
+      <AppBar position="sticky" sx={{  }}>
         <Toolbar
           sx={{
             background: "linear-gradient(45deg, #A32036 40%, #010000fa 60%)",
