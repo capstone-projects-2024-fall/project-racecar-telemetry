@@ -213,7 +213,7 @@ export default function CustomDash() {
             >
                <Box
                 sx={{
-                  backgroundColor: "rgba(120, 128, 120, 0.2)", // Shared grey background
+                  backgroundColor: "rgba(140, 148, 140, 0.13)", // Shared grey background
                   borderRadius: "8px", // Optional: Add rounded corners
                   padding: "5px", // Add some spacing around the buttons
                   display: "flex",
@@ -241,7 +241,7 @@ export default function CustomDash() {
               </Box>
               <Box
                 sx={{
-                  backgroundColor: "rgba(120, 128, 120, 0.2)", // Shared grey background
+                  backgroundColor: "rgba(120, 128, 120, 0.13)", // Shared grey background
                   borderRadius: "8px", // Optional: Add rounded corners
                   padding: "5px", // Add some spacing around the buttons
                   display: "flex",
@@ -265,7 +265,7 @@ export default function CustomDash() {
               </Box>
               <Box
                 sx={{
-                  backgroundColor: "rgba(120, 128, 120, 0.2)", // Shared grey background
+                  backgroundColor: "rgba(120, 128, 120, 0.13)", // Shared grey background
                   borderRadius: "8px", // Optional: Add rounded corners
                   padding: "5px", // Add some spacing around the buttons
                   display: "flex",
