@@ -175,6 +175,7 @@ export default function CustomDash() {
       }}
     >
       <Button
+        
         variant="contained"
         color="primary"
         onClick={handleAddRow}
@@ -204,6 +205,7 @@ export default function CustomDash() {
             >
               <Tooltip title="Add Placeholder" placement="right">
                 <IconButton
+                
                   color="primary"
                   onClick={() => {
                     const updatedRows = [...rows];
@@ -232,32 +234,44 @@ export default function CustomDash() {
                   <RemoveIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Increase Row Height" placement="right">
-                <IconButton
-                  color="primary"
-                  onClick={() => adjustRowHeight(rowIndex, 50)}
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "rgb(40,40,40)",
-                    },
-                  }}
-                >
-                  <CropDinIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Decrease Row Height" placement="right">
-                <IconButton
-                  color="secondary"
-                  onClick={() => adjustRowHeight(rowIndex, -50)}
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "rgb(40,40,40)",
-                    },
-                  }}
-                >
-                  <Crop169Icon />
-                </IconButton>
-              </Tooltip>
+              <Box
+  sx={{
+    backgroundColor: "rgba(0, 128, 0, 0.2)", // Shared green background
+    borderRadius: "8px", // Optional: Add rounded corners
+    padding: "10px", // Add some spacing around the buttons
+    display: "flex",
+    flexDirection: "column", // Stack the buttons vertically
+    alignItems: "center",
+  }}
+>
+  <Tooltip title="Increase Row Height" placement="right">
+    <IconButton
+      color="primary"
+      onClick={() => adjustRowHeight(rowIndex, 50)}
+      sx={{
+        "&:hover": {
+          backgroundColor: "rgba(0, 128, 0, 0.4)", // Darker green on hover
+        },
+      }}
+    >
+      <CropDinIcon />
+    </IconButton>
+  </Tooltip>
+  <Tooltip title="Decrease Row Height" placement="right">
+    <IconButton
+      color="primary"
+      onClick={() => adjustRowHeight(rowIndex, -50)}
+      sx={{
+        "&:hover": {
+          backgroundColor: "rgba(255, 0, 0, 0.4)", // Darker red on hover
+        },
+      }}
+    >
+      <Crop169Icon />
+    </IconButton>
+  </Tooltip>
+</Box>
+
             </Box>
 
             {/* Placeholders */}
