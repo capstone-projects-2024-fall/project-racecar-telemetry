@@ -34,6 +34,15 @@ const componentConfigs = {
       { label: "Y Axis Max Value", type: "number" },
     ],
   },
+  "XY Graph": {
+    fields: [
+      { label: "Color", type: "select", options: ["Blue", "Red", "Green"] },
+      { label: "X Axis Min Value", type: "number" },
+      { label: "X Axis Max Value", type: "number" },
+      { label: "Y Axis Min Value", type: "number" },
+      { label: "Y Axis Max Value", type: "number" },
+    ],
+  },
 };
 
 const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
@@ -42,6 +51,8 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
   const [errors, setErrors] = useState({});
   const [selectedCanID, setSelectedCanID] = useState("");
   const [dataChannels, setDataChannels] = useState([]);
+  const [xDataChannels, setXDataChannels] = useState([]);
+  const [yDataChannels, setYDataChannels] = useState([]);
 
   // When CAN ID changes, update Data Channel options
   useEffect(() => {
@@ -62,45 +73,72 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
     setErrors((prev) => ({ ...prev, [field]: false })); // Clear error when input changes
   };
 
-  const handleCanIDChange = (canID) => {
-    setSelectedCanID(canID);
-    setFormState((prev) => ({ ...prev, canID })); // Save CAN ID in formState
-    setFormState((prev) => ({ ...prev, dataChannel: "" })); // Clear the selected data channel when CAN ID changes
+  const handleCanIDChange = (axis, canID) => {
+    if (axis === "general") {
+      setSelectedCanID(canID);
+      setFormState((prev) => ({ ...prev, canID: canID, dataChannel: "" }));
+    } else if (axis === "x") {
+      setFormState((prev) => ({ ...prev, xCanID: canID, xChannel: "" }));
+      setXDataChannels(groupedDataChannels[canID] || []);
+    } else if (axis === "y") {
+      setFormState((prev) => ({ ...prev, yCanID: canID, yChannel: "" }));
+      setYDataChannels(groupedDataChannels[canID] || []);
+    }
   };
 
   const handleSubmit = () => {
+    console.log("handleSubmit triggered"); // Debugging log
+  
     const newErrors = {};
     if (!componentType) {
       newErrors.componentType = "Please select a component type.";
     }
-    if (!selectedCanID) {
-      newErrors.canID = "Please select a CAN ID.";
+  
+    if (componentType === "XY Graph") {
+      // XY Graph-specific validation
+      if (!formState.xCanID) newErrors.xCanID = "Please select the X-axis CAN ID.";
+      if (!formState.xChannel) newErrors.xChannel = "Please select the X-axis data channel.";
+      if (!formState.yCanID) newErrors.yCanID = "Please select the Y-axis CAN ID.";
+      if (!formState.yChannel) newErrors.yChannel = "Please select the Y-axis data channel.";
+    } else {
+      // General validation for other graph types
+      if (!formState.canID) newErrors.canID = "Please select a CAN ID.";
+      if (!formState.dataChannel) newErrors.dataChannel = "Please select a data channel.";
     }
-    if (!formState.dataChannel) {
-      newErrors.dataChannel = "Please select a data channel.";
-    }
-
+  
     const configFields = componentConfigs[componentType]?.fields || [];
     configFields.forEach((field) => {
       if (!formState[field.label]) {
-        newErrors[field.label] = "This field is required.";
+        newErrors[field.label] = `${field.label} is required.`;
       }
     });
-
+  
     if (Object.keys(newErrors).length > 0) {
+      console.log("Validation errors:", newErrors); // Debugging log
       setErrors(newErrors);
       return;
     }
-
-    console.log("Form Data:", formState);
-    
-    onSave({
+  
+    console.log("Form Data:", formState); // Debugging log
+    const saveData = {
       type: componentType,
-      canID: selectedCanID,
-      dataChannel: formState.dataChannel,
       config: formState,
-    });
+    };
+  
+    if (componentType === "XY Graph") {
+      saveData.xCanID = formState.xCanID;
+      saveData.xChannel = formState.xChannel;
+      saveData.yCanID = formState.yCanID;
+      saveData.yChannel = formState.yChannel;
+    } else {
+      saveData.canID = selectedCanID;
+      saveData.dataChannel = formState.dataChannel;
+    }
+  
+    console.log("Save Data:", saveData); // Debugging log
+    onSave(saveData); // Call the save handler
   };
+  
 
   return (
     <Modal open={open} onClose={onCancel} aria-labelledby="component-editor-modal">
@@ -139,78 +177,120 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
           )}
         </FormControl>
 
-        {/* CAN ID Selector */}
-        <FormControl fullWidth margin="normal" error={!!errors.canID}>
-          <InputLabel>CAN ID</InputLabel>
-          <Select
-            value={selectedCanID}
-            onChange={(e) => handleCanIDChange(e.target.value)}
-          >
-            {Object.keys(groupedDataChannels || {}).map((canID) => (
-              <MenuItem key={canID} value={canID}>
-                {canID}
-              </MenuItem>
-            ))}
-          </Select>
-          {errors.canID && <Typography color="error">{errors.canID}</Typography>}
-        </FormControl>
+        {/* General CAN ID and Data Channel Fields */}
+        {componentType && componentType !== "XY Graph" && (
+          <>
+            <FormControl fullWidth margin="normal" error={!!errors.canID}>
+              <InputLabel>CAN ID</InputLabel>
+              <Select
+                value={selectedCanID || ""}
+                onChange={(e) => handleCanIDChange("general", e.target.value)}
+              >
+                {Object.keys(groupedDataChannels || {}).map((canID) => (
+                  <MenuItem key={canID} value={canID}>
+                    {canID}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.canID && <Typography color="error">{errors.canID}</Typography>}
+            </FormControl>
 
-        {/* Data Channel Selector */}
-        <FormControl fullWidth margin="normal" error={!!errors.dataChannel} disabled={!selectedCanID}>
-          <InputLabel>Data Channel</InputLabel>
-          <Select
-            value={formState.dataChannel || ""}
-            onChange={(e) => handleChange("dataChannel", e.target.value)}
-          >
-            {dataChannels.map((channel, idx) => (
-              <MenuItem key={idx} value={channel}>
-                {channel}
-              </MenuItem>
-            ))}
-          </Select>
-          {errors.dataChannel && (
-            <Typography color="error">{errors.dataChannel}</Typography>
-          )}
-        </FormControl>
+            <FormControl fullWidth margin="normal" error={!!errors.dataChannel} disabled={!selectedCanID}>
+              <InputLabel>Data Channel</InputLabel>
+              <Select
+                value={formState.dataChannel || ""}
+                onChange={(e) => handleChange("dataChannel", e.target.value)}
+              >
+                {dataChannels.map((channel, idx) => (
+                  <MenuItem key={idx} value={channel}>
+                    {channel}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.dataChannel && <Typography color="error">{errors.dataChannel}</Typography>}
+            </FormControl>
+          </>
+        )}
+
+        {/* XY Graph Specific Fields */}
+        {componentType === "XY Graph" && (
+          <>
+            <FormControl fullWidth margin="normal" error={!!errors.xCanID}>
+              <InputLabel>X-Axis CAN ID</InputLabel>
+              <Select
+                value={formState.xCanID || ""}
+                onChange={(e) => handleCanIDChange("x", e.target.value)}
+              >
+                {Object.keys(groupedDataChannels || {}).map((canID) => (
+                  <MenuItem key={canID} value={canID}>
+                    {canID}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.xCanID && <Typography color="error">{errors.xCanID}</Typography>}
+            </FormControl>
+
+            <FormControl fullWidth margin="normal" error={!!errors.xChannel}>
+              <InputLabel>X-Axis Data Channel</InputLabel>
+              <Select
+                value={formState.xChannel || ""}
+                onChange={(e) => handleChange("xChannel", e.target.value)}
+              >
+                {xDataChannels.map((channel, idx) => (
+                  <MenuItem key={idx} value={channel}>
+                    {channel}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.xChannel && <Typography color="error">{errors.xChannel}</Typography>}
+            </FormControl>
+
+            <FormControl fullWidth margin="normal" error={!!errors.yCanID}>
+              <InputLabel>Y-Axis CAN ID</InputLabel>
+              <Select
+                value={formState.yCanID || ""}
+                onChange={(e) => handleCanIDChange("y", e.target.value)}
+              >
+                {Object.keys(groupedDataChannels || {}).map((canID) => (
+                  <MenuItem key={canID} value={canID}>
+                    {canID}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.yCanID && <Typography color="error">{errors.yCanID}</Typography>}
+            </FormControl>
+
+            <FormControl fullWidth margin="normal" error={!!errors.yChannel}>
+              <InputLabel>Y-Axis Data Channel</InputLabel>
+              <Select
+                value={formState.yChannel || ""}
+                onChange={(e) => handleChange("yChannel", e.target.value)}
+              >
+                {yDataChannels.map((channel, idx) => (
+                  <MenuItem key={idx} value={channel}>
+                    {channel}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.yChannel && <Typography color="error">{errors.yChannel}</Typography>}
+            </FormControl>
+          </>
+        )}
 
         {/* Dynamic Fields */}
         {componentType &&
-          componentConfigs[componentType].fields.map((field, index) => (
-            <FormControl
+          componentConfigs[componentType]?.fields.map((field, index) => (
+            <TextField
               key={index}
+              type={field.type}
+              label={field.label}
+              value={formState[field.label] || ""}
+              onChange={(e) => handleChange(field.label, e.target.value)}
               fullWidth
               margin="normal"
               error={!!errors[field.label]}
-            >
-              {field.type === "select" ? (
-                <>
-                  <InputLabel>{field.label}</InputLabel>
-                  <Select
-                    value={formState[field.label] || ""}
-                    onChange={(e) => handleChange(field.label, e.target.value)}
-                  >
-                    {field.options.map((option, idx) => (
-                      <MenuItem key={idx} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors[field.label] && (
-                    <Typography color="error">{errors[field.label]}</Typography>
-                  )}
-                </>
-              ) : (
-                <TextField
-                  type={field.type}
-                  label={field.label}
-                  value={formState[field.label] || ""}
-                  onChange={(e) => handleChange(field.label, e.target.value)}
-                  fullWidth
-                  error={!!errors[field.label]}
-                  helperText={errors[field.label]}
-                />
-              )}
-            </FormControl>
+              helperText={errors[field.label]}
+            />
           ))}
 
         {/* Action Buttons */}

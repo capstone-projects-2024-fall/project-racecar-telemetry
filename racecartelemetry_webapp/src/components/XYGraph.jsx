@@ -9,97 +9,86 @@ import { Modal } from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const XYGraph = ({
-  canID,
-  xChannel,
-  yChannel,
-  xMin,
-  xMax,
-  yMin,
-  yMax,
-  color,
-}) => {
+const XYGraph = ({ uniqueID }) => {
+  const storedConfig = JSON.parse(localStorage.getItem(`XY Graph-${uniqueID}`));
+
+  const initialConfig = {
+    xCanID: storedConfig.xCanID || "CAN ID",
+    xChannel: storedConfig.xChannel || "Data Channel",
+    yCanID: storedConfig.yCanID || "CAN ID",
+    yChannel: storedConfig.yChannel || "Data Channel",
+    color: storedConfig.config?.Color || "Red",
+    xMin: storedConfig.config?.["X Axis Min Value"] || 0,
+    xMax: storedConfig.config?.["X Axis Max Value"] || 100,
+    yMin: storedConfig.config?.["Y Axis Min Value"] || 0,
+    yMax: storedConfig.config?.["Y Axis Max Value"] || 100,
+  }
+
+  const [config, setConfig] = useState(initialConfig);
+
+  console.log(config);
+
   const [lateral, setLat] = useState([]);
   const [longitudinal, setLong] = useState([]);
+  // const [settingsVisible, setSettingsVisible] = useState(false);
+  const [lineColor, setLineColor] = useState(config.color);
+  const [xDataName, setXDataName] = useState(config.xChannel);
+  const [yDataName, setYDataName] = useState(config.yChannel);
+  const [xRange, setXRange] = useState([config.xMin, config.xMax]);
+  const [yRange, setYRange] = useState([config.yMin, config.yMax]);
 
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  console.log("X name",xDataName);
+  console.log("Y name",yDataName);
 
-  const [lineColor, setLineColor] = useState(color);
+  // const handleSettingsClick = () => {
+  //   setSettingsVisible((prevState) => !prevState);
+  // };
 
-  const [xDataName, setXDataName] = useState(xChannel);
-  const [yDataName, setYDataName] = useState(yChannel);
-  const [xRange, setXRange] = useState([xMin, xMax]);
-  const [yRange, setYRange] = useState([yMin, yMax]);
-
-  // These are the config options for TimeSeries Graphs
-  const config = {
-    fields: [
-      
-      {
-        label: "X Axis Max Value",
-        type: "number",
-      },
-      {
-        label: "Y Axis Data Name",
-        type: "text",
-      },
-      {
-        label: "Y Axis Min Value",
-        type: "number",
-      },
-      {
-        label: "Y Axis Max Value",
-        type: "number",
-      },
-      {
-        label: "Color",
-        type: "select",
-        options: ["Blue", "Red", "Green"],
-      },
-    ],
-  };
-
-  const handleSettingsClick = () => {
-    setSettingsVisible((prevState) => !prevState);
-  };
-
-  const handleSettingsClose = () => {
-    setSettingsVisible(false);
-  };
-
-  const handleSave = (data) => {
-    // Set the new settings
-    setXDataName(data["X Axis Data Name"]);
-    setYDataName(data["Y Axis Data Name"]);
-    setXRange([data["X Axis Min Value"], data["X Axis Max Value"]]);
-    setYRange([data["Y Axis Min Value"], data["Y Axis Max Value"]]);
-
-    setLineColor(data["Color"]);
-    setSettingsVisible(false);
-  };
+  // const handleSettingsClose = () => {
+  //   setSettingsVisible(false);
+  // };
 
   useEffect(() => {
-    if (!canID) return;
+    const updatedStoredConfig = { ...initialConfig, ...storedConfig };
+    localStorage.setItem(`XY Graph-${uniqueID}`, JSON.stringify(updatedStoredConfig));
+    // console.log("Linear Color:", config.color);
+    // console.log("Linear Min:", config.min);
+    // console.log("Linear Max:", config.max);
+  }, [uniqueID, initialConfig]);
 
-    const dataRef = ref(db, `data/${canID}`);
+  useEffect(() => {
+    if (!config.xCanID || !config.xChannel) return;
 
-    const unsubscribe = onValue(dataRef, (snapshot) => {
+    const xRef = ref(db, `data/${config.xCanID}`);
+    const unsubscribeX = onValue(xRef, (snapshot) => {
       if (snapshot.exists()) {
         const canData = snapshot.val();
-
-        if (
-          canData[yChannel] !== undefined &&
-          canData[xChannel] !== undefined
-        ) {
-          setLat((prev) => [...prev, canData[yChannel]]);
-          setLong((prev) => [...prev, canData[xChannel]]);
-          // setUnit(canData[unit])
+        if (canData[config.xChannel] !== undefined) {
+          setLong((prev) => [...prev, canData[config.xChannel]]);
         }
       }
     });
 
-    return () => unsubscribe();
-  }, [canID, xChannel, yChannel]);
+    return () => unsubscribeX();
+  }, [config.xCanID, config.xChannel]);
+
+
+  // Fetch Y-Axis data
+  useEffect(() => {
+    if (!config.yCanID || !config.yChannel) return;
+
+    const yRef = ref(db, `data/${config.yCanID}`);
+    const unsubscribeY = onValue(yRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const canData = snapshot.val();
+        if (canData[config.yChannel] !== undefined) {
+          setLat((prev) => [...prev, canData[config.yChannel]]);
+        }
+      }
+    });
+
+    return () => unsubscribeY();
+  }, [config.yCanID, config.yChannel]);
 
   const data = [
     {
@@ -153,7 +142,7 @@ const XYGraph = ({
 
   return (
     <>
-      {settingsVisible && (
+      {/* {settingsVisible && (
         <Modal
           open={settingsVisible}
           onClose={handleSettingsClose}
@@ -169,7 +158,7 @@ const XYGraph = ({
             onSave={handleSave}
           />
         </Modal>
-      )}
+      )} */}
       <div
         style={{
           width: "100%",
@@ -191,13 +180,13 @@ const XYGraph = ({
             height: "1.5rem",
           }}
         >
-          <IconButton onClick={handleSettingsClick}>
+          {/* <IconButton onClick={handleSettingsClick}>
             <SettingsIcon
               style={{
                 color: theme.palette.primary.main,
               }}
             />
-          </IconButton>
+          </IconButton> */}
         </div>
         <Plot
           data={data}
