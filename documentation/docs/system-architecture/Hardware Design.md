@@ -3,7 +3,8 @@ sidebar_position: 2
 ---
 ## Telemetry Device
 
-The telemetry device consists of a microcontroller and CAN transceiver wired to a standard automotive connector that will be plugged directly into the vehicle's wiring harness. It requires the following wires to integrate with the vehicle's wiring harness:
+The telemetry device consists of a ESP32 and Feather M4 wired to a standard automotive connector that will be plugged directly into the vehicle's wiring harness. It requires the following wires to integrate with the vehicle's wiring harness:
+
 | Color     |  Label    |  Meaning  |
 | --------- | -------   | -------   |
 | Black     | GND       | Connects to the vehicle's chassis ground. |
