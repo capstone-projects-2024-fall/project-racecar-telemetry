@@ -236,7 +236,7 @@ export default function CustomDash() {
               </Tooltip>
               <Box
   sx={{
-    backgroundColor: "rgba(0, 128, 0, 0.2)", // Shared green background
+    backgroundColor: "rgba(120, 128, 120, 0.2)", // Shared green background
     borderRadius: "8px", // Optional: Add rounded corners
     padding: "10px", // Add some spacing around the buttons
     display: "flex",
@@ -250,7 +250,7 @@ export default function CustomDash() {
       onClick={() => adjustRowHeight(rowIndex, 50)}
       sx={{
         "&:hover": {
-          backgroundColor: "rgba(0, 128, 0, 0.4)", // Darker green on hover
+          backgroundColor: "rgba(120, 128, 120, 0.4)", // Darker green on hover
         },
       }}
     >
@@ -263,7 +263,7 @@ export default function CustomDash() {
       onClick={() => adjustRowHeight(rowIndex, -50)}
       sx={{
         "&:hover": {
-          backgroundColor: "rgba(255, 0, 0, 0.4)", // Darker red on hover
+          backgroundColor: "rgba(120, 128, 120, 0.4)", // Darker red on hover
         },
       }}
     >
