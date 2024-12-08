@@ -192,7 +192,7 @@ const TimeSeriesGraph = ({ uniqueID }) => {
           width: "100%",
           padding: "0",
           borderRadius: "12px",
-          border: `2px solid ${theme.palette.primary.main}`,
+          border: `0px solid ${theme.palette.primary.main}`,
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
           backgroundColor: "rgba(30, 30, 30, 0.9)",
           margin: "0",
@@ -205,7 +205,7 @@ const TimeSeriesGraph = ({ uniqueID }) => {
             alignItems: "center",
             justifyContent: "left",
             backgroundColor: "rgba(20, 20, 20, 0.9)",
-            height: "1.5rem",
+            height: "0rem",
           }}
         >
           {/* <IconButton onClick={handleSettingsClick}>

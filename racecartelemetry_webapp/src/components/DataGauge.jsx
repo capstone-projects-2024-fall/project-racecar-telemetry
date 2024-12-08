@@ -121,6 +121,8 @@ const DataGauge = ({ uniqueID }) => {
 
       <div
         style={{
+          backgroundColor: "rgba(20, 20, 20, 0.9)",
+
           padding: 5,
           width: "100%",
           height: "100%",

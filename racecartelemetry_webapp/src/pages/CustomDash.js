@@ -9,7 +9,10 @@ import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import DataGauge from "@components/DataGauge";
 import XYGraph from "@components/XYGraph";
 import ComponentEditor from "@components/ComponentEditor";
-import { getCurrentConfig, fetchDataChannelsGroupedByCanID } from "@/services/CANConfigurationService";
+import {
+  getCurrentConfig,
+  fetchDataChannelsGroupedByCanID,
+} from "@/services/CANConfigurationService";
 import { v4 as uuidv4 } from "uuid";
 
 export default function CustomDash() {
@@ -39,8 +42,12 @@ export default function CustomDash() {
 
   // Load dashboard state from localStorage
   useEffect(() => {
-    const storedRows = JSON.parse(localStorage.getItem("dashboardRows") || "[]");
-    const storedHeights = JSON.parse(localStorage.getItem("dashboardRowHeights") || "[]");
+    const storedRows = JSON.parse(
+      localStorage.getItem("dashboardRows") || "[]"
+    );
+    const storedHeights = JSON.parse(
+      localStorage.getItem("dashboardRowHeights") || "[]"
+    );
     setRows(storedRows);
     setRowHeights(storedHeights);
   }, []);
@@ -104,8 +111,10 @@ export default function CustomDash() {
     setRows(updatedRows);
 
     const graphTypePrefix = config.type;
-    localStorage.setItem(`${graphTypePrefix}-${updatedConfig.id}`, JSON.stringify(updatedConfig));
-
+    localStorage.setItem(
+      `${graphTypePrefix}-${updatedConfig.id}`,
+      JSON.stringify(updatedConfig)
+    );
 
     setEditorOpen(false); // Close the editor modal
     setCurrentEdit(null); // Reset current edit state
@@ -129,7 +138,7 @@ export default function CustomDash() {
     // Clone rows for modification
     const updatedRows = [...rows];
     const rowToRemove = updatedRows[rowIndex];
-  
+
     // Remove localStorage entries for all placeholders in the row
     if (rowToRemove) {
       rowToRemove.forEach((placeholder) => {
@@ -139,11 +148,11 @@ export default function CustomDash() {
         }
       });
     }
-  
+
     // Remove the row and update state
     updatedRows.splice(rowIndex, 1);
     setRows(updatedRows);
-  
+
     // Update the heights
     const updatedHeights = [...rowHeights];
     updatedHeights.splice(rowIndex, 1);
@@ -182,7 +191,7 @@ export default function CustomDash() {
         variant="contained"
         color="primary"
         onClick={handleAddRow}
-        sx={{ marginBottom: "20px" }}
+        sx={{ marginBottom: "10px" }}
       >
         Add Row
       </Button>
@@ -206,6 +215,16 @@ export default function CustomDash() {
                 marginRight: "10px",
               }}
             >
+               <Box
+                sx={{
+                  backgroundColor: "rgba(140, 148, 140, 0.13)", // Shared grey background
+                  borderRadius: "8px", // Optional: Add rounded corners
+                  padding: "5px", // Add some spacing around the buttons
+                  display: "flex",
+                  flexDirection: "column", // Stack the buttons vertically
+                  alignItems: "center",
+                }}
+              >
               <Tooltip title="Add Placeholder" placement="right">
                 <IconButton
                   color="primary"
@@ -223,45 +242,68 @@ export default function CustomDash() {
                   <AddIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Remove Row" placement="right">
-                <IconButton
-                  color="secondary"
-                  onClick={() => handleRemoveRow(rowIndex)}
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "rgb(40,40,40)",
-                    },
-                  }}
-                >
-                  <RemoveIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Increase Row Height" placement="right">
-                <IconButton
-                  color="primary"
-                  onClick={() => adjustRowHeight(rowIndex, 50)}
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "rgb(40,40,40)",
-                    },
-                  }}
-                >
-                  <CropDinIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Decrease Row Height" placement="right">
-                <IconButton
-                  color="secondary"
-                  onClick={() => adjustRowHeight(rowIndex, -50)}
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "rgb(40,40,40)",
-                    },
-                  }}
-                >
-                  <Crop169Icon />
-                </IconButton>
-              </Tooltip>
+              </Box>
+              <Box
+                sx={{
+                  backgroundColor: "rgba(120, 128, 120, 0.13)", // Shared grey background
+                  borderRadius: "8px", // Optional: Add rounded corners
+                  padding: "5px", // Add some spacing around the buttons
+                  display: "flex",
+                  flexDirection: "column", // Stack the buttons vertically
+                  alignItems: "center",
+                }}
+              >
+                <Tooltip title="Remove Row" placement="right">
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleRemoveRow(rowIndex)}
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: "rgb(40,40,40)",
+                      },
+                    }}
+                  >
+                    <RemoveIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <Box
+                sx={{
+                  backgroundColor: "rgba(120, 128, 120, 0.13)", // Shared grey background
+                  borderRadius: "8px", // Optional: Add rounded corners
+                  padding: "5px", // Add some spacing around the buttons
+                  display: "flex",
+                  flexDirection: "column", // Stack the buttons vertically
+                  alignItems: "center",
+                }}
+              >
+                <Tooltip title="Increase Row Height" placement="right">
+                  <IconButton
+                    color="primary"
+                    onClick={() => adjustRowHeight(rowIndex, 50)}
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: "rgb(40,40,40)",
+                      },
+                    }}
+                  >
+                    <CropDinIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Decrease Row Height" placement="right">
+                  <IconButton
+                    color="primary"
+                    onClick={() => adjustRowHeight(rowIndex, -50)}
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: "rgb(40,40,40)",
+                      },
+                    }}
+                  >
+                    <Crop169Icon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             </Box>
 
             {/* Placeholders */}
@@ -300,7 +342,9 @@ export default function CustomDash() {
                           backgroundColor: "rgb(40,40,40)",
                         },
                       }}
-                      onClick={() => handleOpenEditor(rowIndex, placeholderIndex)}
+                      onClick={() =>
+                        handleOpenEditor(rowIndex, placeholderIndex)
+                      }
                     >
                       <AddIcon />
                     </IconButton>
@@ -316,7 +360,9 @@ export default function CustomDash() {
                         backgroundColor: "rgb(40,40,40)",
                       },
                     }}
-                    onClick={() => handleRemovePlaceholder(rowIndex, placeholderIndex)}
+                    onClick={() =>
+                      handleRemovePlaceholder(rowIndex, placeholderIndex)
+                    }
                   >
                     <RemoveIcon />
                   </IconButton>
@@ -332,7 +378,9 @@ export default function CustomDash() {
         <ComponentEditor
           open={editorOpen}
           groupedDataChannels={groupedDataChannels} // Pass CAN data
-          onSave={(config) => handleSaveComponent({ type: config.type, ...config })}
+          onSave={(config) =>
+            handleSaveComponent({ type: config.type, ...config })
+          }
           onCancel={() => setEditorOpen(false)}
         />
       )}
