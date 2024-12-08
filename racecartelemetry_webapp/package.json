@@ -38,6 +38,19 @@
     "typescript": "^4.9.5"
   },
   "jest": {
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "^@components/(.*)$": "<rootDir>/src/components/$1",
+      "^@pages/(.*)$": "<rootDir>/src/pages/$1",
+      "^@api/(.*)$": "<rootDir>/src/pages/api/$1",
+      "^@services/(.*)$": "<rootDir>/src/services/$1",
+      "^@styles/(.*)$": "<rootDir>/src/styles/$1",
+      "^@firebaseConfig$": "<rootDir>/src/firebase/firebaseConfig.js",
+      "^@app/(.*)$": "<rootDir>/src/app/$1",
+      "^@global.css$": "<rootDir>/src/app/global.css",
+      "^@hooks/(.*)$": "<rootDir>/src/hooks/$1",
+      "^@theme$": "<rootDir>/src/app/theme.jsx"
+    },
     "coverageThreshold": {
       "global": {
         "lines": 80,

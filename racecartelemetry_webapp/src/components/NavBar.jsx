@@ -11,7 +11,10 @@ import theme from "@app/theme";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useEffect, useState } from "react";
-import { fetchConfigs, updateCurrentConfig } from "@services/CANConfigurationService";
+import {
+  fetchConfigs,
+  updateCurrentConfig,
+} from "@services/CANConfigurationService";
 
 const Navbar = () => {
   const [configs, setConfigs] = useState([]);
@@ -27,12 +30,16 @@ const Navbar = () => {
         const data = await fetchConfigs();
         // console.log("Raw configurations:", data);
 
-        const filteredConfigs = data.filter((config) => config.id !== "currentConfig");
+        const filteredConfigs = data.filter(
+          (config) => config.id !== "currentConfig"
+        );
         // console.log("Filtered configurations:", filteredConfigs);
 
         setConfigs(filteredConfigs);
 
-        const currentConfigData = data.find((config) => config.id === "currentConfig");
+        const currentConfigData = data.find(
+          (config) => config.id === "currentConfig"
+        );
         if (currentConfigData && currentConfigData.current) {
           setCurrentConfig(currentConfigData.current);
           // console.log("Fetched current configuration:", currentConfigData.current);
@@ -46,7 +53,6 @@ const Navbar = () => {
         setLoading(false);
       }
     };
-
 
     fetchAllConfigs();
   }, []);
@@ -63,7 +69,7 @@ const Navbar = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar position="sticky" sx={{  }}>
+      <AppBar position="sticky" sx={{}}>
         <Toolbar
           sx={{
             background: "linear-gradient(45deg, #A32036 40%, #010000fa 60%)",
@@ -91,8 +97,8 @@ const Navbar = () => {
               {isConnected === null
                 ? "Checking connection..."
                 : isConnected
-                  ? "Telemetry Connected"
-                  : "Telemetry Disconnected"}
+                ? "Telemetry Connected"
+                : "Telemetry Disconnected"}
             </Typography>
           </Box>
 
