@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
+import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
+
 // import theme from "@/app/theme";
 // import SettingsIcon from "@mui/icons-material/Settings";
 // import IconButton from "@mui/material/IconButton";
@@ -12,6 +14,7 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const DataGauge = ({ uniqueID }) => {
   const [metricValue, setMetricValue] = useState(0);
+  const [unit, setUnit] = useState("");
   // const [settingsVisible, setSettingsVisible] = useState(false);
 
   const storedConfig = JSON.parse(localStorage.getItem(`Gauge-${uniqueID}`));
@@ -36,6 +39,23 @@ const DataGauge = ({ uniqueID }) => {
     // console.log("Min:", config.min);
     // console.log("Max:", config.max);
   }, [uniqueID, initialConfig]);
+
+  useEffect(() => {
+    const fetchAndSetUnit = async () => {
+      try {
+        const selectedConfig = await getCurrentConfig();
+        console.log("selectedConfig:", selectedConfig);
+        const fetchedUnit = await fetchUnit(selectedConfig, config.canID, config.dataChannel);
+        setUnit(fetchedUnit || "Unknown");
+        console.log(config.dataChannel, " unit: ", fetchedUnit);
+      } catch (error) {
+        console.error("Error Fetching Unit:", error);
+        setUnit("Error");
+      }
+    };
+
+    fetchAndSetUnit();
+  }, []); 
 
   // Fetch live data from Firebase Realtime Database
   useEffect(() => {

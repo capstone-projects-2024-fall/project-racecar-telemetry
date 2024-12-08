@@ -7,6 +7,7 @@ import CropDinIcon from "@mui/icons-material/CropDin";
 import LinearGauge from "@components/LinearGauge";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import DataGauge from "@components/DataGauge";
+import XYGraph from "@components/XYGraph";
 import ComponentEditor from "@components/ComponentEditor";
 import {
   getCurrentConfig,
@@ -169,6 +170,9 @@ export default function CustomDash() {
         return <LinearGauge uniqueID={config.id} />;
       case "Time Series Graph":
         return <TimeSeriesGraph uniqueID={config.id} />;
+      case "XY Graph":
+        console.log("xy graph selected");
+        return <XYGraph uniqueID={config.id} />;
       default:
         return null;
     }

@@ -130,6 +130,26 @@ export const fetchDataChannelsGroupedByCanID = async (selectedConfig) => {
 };
 
 
+export const fetchUnit = async (selectedConfig, canID, dataChannel) => {
+  try {
+    // Fetch the configuration document
+    const configData = await fetchCANData(selectedConfig);
+
+    // Navigate to the specific data channel's unit
+    const unit = configData?.[canID]?.DataChannels?.[dataChannel]?.unit;
+
+    if (!unit) {
+      throw new Error(`Unit not found for CAN ID: ${canID}, Data Channel: ${dataChannel}`);
+    }
+
+    return unit;
+  } catch (error) {
+    console.error("Error fetching unit:", error);
+    return null;
+  }
+};
+
+
 export const getCurrentConfig = async () => {
   const response = await fetch(`/api/CANConfigurationAPI?collectionName=canConfigs&docId=currentConfig`, {
     method: 'GET',

@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
 import theme from "@/app/theme";
+import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
 // import SettingsIcon from "@mui/icons-material/Settings";
 // import IconButton from "@mui/material/IconButton";
 // import { Modal } from "@mui/material";
@@ -11,7 +12,7 @@ import theme from "@/app/theme";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const TimeSeriesGraph = ({ uniqueID }) => {
-  const [unit, setUnit] = useState("(UNIT)");
+  const [unit, setUnit] = useState("");
   const [timestamps, setTimestamps] = useState([]);
   const [valsToPlot, setValsToPlot] = useState([]);
 
@@ -34,6 +35,22 @@ const TimeSeriesGraph = ({ uniqueID }) => {
     localStorage.setItem(`Time Series Graph-${uniqueID}`, JSON.stringify(updatedStoredConfig));
   }, [uniqueID, initialConfig]);
 
+  useEffect(() => {
+    const fetchAndSetUnit = async () => {
+      try {
+        const selectedConfig = await getCurrentConfig();
+        console.log("selectedConfig:", selectedConfig);
+        const fetchedUnit = await fetchUnit(selectedConfig, config.canID, config.dataChannel);
+        setUnit(fetchedUnit || "Unknown");
+        console.log(config.dataChannel, " unit: ", fetchedUnit);
+      } catch (error) {
+        console.error("Error Fetching Unit:", error);
+        setUnit("Error");
+      }
+    };
+
+    fetchAndSetUnit();
+  }, []); 
 
 
   // // State to determine whether or not the settings modal is visible
