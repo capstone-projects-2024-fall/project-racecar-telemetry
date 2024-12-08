@@ -15,7 +15,7 @@ import {
   SortableContext,
   useSortable,
   arrayMove,
-  verticalListSortingStrategy,
+  horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -41,7 +41,6 @@ const DataWidgetList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [widgetOrder, setWidgetOrder] = useState([]);
-  const [elapsedTime, setElapsedTime] = useState(0); // Track elapsed time in seconds
   const isConnected = telemetryConnectionStatus(); // Check connection status
 
   const sensors = useSensors(useSensor(PointerSensor));
@@ -123,58 +122,60 @@ const DataWidgetList = () => {
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={widgetOrder} strategy={verticalListSortingStrategy}>
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{
-            overflowX: "auto",
-            padding: 2,
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <SortableWidget id="configWidget">
-            <Box>
-              <ConfigWidget title={"Selected configuration"} />
-            </Box>
-          </SortableWidget>
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          overflowX: "auto",
+          padding: 2,
+          width: "100%",
+          alignItems: "center",
+        }}
+      >
+        {/* Fixed Configuration Widget */}
+        <Box>
+          <ConfigWidget title={"Selected Configuration"} />
+        </Box>
 
-          {/* Data Widgets */}
-          {Object.entries(configData).map(([canID, canData]) =>
-            Object.entries(canData.DataChannels || {}).map(([channelKey, channelData]) => (
-              <SortableWidget key={`${canID}-${channelKey}`} id={`${canID}-${channelKey}`}>
-                <DataWidget
-                  canID={canID}
-                  valueToDisplay={channelKey} // Channel key (e.g., "Battery")
-                  title={channelKey} // Channel key as the title
-                  unit={channelData.unit || ""}
-                />
-              </SortableWidget>
-            ))
-          )}
+        {/* Draggable Widgets */}
+        <SortableContext items={widgetOrder} strategy={horizontalListSortingStrategy}>
+          {widgetOrder.map((widgetId) => {
+            if (widgetId === "elapsedTime") {
+              return (
+                <SortableWidget key={widgetId} id={widgetId}>
+                  <DataWidget
+                    canID="elapsedTime"
+                    valueToDisplay="Elapsed Time"
+                    title="Elapsed Time"
+                    unit="s"
+                    isElapsedTime={true}
+                    isConnected={isConnected}
+                  />
+                </SortableWidget>
+              );
+            }
 
-          {/* Elapsed Time Widget */}
-          <SortableWidget id="elapsedTime">
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end", // Ensure the elapsed time widget is on the far right
-              }}
-            >
-              <DataWidget
-                canID="elapsedTime"
-                valueToDisplay="Elapsed Time"
-                title="Elapsed Time"
-                unit="s"
-                isElapsedTime={true}
-                isConnected={isConnected}
-              />
-            </Box>
-          </SortableWidget>
-        </Stack>
-      </SortableContext>
+            // Render data widgets for other IDs
+            const [canID, channelKey] = widgetId.split("-");
+            const channelData = configData[canID]?.DataChannels?.[channelKey];
+
+            if (channelData) {
+              return (
+                <SortableWidget key={widgetId} id={widgetId}>
+                  <DataWidget
+                    canID={canID}
+                    valueToDisplay={channelKey} // Channel key (e.g., "Battery")
+                    title={channelKey} // Channel key as the title
+                    unit={channelData.unit || ""}
+                  />
+                </SortableWidget>
+              );
+            }
+
+            return null;
+          })}
+        </SortableContext>
+      </Stack>
     </DndContext>
   );
 };
