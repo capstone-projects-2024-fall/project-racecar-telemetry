@@ -1,290 +1,396 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Button, Box, IconButton, Tooltip } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import Crop169Icon from "@mui/icons-material/Crop169";
+import CropDinIcon from "@mui/icons-material/CropDin";
+import LinearGauge from "@components/LinearGauge";
+import TimeSeriesGraph from "@components/TimeSeriesGraph";
+import DataGauge from "@components/DataGauge";
+import XYGraph from "@components/XYGraph";
+import ComponentEditor from "@components/ComponentEditor";
+import DataWidgetList from "@/components/DataWidgetList";
 import {
-  Button,
-  Modal,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Tooltip,
-  IconButton,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable";
-
-import { CSS } from "@dnd-kit/utilities";
-
-// The Tooltip content for each parameter
-const parameterInfo = {
-  canID: "Identifier for the CAN bus data.",
-  metricKey: "The specific from the db ex: temp.",
-  title: "Title displayed for the component.",
-  maxPrimaryRange: "Maximum range for the primary unit.",
-  maxSecondaryRange: "Maximum range for the secondary unit.",
-  primaryUnit: "Primary unit of measurement (e.g., c, f).",
-  secondaryUnit: "Secondary unit for conversions (e.g., c, f).",
-  yAxis: "The axis to be used for the time series graph.",
-  valueToShow: "The value to be displayed on the linear gauge.",
-  unit: "Unit of measurement for the time series graph or linear gauge.",
-};
-
-const componentsList = [
-  {
-    id: "DataGauge",
-    label: "Data Gauge",
-    parameters: [
-      { name: "canID", type: "string" },
-      { name: "metricKey", type: "string" },
-      { name: "title", type: "string" },
-      { name: "maxPrimaryRange", type: "number" },
-      { name: "maxSecondaryRange", type: "number" },
-      { name: "primaryUnit", type: "string" },
-      { name: "secondaryUnit", type: "string" },
-    ],
-  },
-  {
-    id: "LinearGauge",
-    label: "Linear Gauge",
-    parameters: [
-      { name: "canID", type: "string" },
-      { name: "valueToShow", type: "string" },
-      { name: "title", type: "string" },
-    ],
-  },
-  {
-    id: "TimeSeriesGraph",
-    label: "Time Series Graph",
-    parameters: [
-      { name: "canID", type: "string" },
-      { name: "yAxis", type: "string" },
-      { name: "title", type: "string" },
-      { name: "unit", type: "string" },
-    ],
-  },
-  {
-    id: "GGDiagram",
-    label: "GG Diagram",
-    parameters: [
-      { name: "canID", type: "string" },
-      { name: "title", type: "string" },
-    ],
-  },
-];
+  getCurrentConfig,
+  fetchDataChannelsGroupedByCanID,
+} from "@/services/CANConfigurationService";
+import { v4 as uuidv4 } from "uuid";
 
 export default function CustomDash() {
-  const [open, setOpen] = useState(false);
-  const [modalStep, setModalStep] = useState("selectComponent"); // "selectComponent" or "inputParameters"
-  const [selectedComponent, setSelectedComponent] = useState(null);
-  const [params, setParams] = useState({});
   const [rows, setRows] = useState([]);
-  const [numComponents, setNumComponents] = useState(""); // For the prompt input
-  const [rowComponents, setRowComponents] = useState([]); // Store components for each row
-  const sensors = useSensors(useSensor(PointerSensor));
+  const [error, setError] = useState([]);
+  const [rowHeights, setRowHeights] = useState([]); // Track heights for each row
+  const [editorOpen, setEditorOpen] = useState(false); // Modal open state
+  const [currentEdit, setCurrentEdit] = useState(null); // Track current row and placeholder
+  const [groupedDataChannels, setGroupedDataChannels] = useState({}); // Store CAN data channels
+
+  // Fetch CAN data channels on load
+  useEffect(() => {
+    const fetchCanDataChannels = async () => {
+      try {
+        const currentConfig = await getCurrentConfig(); // Fetch current config
+        if (currentConfig) {
+          const data = await fetchDataChannelsGroupedByCanID(currentConfig); // Fetch grouped channels
+          setGroupedDataChannels(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch CAN data:", err);
+      }
+    };
+
+    fetchCanDataChannels();
+  }, []);
+
+  // Load dashboard state from localStorage
+  useEffect(() => {
+    const storedRows = JSON.parse(
+      localStorage.getItem("dashboardRows") || "[]"
+    );
+    const storedHeights = JSON.parse(
+      localStorage.getItem("dashboardRowHeights") || "[]"
+    );
+    setRows(storedRows);
+    setRowHeights(storedHeights);
+  }, []);
+
+  // Save dashboard state to localStorage
+  useEffect(() => {
+    localStorage.setItem("dashboardRows", JSON.stringify(rows));
+    localStorage.setItem("dashboardRowHeights", JSON.stringify(rowHeights));
+  }, [rows, rowHeights]);
 
   const handleAddRow = () => {
-    const num = parseInt(numComponents);
-    if (isNaN(num) || num <= 0) return; // Validate the number of components
-    setRows((prevRows) => [
-      ...prevRows,
-      Array(num).fill(null), // Add an array of empty placeholders
-    ]);
-    setNumComponents(""); // Reset input after adding row
-  };
+    const input = prompt("Enter a number for placeholders:");
+    const numPlaceholders = parseInt(input);
 
-  const handleSelectComponent = (component) => {
-    setSelectedComponent(component);
-    setModalStep("inputParameters"); // Go to the input parameters step
-    setParams({}); // Reset previous parameters
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setModalStep("selectComponent"); // Reset modal step to select component
-  };
-
-  const handleSave = () => {
-    const updatedRows = [...rows];
-
-    // Ensure the row exists and has an array to hold components
-    if (!updatedRows[selectedComponent.index]) {
-      updatedRows[selectedComponent.index] = []; // Initialize the row if it's undefined
+    if (isNaN(numPlaceholders) || numPlaceholders < 1) {
+      setError("Invalid input. Please enter a number greater than 0.");
+      return;
     }
 
-    // Now, set the component at the correct position within the row
-    updatedRows[selectedComponent.index][selectedComponent.componentIndex] =
-      selectedComponent;
+    setError(""); // Clear any previous errors
 
-    setRowComponents(updatedRows); // Store updated components for that row
-    setOpen(false);
-    setModalStep("selectComponent"); // Reset modal step to select component
+    const newPlaceholders = Array(numPlaceholders)
+      .fill(null)
+      .map(() => ({ id: uuidv4(), type: null }));
+
+    setRows([...rows, newPlaceholders]); // Add a new row
+    setRowHeights([...rowHeights, 350]);
   };
 
-  const handleChange = (event, paramName) => {
-    setParams({ ...params, [paramName]: event.target.value });
+  const adjustRowHeight = (rowIndex, increment) => {
+    const updatedHeights = [...rowHeights];
+    updatedHeights[rowIndex] = Math.max(
+      250,
+      Math.min(550, updatedHeights[rowIndex] + increment)
+    ); // Clamp the height between 250 and 550
+    setRowHeights(updatedHeights);
   };
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      setRows((rows) => {
-        const oldIndex = rows.findIndex((row) => row === active.id);
-        const newIndex = rows.findIndex((row) => row === over.id);
-        return arrayMove(rows, oldIndex, newIndex);
+  const handleOpenEditor = (rowIndex, placeholderIndex) => {
+    setCurrentEdit({ rowIndex, placeholderIndex }); // Track the current placeholder being edited
+    setEditorOpen(true); // Open the editor modal
+  };
+
+  const handleSaveComponent = (config) => {
+    const { rowIndex, placeholderIndex } = currentEdit;
+
+    const uniqueID = config.id || uuidv4();
+
+    // Ensure the config has a unique ID
+    const updatedConfig = {
+      ...config,
+      id: uniqueID,
+    };
+
+    // console.log("save component:", updatedConfig.id);
+
+    const updatedRows = [...rows];
+    updatedRows[rowIndex] = [...updatedRows[rowIndex]];
+    updatedRows[rowIndex][placeholderIndex] = { ...updatedConfig };
+
+    setRows(updatedRows);
+
+    const graphTypePrefix = config.type;
+    localStorage.setItem(
+      `${graphTypePrefix}-${updatedConfig.id}`,
+      JSON.stringify(updatedConfig)
+    );
+
+    setEditorOpen(false); // Close the editor modal
+    setCurrentEdit(null); // Reset current edit state
+  };
+
+  const handleRemovePlaceholder = (rowIndex, placeholderIndex) => {
+    const updatedRows = [...rows];
+
+    const placeholder = updatedRows[rowIndex][placeholderIndex];
+    if (placeholder && placeholder.id) {
+      const graphTypePrefix = placeholder.type;
+      console.log("placeholderType:", graphTypePrefix);
+      localStorage.removeItem(`${graphTypePrefix}-${placeholder.id}`);
+    }
+
+    updatedRows[rowIndex].splice(placeholderIndex, 1); // Remove the placeholder box
+    setRows(updatedRows);
+  };
+
+  const handleRemoveRow = (rowIndex) => {
+    // Clone rows for modification
+    const updatedRows = [...rows];
+    const rowToRemove = updatedRows[rowIndex];
+
+    // Remove localStorage entries for all placeholders in the row
+    if (rowToRemove) {
+      rowToRemove.forEach((placeholder) => {
+        if (placeholder && placeholder.id && placeholder.type) {
+          const graphTypePrefix = placeholder.type;
+          localStorage.removeItem(`${graphTypePrefix}-${placeholder.id}`);
+        }
       });
+    }
+
+    // Remove the row and update state
+    updatedRows.splice(rowIndex, 1);
+    setRows(updatedRows);
+
+    // Update the heights
+    const updatedHeights = [...rowHeights];
+    updatedHeights.splice(rowIndex, 1);
+    setRowHeights(updatedHeights);
+  };
+
+  const renderGraph = (config) => {
+    if (!config.type) return null;
+
+    // console.log("select: ", config.type)
+    switch (config.type) {
+      case "Gauge":
+        return <DataGauge uniqueID={config.id} />;
+      case "Linear Gauge":
+        return <LinearGauge uniqueID={config.id} />;
+      case "Time Series Graph":
+        return <TimeSeriesGraph uniqueID={config.id} />;
+      case "XY Graph":
+        console.log("xy graph selected");
+        return <XYGraph uniqueID={config.id} />;
+      default:
+        return null;
     }
   };
 
   return (
-    <div>
-      {/* Input for adding rows */}
-      <div style={{ marginBottom: "1rem", color: "orange" }}>
-        <TextField
-          variant="filled"
-          label="Num. of Components"
-          type="number"
-          value={numComponents}
-          onChange={(e) => setNumComponents(e.target.value)}
-          style={{ marginRight: "1rem" }}
-          sx={{ color: "blue" }}
-        />
-        <Button variant="outlined" onClick={handleAddRow}>
-          Add Row
-        </Button>
-      </div>
-
-      {/* Drag and Drop Context */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
+     
+    <Box
+      sx={{
+        backgroundColor: "black",
+        minHeight: "100vh",
+        padding: "10px",
+        color: "white",
+      }}
+    >
+      {/* Data Widgets at the Top */}
+      <Box sx={{ marginBottom: "5px" }}>
+        <DataWidgetList />
+      </Box>
+      
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleAddRow}
+        sx={{ marginBottom: "10px" }}
       >
-        <div
-          className="custom-dash"
-          style={{
-            display: "flex",
-            flexDirection: "column", // Stack rows vertically
-            gap: "1rem", // Adds space between rows
-          }}
-        >
-          {rows.map((row, rowIndex) => (
-            <SortableContext
-              key={rowIndex}
-              items={row.filter((item) => item !== null)}
-              strategy={verticalListSortingStrategy}
+        Add Row
+      </Button>
+      {error && <Box sx={{ color: "red", marginBottom: "10px" }}>{error}</Box>}
+      <Box>
+        {rows.map((row, rowIndex) => (
+          <Box
+            key={rowIndex}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            {/* Controls on the left */}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginRight: "10px",
+              }}
             >
-              <div
-                className="row"
-                style={{
+               <Box
+                sx={{
+                  backgroundColor: "rgba(140, 148, 140, 0.16)", // Shared grey background
+                  borderRadius: "8px", // Optional: Add rounded corners
+                  padding: "5px", // Add some spacing around the buttons
                   display: "flex",
-                  gap: "1rem", // Adds space between components in a row
-                  flexWrap: "nowrap", // Prevent wrapping
-                  width: "100%", // Ensure the row takes full width
-                  marginBottom: "1rem", // Adds space between rows
+                  flexDirection: "column", // Stack the buttons vertically
+                  alignItems: "center",
                 }}
               >
-                {row.map((_, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      flex: `1 0 ${Math.max(100 / row.length, 25)}%`, // Ensures a minimum width of 25% for each component
-                      height: "400px", // Fix height issue
-                      border: "2px dotted #ccc",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+              <Tooltip title="Add Placeholder" placement="right">
+                <IconButton
+                  color="primary"
+                  onClick={() => {
+                    const updatedRows = [...rows];
+                    updatedRows[rowIndex].push({ id: uuidv4(), type: null });
+                    setRows(updatedRows);
+                  }}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "rgb(40,40,40)",
+                    },
+                  }}
+                >
+                  <AddIcon />
+                </IconButton>
+              </Tooltip>
+              </Box>
+              <Box
+                sx={{
+                  backgroundColor: "rgba(120, 128, 120, 0.16)", // Shared grey background
+                  borderRadius: "8px", // Optional: Add rounded corners
+                  padding: "5px", // Add some spacing around the buttons
+                  display: "flex",
+                  flexDirection: "column", // Stack the buttons vertically
+                  alignItems: "center",
+                }}
+              >
+                <Tooltip title="Remove Row" placement="right">
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleRemoveRow(rowIndex)}
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: "rgb(40,40,40)",
+                      },
                     }}
                   >
-                    <IconButton onClick={() => setOpen(true)}>
-                      <AddCircleIcon sx={{ color: "blue" }} />
-                    </IconButton>
-                  </div>
-                ))}
-              </div>
-            </SortableContext>
-          ))}
-        </div>
-      </DndContext>
+                    <RemoveIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <Box
+                sx={{
+                  backgroundColor: "rgba(120, 128, 120, 0.16)", // Shared grey background
+                  borderRadius: "8px", // Optional: Add rounded corners
+                  padding: "5px", // Add some spacing around the buttons
+                  display: "flex",
+                  flexDirection: "column", // Stack the buttons vertically
+                  alignItems: "center",
+                }}
+              >
+                <Tooltip title="Increase Row Height" placement="right">
+                  <IconButton
+                    color="primary"
+                    onClick={() => adjustRowHeight(rowIndex, 50)}
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: "rgb(40,40,40)",
+                      },
+                    }}
+                  >
+                    <CropDinIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Decrease Row Height" placement="right">
+                  <IconButton
+                    color="primary"
+                    onClick={() => adjustRowHeight(rowIndex, -50)}
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: "rgb(40,40,40)",
+                      },
+                    }}
+                  >
+                    <Crop169Icon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Box>
 
-      {/* Modal for configuring component */}
-      <Dialog open={open} onClose={handleClose}>
-        {modalStep === "selectComponent" && (
-          <>
-            <DialogTitle>Select Component</DialogTitle>
-            <DialogContent>
-              {componentsList.map((component) => (
-                <Button
-                  key={component.id}
-                  variant="contained"
-                  onClick={() => handleSelectComponent(component)}
-                  style={{ margin: "10px" }}
+            {/* Placeholders */}
+            <Box
+              sx={{
+                display: "flex",
+                flexGrow: 1,
+                gap: "10px",
+                justifyContent: "space-between",
+                height: `${rowHeights[rowIndex]}px`, // Dynamically set height
+                width: "100%",
+              }}
+            >
+              {row.map((placeholder, placeholderIndex) => (
+                <Box
+                  key={placeholder.id}
+                  sx={{
+                    flex: 1,
+                    height: "100%", // Match row height
+                    border: "3px dashed #101010",
+                    position: "relative",
+                  }}
                 >
-                  {component.label}
-                </Button>
+                  {placeholder.type ? (
+                    renderGraph(placeholder)
+                  ) : (
+                    // Render the add button for placeholders
+                    <IconButton
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "rgb(40,40,40)",
+                        },
+                      }}
+                      onClick={() =>
+                        handleOpenEditor(rowIndex, placeholderIndex)
+                      }
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  )}
+                  {/* Remove placeholder/component button */}
+                  <IconButton
+                    sx={{
+                      position: "absolute",
+                      top: "10px",
+                      right: "10px",
+                      color: "red",
+                      "&:hover": {
+                        backgroundColor: "rgb(40,40,40)",
+                      },
+                    }}
+                    onClick={() =>
+                      handleRemovePlaceholder(rowIndex, placeholderIndex)
+                    }
+                  >
+                    <RemoveIcon />
+                  </IconButton>
+                </Box>
               ))}
-            </DialogContent>
-          </>
-        )}
+            </Box>
+          </Box>
+        ))}
+      </Box>
 
-        {modalStep === "inputParameters" && selectedComponent && (
-          <>
-            <DialogTitle>Configure {selectedComponent.label}</DialogTitle>
-            <DialogContent>
-              {selectedComponent.parameters.map((param) => (
-                <div key={param.name} style={{ marginBottom: "10px" }}>
-                  <FormControl fullWidth>
-                    <TextField
-                      label={param.name}
-                      type={param.type === "number" ? "number" : "text"}
-                      value={params[param.name] || ""}
-                      onChange={(e) => handleChange(e, param.name)}
-                      variant="outlined"
-                      fullWidth
-                      required
-                    />
-                    <Tooltip title={parameterInfo[param.name]} placement="top">
-                      <IconButton
-                        style={{
-                          position: "absolute",
-                          right: "10px",
-                          top: "10px",
-                        }}
-                      >
-                        <InfoIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </FormControl>
-                </div>
-              ))}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={handleSave} color="primary">
-                Save
-              </Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
-    </div>
+      {/* Component Editor Modal */}
+      {editorOpen && (
+        <ComponentEditor
+          open={editorOpen}
+          groupedDataChannels={groupedDataChannels} // Pass CAN data
+          onSave={(config) =>
+            handleSaveComponent({ type: config.type, ...config })
+          }
+          onCancel={() => setEditorOpen(false)}
+        />
+      )}
+    </Box>
   );
 }

@@ -16,13 +16,10 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import NavBar from "@components/NavBar";
-import TimeSeriesGraph from "@components/TimeSeriesGraph";
-import GGDiagram from "@components/GGDiagram";
-import LinearGauge from "@components/LinearGauge";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@app/theme";
-import DataGauge from "@components/DataGauge";
-import DataWidget from "@components/DataWidget";
+import DataWidgetList from "@components/DataWidgetList";
+import CustomDash from "@pages/CustomDash"; // Import CustomDash
 
 function SortableItem({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -67,64 +64,7 @@ function SortableItem({ id, children }) {
 }
 
 export default function Home() {
-  const [layout, setLayout] = useState([
-    {
-      id: "engineTempGauge",
-      component: (
-        <DataGauge
-          canID="210"
-          metricKey="Temp"
-          title="Engine Temperature"
-          maxPrimaryRange={200}
-          maxSecondaryRange={300}
-          primaryUnit="C"
-          secondaryUnit="F"
-        />
-      ),
-    },
-    {
-      id: "batteryVoltage",
-      component: (
-        <DataGauge
-          canID="200"
-          metricKey="Battery"
-          title="Battery Voltage"
-          maxPrimaryRange={15}
-          primaryUnit="V"
-        />
-      ),
-    },
-    {
-      id: "steering",
-      component: (
-        <LinearGauge
-          canID="100"
-          valueToShow="steering"
-          title="Steering Rack Position"
-        />
-      ),
-    },
-    {
-      id: "pdeal",
-      component: (
-        <LinearGauge
-          canID="100"
-          valueToShow="pdeal"
-          title="Pedal Position"
-        />
-      ),
-    },
-    {
-      id: "throttlePosGauge",
-      component: (
-        <LinearGauge
-          canID="200"
-          valueToShow="Throttle"
-          title="Throttle Position"
-        />
-      ),
-    },
-  ]);
+  const [layout, setLayout] = useState([]);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -147,42 +87,15 @@ export default function Home() {
       <NavBar />
       <Box
         sx={{
+          backgroundColor: "black",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: 2,
+          padding: 0.5,
         }}
       >
         {/* Data Widgets */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            gap: 2,
-            marginBottom: 2,
-            flexWrap: "wrap",
-          }}
-        >
-          <DataWidget
-            canID={"200"}
-            valueToDisplay={"Battery"}
-            title="Battery Voltage"
-            unit="V"
-          />
-          <DataWidget
-            canID={"200"}
-            valueToDisplay={"Throttle"}
-            title="Throttle Position"
-            unit="%"
-          />
-          <DataWidget
-            canID={"200"}
-            valueToDisplay={"Timestamp"}
-            title="Timestamp"
-            unit="s"
-          />
-        </Box>
+        <DataWidgetList />
 
         {/* Draggable Row of Components */}
         <DndContext
@@ -198,7 +111,7 @@ export default function Home() {
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                flexWrap: "nowrap", // Keeps items in a single row
+                flexWrap: "nowrap",
                 gap: "1rem",
                 width: "100%",
                 marginBottom: 2,
@@ -214,23 +127,10 @@ export default function Home() {
           </SortableContext>
         </DndContext>
 
-        {/* Side-by-Side Graphs */}
-        <Box
-          sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}
-        >
-          <Box sx={{ width: "50%" }}>
-            <TimeSeriesGraph
-              canID={"210"}
-              yAxis={"X"}
-              title={"Throttle Position"}
-              unit={"%"}
-            />
-          </Box>
-          <Box sx={{ width: "50%" }}>
-            <GGDiagram canID={"210"} title={"GG Diagram"} />
-          </Box>
-        </Box>
+        {/* Custom Dash Section */}
       </Box>
+
+       
     </ThemeProvider>
   );
 }

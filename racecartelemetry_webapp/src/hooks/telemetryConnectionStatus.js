@@ -23,7 +23,7 @@ const telemetryConnectionStatus = () => {
 
         timeoutRef.current = setTimeout(() => {
           setIsConnected(false)
-        }, 2000)
+        }, 6000)
       } else {
         setIsConnected(false)
       }

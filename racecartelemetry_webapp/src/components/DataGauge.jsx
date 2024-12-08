@@ -1,119 +1,93 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-import { db } from "@firebaseConfig";
 import { ref, onValue } from "firebase/database";
-import theme from "@/app/theme";
-import SettingsIcon from "@mui/icons-material/Settings";
-import IconButton from "@mui/material/IconButton";
-import { Modal } from "@mui/material";
-import ComponentEditor from "@/components/ComponentEditor";
+import { db } from "@firebaseConfig";
+import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
+import theme from "@/app/theme"; // Import your theme
 
-const DataGauge = ({
-  canID,
-  metricKey,
-  title,
-  maxPrimaryRange,
-  maxSecondaryRange,
-  primaryUnit = "C",
-  secondaryUnit,
-}) => {
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+
+const DataGauge = ({ uniqueID }) => {
   const [metricValue, setMetricValue] = useState(0);
-  const [isSecondaryUnit, setIsSecondaryUnit] = useState(false);
-  // State to determine whether or not the settings modal is visible
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [unit, setUnit] = useState("");
+  // const [settingsVisible, setSettingsVisible] = useState(false);
 
-  // Range of vals to display
-  const [range, setRange] = useState([0, maxPrimaryRange]);
+  const storedConfig = JSON.parse(localStorage.getItem(`Gauge-${uniqueID}`));
 
-  // OriginalRange is the range in the primary unit
-  const [originalRange, setOriginalRange] = useState([0, maxPrimaryRange]);
-
-  const [dataName, setDataName] = useState(title);
-  const [color, setColor] = useState(`${theme.palette.primary.main}`);
-
-  // These are the config options for DataGauge Graphs
-  const config = {
-    fields: [
-      {
-        label: "Data Name",
-        type: "text",
-      },
-      {
-        label: "Color",
-        type: "select",
-        options: ["Blue", "Red", "Green"],
-      },
-      {
-        label: "Min Value (C)",
-        type: "number",
-      },
-      { label: "Max Value (C)", type: "number" },
-    ],
+  const initialConfig = {
+    canID: storedConfig?.canID || "CAN ID",
+    dataChannel: storedConfig?.dataChannel || "Data Channel",
+    color: storedConfig?.config?.Color || "Red",
+    min: storedConfig?.config?.["Min Value"] || 0,
+    max: storedConfig?.config?.["Max Value"] || 100,
   };
 
-  const handleSettingsClick = () => {
-    setSettingsVisible((prevState) => !prevState);
-  };
+  const [config, setConfig] = useState(initialConfig);
 
-  const handleSettingsClose = () => {
-    setSettingsVisible(false);
-  };
-
-  const handleSave = (data) => {
-    // We want to keep a copy of the Celsius range, so we can go back to it when switching between F and C
-    const newRange = [data["Min Value (C)"], data["Max Value (C)"]];
-    setOriginalRange(newRange);
-    setRange(newRange);
-    setDataName(data["Data Name"]);
-    setColor(data["Color"]);
-    setSettingsVisible(false);
-  };
-
-  // Whenever the range gets updated, check if we're doing it in celsius or fahrenheit
-  useEffect(() => {
-    const [min, max] = originalRange;
-
-    if (isSecondaryUnit) {
-      setRange([convertToFahrenheit(min), convertToFahrenheit(max)]);
-    } else {
-      setRange([min, max]);
-    }
-  }, [isSecondaryUnit, originalRange]);
+  // State for range calculations
+  const [range, setRange] = useState([config.min, config.max]);
 
   useEffect(() => {
-    if (!canID || !metricKey) return;
+    const updatedStoredConfig = { ...initialConfig, ...storedConfig };
+    localStorage.setItem(
+      `Gauge-${uniqueID}`,
+      JSON.stringify(updatedStoredConfig)
+    );
+    // console.log("Color:", config.color);
+    // console.log("Min:", config.min);
+    // console.log("Max:", config.max);
+  }, [uniqueID, initialConfig]);
 
-    const dataRef = ref(db, `data/${canID}`);
+  useEffect(() => {
+    const fetchAndSetUnit = async () => {
+      try {
+        const selectedConfig = await getCurrentConfig();
+        console.log("selectedConfig:", selectedConfig);
+        const fetchedUnit = await fetchUnit(
+          selectedConfig,
+          config.canID,
+          config.dataChannel
+        );
+        setUnit(fetchedUnit || "Unknown");
+        console.log(config.dataChannel, " unit: ", fetchedUnit);
+        console.log(unit);
+      } catch (error) {
+        console.error("Error Fetching Unit:", error);
+        setUnit("Error");
+      }
+    };
+
+    fetchAndSetUnit();
+  }, []);
+
+  // Fetch live data from Firebase Realtime Database
+  useEffect(() => {
+    if (!config.canID || !config.dataChannel) return;
+
+    // console.log(`Subscribing to Firebase path: data/${config.canID}`);
+    const dataRef = ref(db, `data/${config.canID}`);
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
-        const canData = snapshot.val();
-        if (canData[metricKey] !== undefined) {
-          setMetricValue(canData[metricKey]);
+        const data = snapshot.val();
+        if (data[config.dataChannel] !== undefined) {
+          setMetricValue(data[config.dataChannel]);
         }
       }
     });
 
     return () => unsubscribe();
-  }, [canID, metricKey]);
+  }, [config.canID, config.dataChannel]);
 
-  const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
-  const convertToMPH = (kmh) => kmh * 0.621371;
-  const convertToCelsius = (fahrenheit) => ((fahrenheit - 32) * 5) / 9;
+  // // Unit conversion functions
+  // const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
+  // const convertToMPH = (kmh) => kmh * 0.621371;
 
-  const displayedValue =
-    metricKey === "Temp" && isSecondaryUnit
-      ? convertToFahrenheit(metricValue)
-      : metricKey === "Speed" && isSecondaryUnit
-      ? convertToMPH(metricValue)
-      : metricValue;
-
-  const toggleUnit = () =>
-    setIsSecondaryUnit((isSecondaryUnit) => !isSecondaryUnit);
+  // Determine displayed value based on unit
+  const displayedValue = metricValue;
 
   return (
     <>
-      {settingsVisible && (
+      {/* {settingsVisible && (
         <Modal
           open={settingsVisible}
           onClose={handleSettingsClose}
@@ -124,15 +98,23 @@ const DataGauge = ({
           }}
         >
           <ComponentEditor
-            config={config}
-            onCancel={handleSettingsClose}
+            config={{
+              fields: [
+                { label: "Color", type: "select", options: ["Red", "Green", "Blue"] },
+                { label: "Min Value", type: "number" },
+                { label: "Max Value", type: "number" },
+              ],
+            }}
             onSave={handleSave}
+            onCancel={handleSettingsClose}
           />
         </Modal>
-      )}
+      )} */}
 
       <div
         style={{
+          backgroundColor: "rgba(20, 20, 20, 0.9)",
+
           padding: 5,
           width: "100%",
           height: "100%",
@@ -143,36 +125,20 @@ const DataGauge = ({
       >
         <div
           style={{
-            fontSize: "1rem",
-            color: "white",
-            fontWeight: "bold",
+            // Title styling using theme
+            fontSize: 24,
+            color: theme.palette.primary.main, // Use theme primary color
             textAlign: "center",
-            lineHeight: 1.2,
+            lineHeight: 1.9,
             marginBottom: "0.3rem",
-            alignItems: "s",
           }}
         >
-          <IconButton onClick={handleSettingsClick}>
-            <SettingsIcon
-              style={{
-                color: theme.palette.primary.main,
-              }}
-            />
-          </IconButton>
-          {dataName} ({isSecondaryUnit ? secondaryUnit : primaryUnit})
+          {/* <IconButton onClick={handleSettingsClick}>
+            <SettingsIcon style={{ color: theme.palette.primary.main }} />
+          </IconButton> */}
+
+          {`${config.canID} / ${config.dataChannel}`}
         </div>
-        {secondaryUnit && (
-          <button
-            onClick={toggleUnit}
-            style={{
-              fontSize: "0.85rem",
-              color: "grey",
-              marginBottom: "0.3rem",
-            }}
-          >
-            Show in {isSecondaryUnit ? primaryUnit : secondaryUnit}
-          </button>
-        )}
         <div
           style={{
             width: "100%",
@@ -180,7 +146,7 @@ const DataGauge = ({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            transform: "scale(0.85)", // Slightly smaller to fit more comfortably
+            transform: "scale(0.85)", // Adjust scale for better fit
             transformOrigin: "center",
           }}
         >
@@ -190,12 +156,16 @@ const DataGauge = ({
                 type: "indicator",
                 mode: "gauge+number",
                 value: displayedValue,
+                number: {
+                  suffix: ` ${unit}`, // Append the unit to the number display
+                  font: { color: "white" }, // Ensure text color matches theme
+                },
                 gauge: {
                   axis: {
                     range: range,
                     tickcolor: "white",
                   },
-                  bar: { color: color },
+                  bar: { color: config.color },
                   steps: [
                     {
                       range: [range[1] * 0.33, range[1] * 0.66],
@@ -212,7 +182,7 @@ const DataGauge = ({
             layout={{
               autosize: true,
               responsive: true,
-              margin: { t: 20, b: 20, l: 20, r: 20 }, // Add more space for labels
+              margin: { t: 20, b: 20, l: 20, r: 20 },
               font: { color: "white" },
               paper_bgcolor: "rgba(0, 0, 0, 0)",
               plot_bgcolor: "rgba(0, 0, 0, 0)",

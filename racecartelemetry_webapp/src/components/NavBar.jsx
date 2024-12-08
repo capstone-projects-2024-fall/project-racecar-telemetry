@@ -19,23 +19,23 @@ const Navbar = () => {
   const [loading, setLoading] = useState(true);
 
   const isConnected = telemetryConnectionStatus();
-  console.log(isConnected);
+  // console.log(isConnected);
 
   useEffect(() => {
     const fetchAllConfigs = async () => {
       try {
         const data = await fetchConfigs();
-        console.log("Raw configurations:", data);
+        // console.log("Raw configurations:", data);
 
         const filteredConfigs = data.filter((config) => config.id !== "currentConfig");
-        console.log("Filtered configurations:", filteredConfigs);
+        // console.log("Filtered configurations:", filteredConfigs);
 
         setConfigs(filteredConfigs);
 
         const currentConfigData = data.find((config) => config.id === "currentConfig");
         if (currentConfigData && currentConfigData.current) {
           setCurrentConfig(currentConfigData.current);
-          console.log("Fetched current configuration:", currentConfigData.current);
+          // console.log("Fetched current configuration:", currentConfigData.current);
         } else {
           setCurrentConfig(null);
           console.log("No current configuration set");
@@ -63,7 +63,7 @@ const Navbar = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar position="sticky" sx={{ marginBottom: 5 }}>
+      <AppBar position="sticky" sx={{  }}>
         <Toolbar
           sx={{
             background: "linear-gradient(45deg, #A32036 40%, #010000fa 60%)",
@@ -94,34 +94,6 @@ const Navbar = () => {
                   ? "Telemetry Connected"
                   : "Telemetry Disconnected"}
             </Typography>
-            <Select
-              value={currentConfig || ""}
-              onChange={(e) => handleConfigChange(e.target.value)}
-              displayEmpty
-              sx={{
-                marginLeft: "8px",
-                backgroundColor: "white",
-                borderRadius: "4px",
-                padding: "0 8px",
-                fontSize: "0.9rem",
-                color: "black",
-                fontWeight: "500",
-                minWidth: "120px",
-                height: "32px",
-              }}
-              disabled={loading}
-              renderValue={(selected) => {
-                if (!selected) return "No configuration selected"; // Placeholder when no config is selected
-                const selectedConfig = configs.find((config) => config.id === selected);
-                return selectedConfig ? selectedConfig.id : "No configuration selected";
-              }}
-            >
-              {configs.map((config) => (
-                <MenuItem key={config.id} value={config.id}>
-                  {config.id}
-                </MenuItem>
-              ))}
-            </Select>
           </Box>
 
           <Link href="/">
