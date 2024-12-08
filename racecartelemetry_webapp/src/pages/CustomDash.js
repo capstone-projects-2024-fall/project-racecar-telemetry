@@ -75,7 +75,7 @@ export default function CustomDash() {
       .map(() => ({ id: uuidv4(), type: null }));
 
     setRows([...rows, newPlaceholders]); // Add a new row
-    setRowHeights([...rowHeights, 450]);
+    setRowHeights([...rowHeights, 350]);
   };
 
   const adjustRowHeight = (rowIndex, increment) => {
