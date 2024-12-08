@@ -88,43 +88,48 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
 
   const handleSubmit = () => {
     // console.log("handleSubmit triggered"); // Debugging log
-  
+
     const newErrors = {};
     if (!componentType) {
       newErrors.componentType = "Please select a component type.";
     }
-  
+
     if (componentType === "XY Graph") {
       // XY Graph-specific validation
-      if (!formState.xCanID) newErrors.xCanID = "Please select the X-axis CAN ID.";
-      if (!formState.xChannel) newErrors.xChannel = "Please select the X-axis data channel.";
-      if (!formState.yCanID) newErrors.yCanID = "Please select the Y-axis CAN ID.";
-      if (!formState.yChannel) newErrors.yChannel = "Please select the Y-axis data channel.";
+      if (!formState.xCanID)
+        newErrors.xCanID = "Please select the X-axis CAN ID.";
+      if (!formState.xChannel)
+        newErrors.xChannel = "Please select the X-axis data channel.";
+      if (!formState.yCanID)
+        newErrors.yCanID = "Please select the Y-axis CAN ID.";
+      if (!formState.yChannel)
+        newErrors.yChannel = "Please select the Y-axis data channel.";
     } else {
       // General validation for other graph types
       if (!formState.canID) newErrors.canID = "Please select a CAN ID.";
-      if (!formState.dataChannel) newErrors.dataChannel = "Please select a data channel.";
+      if (!formState.dataChannel)
+        newErrors.dataChannel = "Please select a data channel.";
     }
-  
+
     const configFields = componentConfigs[componentType]?.fields || [];
     configFields.forEach((field) => {
       if (!formState[field.label]) {
         newErrors[field.label] = `${field.label} is required.`;
       }
     });
-  
+
     if (Object.keys(newErrors).length > 0) {
       console.log("Validation errors:", newErrors); // Debugging log
       setErrors(newErrors);
       return;
     }
-  
+
     // console.log("Form Data:", formState); // Debugging log
     const saveData = {
       type: componentType,
       config: formState,
     };
-  
+
     if (componentType === "XY Graph") {
       saveData.xCanID = formState.xCanID;
       saveData.xChannel = formState.xChannel;
@@ -134,14 +139,17 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
       saveData.canID = selectedCanID;
       saveData.dataChannel = formState.dataChannel;
     }
-  
+
     // console.log("Save Data:", saveData); // Debugging log
     onSave(saveData); // Call the save handler
   };
-  
 
   return (
-    <Modal open={open} onClose={onCancel} aria-labelledby="component-editor-modal">
+    <Modal
+      open={open}
+      onClose={onCancel}
+      aria-labelledby="component-editor-modal"
+    >
       <Box
         sx={{
           position: "absolute",
@@ -161,8 +169,10 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
 
         {/* Component Type Selector */}
         <FormControl fullWidth margin="normal" error={!!errors.componentType}>
-          <InputLabel>Component Type</InputLabel>
+          <InputLabel id="component-type-label">Component Type</InputLabel>
           <Select
+            labelId="component-type-label"
+            id="component-type-select"
             value={componentType}
             onChange={(e) => handleTypeChange(e.target.value)}
           >
@@ -181,10 +191,12 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
         {componentType && componentType !== "XY Graph" && (
           <>
             <FormControl fullWidth margin="normal" error={!!errors.canID}>
-              <InputLabel>CAN ID</InputLabel>
+              <InputLabel id="can-id-label">CAN ID</InputLabel>
               <Select
+                labelId="can-id-label" // This should match the InputLabel's id
                 value={selectedCanID || ""}
                 onChange={(e) => handleCanIDChange("general", e.target.value)}
+                id="can-id-select" // Optional but recommended for better clarity
               >
                 {Object.keys(groupedDataChannels || {}).map((canID) => (
                   <MenuItem key={canID} value={canID}>
@@ -192,14 +204,23 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {errors.canID && <Typography color="error">{errors.canID}</Typography>}
+              {errors.canID && (
+                <Typography color="error">{errors.canID}</Typography>
+              )}
             </FormControl>
 
-            <FormControl fullWidth margin="normal" error={!!errors.dataChannel} disabled={!selectedCanID}>
-              <InputLabel>Data Channel</InputLabel>
+            <FormControl
+              fullWidth
+              margin="normal"
+              error={!!errors.dataChannel}
+              disabled={!selectedCanID}
+            >
+              <InputLabel id="data-channel-label">Data Channel</InputLabel>
               <Select
+                labelId="data-channel-label" // This should match the InputLabel's id
                 value={formState.dataChannel || ""}
                 onChange={(e) => handleChange("dataChannel", e.target.value)}
+                id="data-channel-select" // Optional but recommended for better clarity
               >
                 {dataChannels.map((channel, idx) => (
                   <MenuItem key={idx} value={channel}>
@@ -207,7 +228,9 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {errors.dataChannel && <Typography color="error">{errors.dataChannel}</Typography>}
+              {errors.dataChannel && (
+                <Typography color="error">{errors.dataChannel}</Typography>
+              )}
             </FormControl>
           </>
         )}
@@ -227,7 +250,9 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {errors.xCanID && <Typography color="error">{errors.xCanID}</Typography>}
+              {errors.xCanID && (
+                <Typography color="error">{errors.xCanID}</Typography>
+              )}
             </FormControl>
 
             <FormControl fullWidth margin="normal" error={!!errors.xChannel}>
@@ -242,7 +267,9 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {errors.xChannel && <Typography color="error">{errors.xChannel}</Typography>}
+              {errors.xChannel && (
+                <Typography color="error">{errors.xChannel}</Typography>
+              )}
             </FormControl>
 
             <FormControl fullWidth margin="normal" error={!!errors.yCanID}>
@@ -257,7 +284,9 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {errors.yCanID && <Typography color="error">{errors.yCanID}</Typography>}
+              {errors.yCanID && (
+                <Typography color="error">{errors.yCanID}</Typography>
+              )}
             </FormControl>
 
             <FormControl fullWidth margin="normal" error={!!errors.yChannel}>
@@ -272,7 +301,9 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {errors.yChannel && <Typography color="error">{errors.yChannel}</Typography>}
+              {errors.yChannel && (
+                <Typography color="error">{errors.yChannel}</Typography>
+              )}
             </FormControl>
           </>
         )}
