@@ -6,9 +6,10 @@ sidebar_position: 3
 
 ## Hardware Requirements  
 ### Main Telemetry Device Hardware Components
-- CAN Transceiver: TJA1050  
-- Microprocessor: ESP-WROOM32-DEVKITV1
-- Smartphone with mobile hotspot capability
+Components:
+* ESP-WROOM-32 DEVKITV1: ESP microcontroller (includes CAN controller but not a CAN transceiver)
+* Adafruit Feather M4 CAN Express with ATSAME51
+* Mobile hotspot
 
 ### Complete Hardware Requirements
 <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRPmqrR1D0rSadeonzcJYDSI9_54YGbKhxfEFePVx_G_DNKT3bhswWF8M95XYecuXjWSqct2AxIOJHy/pubhtml?widget=true&headers=false" frameborder="0" width="100%" height="500"></iframe>

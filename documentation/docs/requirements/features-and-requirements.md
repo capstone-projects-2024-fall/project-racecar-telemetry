@@ -8,31 +8,27 @@ sidebar_position: 4
 
 ### 1. Data collection & transmission
 1. A device plugs into the vehicle's communication area network (CAN) bus to receive sensor & diagnostic information from the engine control unit (ECU).
-    1. The device contains a microcontroller, CAN transceiver, and hardware to plug into a standard automotive connector on the vehicle.
+    1. The device contains a microcontroller with WiFi, microcontroller with a CAN controller and transceiver, and hardware to plug into a standard automotive connector on the vehicle.
 2. A smartphone with hotspot capability is placed in the vehicle to provide a WiFi access point for the telemetry device.
 3. A microcontroller within the device filters incoming CAN frames and uploads relevant CAN IDs to a database (for the purposes of the project, the TFR team will be instructed to only use CAN IDs 0x200-0x300 to transmit data).
 4. A CAN Configuration page on the web app allows users to input how data is stored within CAN frames using the following options (examples are given for transmission of throttle position data):
     - Data Channel (String): "Throttle Position"
     - CAN ID (Hex number): 0x230
     - Message Length (bits): 16
-    - Message offset (bits): 0
+    - Start bit: 0
     - Adder (int): 0
     - Multiplier (int): 1
     - Unit (String): "%"
 
 ### 2. Data storage
 1. Live data is stored in a Firebase realtime database. 
-2. CAN config data is stored in the Firestore database.
+2. CAN configuration data is stored in the Firestore database.
 
 ### 3. Data Visualization
 1. A default dashboard page containing various widgets (e.g., graphs, gauges, number displays) appears when users first open the page.
 2. A text box says “Connected” if data is currently streaming to the database, and “Not Connected” otherwise.
-3. If “**Connected**”:
-    - Widgets automatically populate with live data.
-4. If “**Not Connected**”:
-    - If no data has been streaming recently:
-        - A pop-up gives the user a list of reasons data is not streaming. It has a “Do not show this message again” checkbox.
-        - Widgets still appear but indicate that data is unavailable (through text or color).
+3. If “**Connected**”, widgets automatically populate with live data.
+4. If “**Not Connected**”, widgets still appear but indicate that data is unavailable (through text or color).
 5. Widgets are customizable:
     - Users can edit data channels, colors, and other settings.
     - Users can add, drag, resize, or delete widgets.

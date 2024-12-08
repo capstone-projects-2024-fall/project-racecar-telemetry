@@ -3,13 +3,17 @@ sidebar_position: 2
 ---
 ## Telemetry Device
 
-The telemetry device consists of a ESP32 and Feather M4 wired to a standard automotive connector that will be plugged directly into the vehicle's wiring harness. 
+The telemetry device consists of a ESP32 and Feather M4 wired to a standard automotive connector that will be plugged directly into the vehicle's wiring harness. The telemetry device also requires a mobile hotspot to be in the car while transmitting data.
 
 Components:
 * ESP-WROOM-32 DEVKITV1: ESP microcontroller (includes CAN controller but not a CAN transceiver)
 * Adafruit Feather M4 CAN Express with ATSAME51
 * 1100 mAh LION battery
 * 120 ohm Terminal Resistor
+* Mobile Hotspot
+
+The CAN (Controller Area Network) bus is the TFR vehicle's serial communication bus, which is capable of transmitting sensor and diagnostic information from the vehicle's ECU (Engine control unit) to the telemetry device. The Adafruit Feather M4 CAN was selected for use because of its integrated CAN transceeiver and microcontroller, giving it the ability to interpret CAN frames from the car. 
+An ESP32 was selected because of its WiFi capability. The feather uses i2c protocol to transmit the interpreted CAN frames to the ESP32, and the ESP32 then handles pushing the data to the Firebase realtime database.
 
 ### Connector Pinout
 _A DTM04-4P: 4 pin Deutsch Connector is connected to the Telemetry Device in order to plug into the TFR vehicle._
