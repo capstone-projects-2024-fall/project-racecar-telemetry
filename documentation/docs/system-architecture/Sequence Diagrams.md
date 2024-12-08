@@ -7,7 +7,7 @@ _User follows instructions for initial setup of up telemetry device._
 
 ```mermaid
 sequenceDiagram
-participant User
+actor User
 participant Default Dash
 
 User -) Default Dash: User opens Default Dashboard page
@@ -30,12 +30,12 @@ _User edits ECU and webapp CAN configurations to transmit/receive data channels.
 
 ```mermaid
 sequenceDiagram
-participant User
+actor User
 participant ECU
 participant CAN Config
 participant Firestore
 
-User -) ECU: User configures ECU to send desired CAN data.
+User -) ECU: Configure ECU to send desired CAN data.
 activate User
 activate ECU
 ECU --) User: 
@@ -59,7 +59,6 @@ deactivate Firestore
 CAN Config --) User: Show popup "Data saved successfully"
 deactivate CAN Config
 deactivate User
-
 ```
 
 Note: All other use cases assume that case 0 and 1 (first time setup) has occurred.
@@ -67,11 +66,37 @@ Note: All other use cases assume that case 0 and 1 (first time setup) has occurr
 ### Use Case 2
 _User views live data on default dashboard page._
 1. User opens the telemetry webapp, where they see a default dashboard page. It displays "Not Connected", and shows the following default displays (which are visible but empty, as no data is transmitting):
+    - "Chips" for each data channel being transmitted across the top of the screen (this persists throughout all pages)
     - A time-series graph of engine coolant temperature
     - A time-series graph of engine speed (RPM)
     - A number for battery voltage
     - A linear gauge for throttle position
-2. A driver turns on the car, beginning data transmission, which causes the display to change to “Connected.” The display components populate with live numbers.
+2. User selects the current CAN configuration from a menu.
+3. A driver turns on the car, beginning data transmission, which causes the display to change to “Connected.” The display components populate with live numbers.
+
+```mermaid
+sequenceDiagram
+actor User
+participant Dash
+participant Firestore
+participant Realtime
+participant ESP32
+participant FeatherM4
+
+User -) Dash: Open Default Dashboard page, select CAN Configuration from menu
+activate User
+activate Dash
+User -) Dash: Select a CAN Configuration from menu
+Dash -) Firestore: Update Current Configuration
+activate Firestore
+Firestore -) Dash: Success
+deactivate Firestore
+Dash --) User: show "Not connected" page with blank displays
+User 
+
+deactivate Dash
+deactivate User
+```
 
 ### Use Case 3
 _User inserts new display components on custom dashboard page._
