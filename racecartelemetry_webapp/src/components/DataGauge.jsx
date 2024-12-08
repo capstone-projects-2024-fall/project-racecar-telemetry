@@ -133,6 +133,7 @@ const DataGauge = ({ uniqueID }) => {
       >
         <div
           style={{
+            
             fontSize: "1rem",
             color: "white",
             fontWeight: "bold",

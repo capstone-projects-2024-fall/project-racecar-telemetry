@@ -60,11 +60,11 @@ export default function CustomDash() {
   }, [rows, rowHeights]);
 
   const handleAddRow = () => {
-    const input = prompt("Enter a number between 1 and 6 for placeholders:");
+    const input = prompt("Enter a number for placeholders:");
     const numPlaceholders = parseInt(input);
 
-    if (isNaN(numPlaceholders) || numPlaceholders < 1 || numPlaceholders > 6) {
-      setError("Invalid input. Please enter a number between 1 and 6.");
+    if (isNaN(numPlaceholders) || numPlaceholders < 1) {
+      setError("Invalid input. Please enter a number greater than 0.");
       return;
     }
 

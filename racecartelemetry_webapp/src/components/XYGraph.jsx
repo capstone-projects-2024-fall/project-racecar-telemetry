@@ -3,14 +3,8 @@ import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
 import theme from "@/app/theme";
-import {
-  fetchUnit,
-  getCurrentConfig,
-} from "@/services/CANConfigurationService";
-// import SettingsIcon from "@mui/icons-material/Settings";
-// import IconButton from "@mui/material/IconButton";
-// import { Modal } from "@mui/material";
-// import ComponentEditor from "@/components/ComponentEditor";
+import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
+
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const XYGraph = ({ uniqueID }) => {
@@ -34,20 +28,9 @@ const XYGraph = ({ uniqueID }) => {
   const [yUnit, setYUnit] = useState("");
   const [lateral, setLat] = useState([]);
   const [longitudinal, setLong] = useState([]);
-  // const [settingsVisible, setSettingsVisible] = useState(false);
-  const [lineColor, setLineColor] = useState(config.color);
-  const [xDataName, setXDataName] = useState(config.xChannel);
-  const [yDataName, setYDataName] = useState(config.yChannel);
+
   const [xRange, setXRange] = useState([config.xMin, config.xMax]);
   const [yRange, setYRange] = useState([config.yMin, config.yMax]);
-
-  // const handleSettingsClick = () => {
-  //   setSettingsVisible((prevState) => !prevState);
-  // };
-
-  // const handleSettingsClose = () => {
-  //   setSettingsVisible(false);
-  // };
 
   useEffect(() => {
     const updatedStoredConfig = { ...initialConfig, ...storedConfig };
@@ -100,7 +83,6 @@ const XYGraph = ({ uniqueID }) => {
     return () => unsubscribeX();
   }, [config.xCanID, config.xChannel]);
 
-  // Fetch Y-Axis data
   useEffect(() => {
     if (!config.yCanID || !config.yChannel) return;
 
@@ -123,13 +105,13 @@ const XYGraph = ({ uniqueID }) => {
       y: lateral,
       type: "scatter",
       mode: "markers",
-      marker: { color: lineColor },
+      marker: { color: config.color },
     },
   ];
 
   const layout = {
     title: {
-      text: `${xDataName} x ${yDataName}`,
+      text: `${config.xChannel} x ${config.yChannel}`,
       font: {
         size: 24,
         color: theme.palette.primary.main,
@@ -137,7 +119,7 @@ const XYGraph = ({ uniqueID }) => {
     },
     xaxis: {
       title: {
-        text: `${xDataName} (${xUnit})`,
+        text: `${config.xChannel} (${xUnit})`,
         font: { color: "white" },
       },
       tickfont: { color: "white" },
@@ -150,7 +132,7 @@ const XYGraph = ({ uniqueID }) => {
     },
     yaxis: {
       title: {
-        text: `${yDataName} (${yUnit})`,
+        text: `${config.yChannel} (${yUnit})`,
         font: { color: "white" },
         standoff: 15,
       },
@@ -165,66 +147,29 @@ const XYGraph = ({ uniqueID }) => {
     },
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
+    autosize: true,
+    responsive: true, // Enables responsiveness
   };
 
   return (
-    <>
-      {/* {settingsVisible && (
-        <Modal
-          open={settingsVisible}
-          onClose={handleSettingsClose}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ComponentEditor
-            config={config}
-            onCancel={handleSettingsClose}
-            onSave={handleSave}
-          />
-        </Modal>
-      )} */}
-      <div
-        style={{
-          width: "100%",
-          padding: "0",
-          borderRadius: "12px",
-          border: `2px solid ${theme.palette.primary.main}`,
-          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-          backgroundColor: "rgba(30, 30, 30, 0.9)",
-          margin: "0",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "left",
-            justifyContent: "left",
-            backgroundColor: "rgba(20, 20, 20, 0.9)",
-            alignItems: "left",
-            height: "1.5rem",
-          }}
-        >
-
-          {/* <IconButton onClick={handleSettingsClick}>
-            <SettingsIcon
-              style={{
-                color: theme.palette.primary.main,
-              }}
-            />
-          </IconButton> */}
-
-        </div>
-        <Plot
-          data={data}
-          layout={layout}
-          useResizeHandler={true}
-          style={{ width: "100%", height: "400px", margin: "0", padding: "0" }}
-        />
-      </div>
-    </>
+    <div
+      style={{
+        width: "100%",
+        padding: "0",
+        borderRadius: "12px",
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+        backgroundColor: "rgba(30, 30, 30, 0.9)",
+        margin: "0",
+        height: "100%", // Enables the container to scale dynamically
+      }}
+    >
+      <Plot
+        data={data}
+        layout={layout}
+        useResizeHandler={true} // Resizes the graph with the container
+        style={{ width: "100%", height: "100%" }}
+      />
+    </div>
   );
 };
 
