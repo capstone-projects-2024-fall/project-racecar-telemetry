@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
-import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
+import {
+  fetchUnit,
+  getCurrentConfig,
+} from "@/services/CANConfigurationService";
 
 // import theme from "@/app/theme";
 // import SettingsIcon from "@mui/icons-material/Settings";
@@ -22,10 +25,10 @@ const DataGauge = ({ uniqueID }) => {
   const initialConfig = {
     canID: storedConfig.canID || "CAN ID",
     dataChannel: storedConfig.dataChannel || "Data Channel",
-    color: storedConfig.config?.Color || "Red", 
-    min: storedConfig.config?.["Min Value"] || 0, 
-    max: storedConfig.config?.["Max Value"] || 100, 
-  }
+    color: storedConfig.config?.Color || "Red",
+    min: storedConfig.config?.["Min Value"] || 0,
+    max: storedConfig.config?.["Max Value"] || 100,
+  };
 
   const [config, setConfig] = useState(initialConfig);
 
@@ -34,7 +37,10 @@ const DataGauge = ({ uniqueID }) => {
 
   useEffect(() => {
     const updatedStoredConfig = { ...initialConfig, ...storedConfig };
-    localStorage.setItem(`Gauge-${uniqueID}`, JSON.stringify(updatedStoredConfig));
+    localStorage.setItem(
+      `Gauge-${uniqueID}`,
+      JSON.stringify(updatedStoredConfig)
+    );
     // console.log("Color:", config.color);
     // console.log("Min:", config.min);
     // console.log("Max:", config.max);
@@ -45,9 +51,14 @@ const DataGauge = ({ uniqueID }) => {
       try {
         const selectedConfig = await getCurrentConfig();
         console.log("selectedConfig:", selectedConfig);
-        const fetchedUnit = await fetchUnit(selectedConfig, config.canID, config.dataChannel);
+        const fetchedUnit = await fetchUnit(
+          selectedConfig,
+          config.canID,
+          config.dataChannel
+        );
         setUnit(fetchedUnit || "Unknown");
         console.log(config.dataChannel, " unit: ", fetchedUnit);
+        console.log(unit);
       } catch (error) {
         console.error("Error Fetching Unit:", error);
         setUnit("Error");
@@ -55,7 +66,7 @@ const DataGauge = ({ uniqueID }) => {
     };
 
     fetchAndSetUnit();
-  }, []); 
+  }, []);
 
   // Fetch live data from Firebase Realtime Database
   useEffect(() => {
@@ -153,6 +164,10 @@ const DataGauge = ({ uniqueID }) => {
                 type: "indicator",
                 mode: "gauge+number",
                 value: displayedValue,
+                number: {
+                  suffix: ` ${unit}`, // Append the unit to the number display
+                  font: { color: "white" },
+                },
                 gauge: {
                   axis: {
                     range: range,

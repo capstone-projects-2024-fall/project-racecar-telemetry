@@ -3,7 +3,10 @@ import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
 import theme from "@/app/theme";
-import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
+import {
+  fetchUnit,
+  getCurrentConfig,
+} from "@/services/CANConfigurationService";
 // import SettingsIcon from "@mui/icons-material/Settings";
 // import IconButton from "@mui/material/IconButton";
 // import { Modal } from "@mui/material";
@@ -16,7 +19,9 @@ const TimeSeriesGraph = ({ uniqueID }) => {
   const [timestamps, setTimestamps] = useState([]);
   const [valsToPlot, setValsToPlot] = useState([]);
 
-  const storedConfig = JSON.parse(localStorage.getItem(`Time Series Graph-${uniqueID}`));
+  const storedConfig = JSON.parse(
+    localStorage.getItem(`Time Series Graph-${uniqueID}`)
+  );
 
   // console.log(`Time Series Graph-${uniqueID}`);
 
@@ -24,15 +29,18 @@ const TimeSeriesGraph = ({ uniqueID }) => {
     canID: storedConfig.canID || "CAN ID",
     dataChannel: storedConfig.dataChannel || "Data Channel",
     color: storedConfig.config?.Color || "Red",
-    min: storedConfig.config?.["Min Value"] || 0,
-    max: storedConfig.config?.["Max Value"] || 100,
-  }
+    min: storedConfig.config?.["Y Axis Min Value"] || 0,
+    max: storedConfig.config?.["Y Axis Max Value"] || 100,
+  };
 
   const [config, setConfig] = useState(initialConfig);
 
   useEffect(() => {
     const updatedStoredConfig = { ...initialConfig, ...storedConfig };
-    localStorage.setItem(`Time Series Graph-${uniqueID}`, JSON.stringify(updatedStoredConfig));
+    localStorage.setItem(
+      `Time Series Graph-${uniqueID}`,
+      JSON.stringify(updatedStoredConfig)
+    );
   }, [uniqueID, initialConfig]);
 
   useEffect(() => {
@@ -40,7 +48,11 @@ const TimeSeriesGraph = ({ uniqueID }) => {
       try {
         const selectedConfig = await getCurrentConfig();
         console.log("selectedConfig:", selectedConfig);
-        const fetchedUnit = await fetchUnit(selectedConfig, config.canID, config.dataChannel);
+        const fetchedUnit = await fetchUnit(
+          selectedConfig,
+          config.canID,
+          config.dataChannel
+        );
         setUnit(fetchedUnit || "Unknown");
         console.log(config.dataChannel, " unit: ", fetchedUnit);
       } catch (error) {
@@ -50,8 +62,7 @@ const TimeSeriesGraph = ({ uniqueID }) => {
     };
 
     fetchAndSetUnit();
-  }, []); 
-
+  }, []);
 
   // // State to determine whether or not the settings modal is visible
   // const [settingsVisible, setSettingsVisible] = useState(false);
@@ -85,7 +96,10 @@ const TimeSeriesGraph = ({ uniqueID }) => {
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
-        if (data[config.dataChannel] !== undefined && data.timestamp !== undefined) {
+        if (
+          data[config.dataChannel] !== undefined &&
+          data.timestamp !== undefined
+        ) {
           setTimestamps((prev) => [...prev, data.timestamp / 1000]); // Convert timestamp to seconds
           setValsToPlot((prev) => [...prev, data[config.dataChannel]]);
         }
@@ -108,7 +122,7 @@ const TimeSeriesGraph = ({ uniqueID }) => {
 
   const layout = {
     title: {
-      text: config.title || "Time Series Data",
+      text: config.dataChannel || "Time Series Data",
       font: {
         size: 24,
         color: theme.palette.primary.main,
@@ -139,7 +153,7 @@ const TimeSeriesGraph = ({ uniqueID }) => {
       zerolinewidth: 2,
       gridcolor: "rgba(255, 255, 255, 0.1)",
       gridwidth: 1,
-      range: [config.yMin, config.yMax],
+      range: [config.min, config.max],
     },
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
@@ -201,7 +215,6 @@ const TimeSeriesGraph = ({ uniqueID }) => {
               }}
             />
           </IconButton> */}
-
         </div>
 
         <Plot

@@ -3,7 +3,10 @@ import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
 import theme from "@/app/theme";
-import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
+import {
+  fetchUnit,
+  getCurrentConfig,
+} from "@/services/CANConfigurationService";
 // import SettingsIcon from "@mui/icons-material/Settings";
 // import IconButton from "@mui/material/IconButton";
 // import { Modal } from "@mui/material";
@@ -23,7 +26,7 @@ const XYGraph = ({ uniqueID }) => {
     xMax: storedConfig.config?.["X Axis Max Value"] || 100,
     yMin: storedConfig.config?.["Y Axis Min Value"] || 0,
     yMax: storedConfig.config?.["Y Axis Max Value"] || 100,
-  }
+  };
 
   const [config, setConfig] = useState(initialConfig);
 
@@ -48,7 +51,10 @@ const XYGraph = ({ uniqueID }) => {
 
   useEffect(() => {
     const updatedStoredConfig = { ...initialConfig, ...storedConfig };
-    localStorage.setItem(`XY Graph-${uniqueID}`, JSON.stringify(updatedStoredConfig));
+    localStorage.setItem(
+      `XY Graph-${uniqueID}`,
+      JSON.stringify(updatedStoredConfig)
+    );
   }, [uniqueID, initialConfig]);
 
   useEffect(() => {
@@ -56,12 +62,19 @@ const XYGraph = ({ uniqueID }) => {
       try {
         const selectedConfig = await getCurrentConfig();
 
-        const fetchedXUnit = await fetchUnit(selectedConfig, config.xCanID, config.xChannel);
+        const fetchedXUnit = await fetchUnit(
+          selectedConfig,
+          config.xCanID,
+          config.xChannel
+        );
         setXUnit(fetchedXUnit);
 
-        const fetchedYUnit = await fetchUnit(selectedConfig, config.yCanID, config.yChannel);
+        const fetchedYUnit = await fetchUnit(
+          selectedConfig,
+          config.yCanID,
+          config.yChannel
+        );
         setYUnit(fetchedYUnit);
-
       } catch (error) {
         console.error("Error Fetching Unit:", error);
         setUnit("Error");
@@ -69,10 +82,9 @@ const XYGraph = ({ uniqueID }) => {
     };
 
     fetchAndSetUnit();
-  }, []); 
+  }, []);
 
   useEffect(() => {
-
     if (!config.xCanID || !config.xChannel) return;
 
     const xRef = ref(db, `data/${config.xCanID}`);
@@ -87,7 +99,6 @@ const XYGraph = ({ uniqueID }) => {
 
     return () => unsubscribeX();
   }, [config.xCanID, config.xChannel]);
-
 
   // Fetch Y-Axis data
   useEffect(() => {
@@ -126,7 +137,7 @@ const XYGraph = ({ uniqueID }) => {
     },
     xaxis: {
       title: {
-        text: xDataName,
+        text: `${xDataName} (${xUnit})`,
         font: { color: "white" },
       },
       tickfont: { color: "white" },
@@ -139,7 +150,7 @@ const XYGraph = ({ uniqueID }) => {
     },
     yaxis: {
       title: {
-        text: yDataName,
+        text: `${yDataName} (${yUnit})`,
         font: { color: "white" },
         standoff: 15,
       },
