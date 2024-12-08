@@ -3,10 +3,11 @@ import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
 import theme from "@/app/theme";
-import SettingsIcon from "@mui/icons-material/Settings";
-import IconButton from "@mui/material/IconButton";
-import { Modal } from "@mui/material";
-import ComponentEditor from "@/components/ComponentEditor";
+import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
+// import SettingsIcon from "@mui/icons-material/Settings";
+// import IconButton from "@mui/material/IconButton";
+// import { Modal } from "@mui/material";
+// import ComponentEditor from "@/components/ComponentEditor";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const XYGraph = ({ uniqueID }) => {
@@ -26,8 +27,8 @@ const XYGraph = ({ uniqueID }) => {
 
   const [config, setConfig] = useState(initialConfig);
 
-  console.log(config);
-
+  const [xUnit, setXUnit] = useState("");
+  const [yUnit, setYUnit] = useState("");
   const [lateral, setLat] = useState([]);
   const [longitudinal, setLong] = useState([]);
   // const [settingsVisible, setSettingsVisible] = useState(false);
@@ -36,9 +37,6 @@ const XYGraph = ({ uniqueID }) => {
   const [yDataName, setYDataName] = useState(config.yChannel);
   const [xRange, setXRange] = useState([config.xMin, config.xMax]);
   const [yRange, setYRange] = useState([config.yMin, config.yMax]);
-
-  console.log("X name",xDataName);
-  console.log("Y name",yDataName);
 
   // const handleSettingsClick = () => {
   //   setSettingsVisible((prevState) => !prevState);
@@ -51,12 +49,30 @@ const XYGraph = ({ uniqueID }) => {
   useEffect(() => {
     const updatedStoredConfig = { ...initialConfig, ...storedConfig };
     localStorage.setItem(`XY Graph-${uniqueID}`, JSON.stringify(updatedStoredConfig));
-    // console.log("Linear Color:", config.color);
-    // console.log("Linear Min:", config.min);
-    // console.log("Linear Max:", config.max);
   }, [uniqueID, initialConfig]);
 
   useEffect(() => {
+    const fetchAndSetUnit = async () => {
+      try {
+        const selectedConfig = await getCurrentConfig();
+
+        const fetchedXUnit = await fetchUnit(selectedConfig, config.xCanID, config.xChannel);
+        setXUnit(fetchedXUnit);
+
+        const fetchedYUnit = await fetchUnit(selectedConfig, config.yCanID, config.yChannel);
+        setYUnit(fetchedYUnit);
+
+      } catch (error) {
+        console.error("Error Fetching Unit:", error);
+        setUnit("Error");
+      }
+    };
+
+    fetchAndSetUnit();
+  }, []); 
+
+  useEffect(() => {
+
     if (!config.xCanID || !config.xChannel) return;
 
     const xRef = ref(db, `data/${config.xCanID}`);

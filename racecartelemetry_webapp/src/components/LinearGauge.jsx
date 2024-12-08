@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
+import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -28,7 +29,7 @@ const LinearGauge = ({ uniqueID }) => {
 
   const [config, setConfig] = useState(initialConfig);
   const [value, setValue] = useState(0);
-  const [unit, setUnit] = useState("(UNIT)");
+  const [unit, setUnit] = useState("");
   // const [settingsVisible, setSettingsVisible] = useState(false);
   // Range of vals to display
   const [range, setRange] = useState([config.min, config.max]);
@@ -41,7 +42,22 @@ const LinearGauge = ({ uniqueID }) => {
     // console.log("Linear Max:", config.max);
   }, [uniqueID, initialConfig]);
 
+  useEffect(() => {
+    const fetchAndSetUnit = async () => {
+      try {
+        const selectedConfig = await getCurrentConfig();
+        console.log("selectedConfig:", selectedConfig);
+        const fetchedUnit = await fetchUnit(selectedConfig, config.canID, config.dataChannel);
+        setUnit(fetchedUnit || "Unknown");
+        console.log(config.dataChannel, " unit: ", fetchedUnit);
+      } catch (error) {
+        console.error("Error Fetching Unit:", error);
+        setUnit("Error");
+      }
+    };
 
+    fetchAndSetUnit();
+  }, []); 
 
 
 

@@ -87,7 +87,7 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
   };
 
   const handleSubmit = () => {
-    console.log("handleSubmit triggered"); // Debugging log
+    // console.log("handleSubmit triggered"); // Debugging log
   
     const newErrors = {};
     if (!componentType) {
@@ -119,7 +119,7 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
       return;
     }
   
-    console.log("Form Data:", formState); // Debugging log
+    // console.log("Form Data:", formState); // Debugging log
     const saveData = {
       type: componentType,
       config: formState,
@@ -135,7 +135,7 @@ const ComponentEditor = ({ open, onSave, onCancel, groupedDataChannels }) => {
       saveData.dataChannel = formState.dataChannel;
     }
   
-    console.log("Save Data:", saveData); // Debugging log
+    // console.log("Save Data:", saveData); // Debugging log
     onSave(saveData); // Call the save handler
   };
   
