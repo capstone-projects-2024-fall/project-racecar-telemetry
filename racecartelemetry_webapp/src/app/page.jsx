@@ -69,21 +69,21 @@ function SortableItem({ id, children }) {
 
 export default function Home() {
   const [layout, setLayout] = useState([
-    {
-      id: "r11", component: <DataGauge /> 
-    },
-    {
-      id: "r12", component: <DataGauge /> 
-    },
-    {
-      id: "r13", component: <LinearGauge /> 
-    },
-    {
-      id: "r14", component: <LinearGauge /> 
-    },
-    {
-      id: "r15", component: <LinearGauge /> 
-    },
+    // {
+    //   id: "r11", component: <DataGauge /> 
+    // },
+    // {
+    //   id: "r12", component: <DataGauge /> 
+    // },
+    // {
+    //   id: "r13", component: <LinearGauge /> 
+    // },
+    // {
+    //   id: "r14", component: <LinearGauge /> 
+    // },
+    // {
+    //   id: "r15", component: <LinearGauge /> 
+    // },
   ]);
 
   const sensors = useSensors(useSensor(PointerSensor));
@@ -174,7 +174,7 @@ export default function Home() {
         </DndContext>
 
         {/* Side-by-Side Graphs */}
-        <Box
+        {/* <Box
           sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}
         >
           <Box sx={{ width: "50%" }}>
@@ -192,7 +192,7 @@ export default function Home() {
               color={theme.palette.primary.main}
             />
           </Box>
-        </Box>
+        </Box> */}
       </Box>
     </ThemeProvider>
   );
