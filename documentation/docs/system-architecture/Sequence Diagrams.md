@@ -1,4 +1,101 @@
+### Use Case 0 - Device Initial Setup
+_User follows instructions for initial setup of up telemetry device._
+1. User opens the telemetry website to the default dashboard page.
+2. A pop-up appears with instructions on how to set up the telemetry device for the first time, including installation of the device in the vehicle.
+3. Following the instructions, user plugs the telemetry device into a connector on the car’s wiring harness (the connector contains pins for 5V power, ground, CAN high and CAN low).
+4. User closes out of the instructions pop-up.
 
+```mermaid
+sequenceDiagram
+participant User
+participant Default Dash
+
+User -) Default Dash: User opens Default Dashboard page
+activate User
+activate Default Dash
+Default Dash --) User: Initial setup instructions
+deactivate Default Dash
+User -) Telemetry Device: User plugs telemetry device into car
+deactivate User
+
+```
+
+### Use Case 1
+_User edits ECU and webapp CAN configurations to transmit/receive data channels._
+1. User configures the vehicle's ECU (engine control unit) to transmit desired data over CAN IDs between 0x200-0x300.
+2. User opens the telemetry webapp and opens the CAN Configuration page from the navbar.
+3. User is able to choose a previously created configuration or create a new one.
+4. When creating new configuration, user can assign CANID and number of signals incoming from ECU.
+    - For each data channel, user provides the channel name, start bit, bit length, adder, multiplier, and unit.
+
+```mermaid
+sequenceDiagram
+participant User
+participant ECU
+participant CAN Config
+participant Firestore
+
+User -) ECU: User configures ECU to send desired CAN data.
+activate User
+activate ECU
+ECU --) User: 
+deactivate ECU
+User -) CAN Config: Enter new config name, clicks "Create"
+activate CAN Config
+CAN Config -) Firestore: Save config name
+activate Firestore
+Firestore --) CAN Config: success
+deactivate Firestore
+CAN Config --) User: Show config editor
+User -) CAN Config: Click "Add Row"
+CAN Config --) User: Show CAN ID/signal editor
+User -) CAN Config: Enter CAN ID, # of Signals, click "Edit Signal Info"
+CAN Config -) User: Show Edit Signal Info popup window
+User -) CAN Config: Enter configuration info for each data channel, click "Save Changes"
+CAN Config -) Firestore: Save configuration data
+activate Firestore
+Firestore --) CAN Config: Success
+deactivate Firestore
+CAN Config --) User: Show popup "Data saved successfully"
+deactivate CAN Config
+deactivate User
+
+```
+
+Note: All other use cases assume that case 0 and 1 (first time setup) has occurred.
+
+### Use Case 2
+_User views live data on default dashboard page._
+1. User opens the telemetry webapp, where they see a default dashboard page. It displays "Not Connected", and shows the following default displays (which are visible but empty, as no data is transmitting):
+    - A time-series graph of engine coolant temperature
+    - A time-series graph of engine speed (RPM)
+    - A number for battery voltage
+    - A linear gauge for throttle position
+2. A driver turns on the car, beginning data transmission, which causes the display to change to “Connected.” The display components populate with live numbers.
+
+### Use Case 3
+_User inserts new display components on custom dashboard page._
+1. User opens the telemetry webapp to the default dashboard page (Not Connected).
+2. User clicks the "Add Row" button. Insert number of components in row.
+3. User chooses "+" sign to assign: Component type, CAN ID, data channel, etc.
+4. The new component appears on the dashboard.
+5. When the page says “Connected,” the new graphs also populate with live data.
+
+### Use Case 4
+_User edits existing components on the dashboard._
+1. User clicks the settings button on existing component, bringing up the component editor.
+2. User changes the data channel. For example, from battery voltage to fuel pressure, and the type of graph from a number to a linear gauge. 
+3. User deletes the throttle position display.
+
+### Use Case 5
+_Two users view website at the same time._
+1. User 1 opens the telemetry webapp to the default dashboard (Not Connected because the car is off).
+2. A driver turns the car on, causing User 1’s page to switch to Connected.
+3. User 2 opens the telemetry webapp to the default dashboard, and sees Connected since the car is on.
+4. User 2 sees the same display as user 1 - live data as well as historical data from earlier in the run.
+
+<!-- 
+OLD SEQUENCE DIAGRAMS
 ### Use Case 1:
 _A race crew is testing their vehicle with their driver to make sure the car is performing well._ 
 
@@ -233,7 +330,7 @@ t -) l: Username and password entered
 activate d
 d -) d: Check if valid user/password
     loop While username and password do not match
-        d-->t: Invalid. Enter username and pw
+        d->t: Invalid. Enter username and pw
     end
 deactivate d
 
@@ -277,7 +374,7 @@ t -) l: Username and password entered
 activate d
 d -) d: Check if valid user/password
     loop While username and password do not match
-        d-->t: Invalid. Enter username and pw
+        d->t: Invalid. Enter username and pw
     end
 deactivate d
 
@@ -310,3 +407,5 @@ deactivate d
 dash --) t: Display graph for the chosen sensor to be read.
 
 ```
+
+-->

@@ -4,11 +4,11 @@ sidebar_position: 5
 
 # Use-Case Descriptions
 
-### Case 0
+### Use Case 0
 _User sets up telemetry device for the first time._
 1. User plugs the telemetry device into a connector on the car’s wiring harness (the connector contains pins for 12 power and ground, 5V power, CAN high and low).
 
-### Case 1
+### Use Case 1
 _User edits ECU and webapp CAN configurations to transmit/receive data channels._
 1. User configures the vehicle's ECU to transmit relevant data over CAN IDs between 0x200-0x300. First time setup should include:
     - Engine coolant temperature
@@ -22,7 +22,7 @@ _User edits ECU and webapp CAN configurations to transmit/receive data channels.
 
 Note: All other use cases assume that case 0 and 1 (first time setup) has occurred.
 
-### Case 2
+### Use Case 2
 _User views live data on default dashboard page._
 1. User opens the telemetry webapp, where they see a default dashboard page. It displays "Not Connected", and shows the following default displays (which are visible but empty, as no data is transmitting):
     - A time-series graph of engine coolant temperature
@@ -31,7 +31,7 @@ _User views live data on default dashboard page._
     - A linear gauge for throttle position
 2. A driver turns on the car, beginning data transmission, which causes the display to change to “Connected.” The display components populate with live numbers.
 
-### Case 3
+### Use Case 3
 _User inserts new display components on custom dashboard page._
 1. User opens the telemetry webapp to the default dashboard page (Not Connected).
 2. User clicks the "Add Row" button. Insert number of components in row.
@@ -39,19 +39,18 @@ _User inserts new display components on custom dashboard page._
 4. The new component appears on the dashboard.
 5. When the page says “Connected,” the new graphs also populate with live data.
 
-### Case 4
+### Use Case 4
 _User edits existing components on the dashboard._
 1. User clicks the settings button on existing component, bringing up the component editor.
 2. User changes the data channel. For example, from battery voltage to fuel pressure, and the type of graph from a number to a linear gauge. 
 3. User deletes the throttle position display.
 
-### Case 5
+### Use Case 5
 _Two users view website at the same time._
 1. User 1 opens the telemetry webapp to the default dashboard (Not Connected because the car is off).
 2. A driver turns the car on, causing User 1’s page to switch to Connected.
 3. User 2 opens the telemetry webapp to the default dashboard, and sees Connected since the car is on.
 4. User 2 sees the same display as user 1 - live data as well as historical data from earlier in the run.
-
 
 <!-- 
 OLD USE CASES
