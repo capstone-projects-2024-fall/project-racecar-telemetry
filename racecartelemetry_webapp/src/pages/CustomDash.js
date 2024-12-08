@@ -330,7 +330,7 @@ export default function CustomDash() {
                   sx={{
                     flex: 1,
                     height: "100%", // Match row height
-                    border: "2px dashed gray",
+                    border: "3px dashed #101010",
                     position: "relative",
                   }}
                 >
