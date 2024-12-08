@@ -186,12 +186,12 @@ const LinearGauge = ({ uniqueID }) => {
           layout={{
             autosize: true,
             responsive: true,
-            margin: { t: 30, b: 10, l: 20, r: 20 },
+            margin: { t: 100, b: 10, l: 20, r: 20 },
             paper_bgcolor: "rgba(20, 20, 20, 0.9)",
             plot_bgcolor: "rgba(20, 20, 20, 0.9)",
             title: {
-              text: `${config.dataChannel} (${unit})`,
-              font: { size: 16, color: theme.palette.primary.main },
+              text: `${config.dataChannel}`,
+              font: { size: 24, color: theme.palette.primary.main },
             },
           }}
           config={{
