@@ -196,6 +196,7 @@ const XYGraph = ({ uniqueID }) => {
             height: "1.5rem",
           }}
         >
+
           {/* <IconButton onClick={handleSettingsClick}>
             <SettingsIcon
               style={{
@@ -203,6 +204,7 @@ const XYGraph = ({ uniqueID }) => {
               }}
             />
           </IconButton> */}
+
         </div>
         <Plot
           data={data}

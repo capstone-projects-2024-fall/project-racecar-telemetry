@@ -129,7 +129,7 @@ const LinearGauge = ({ uniqueID }) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          border: `2px solid ${theme.palette.primary.main}`,
+          border: `0px solid ${theme.palette.primary.main}`,
           borderRadius: "12px",
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
           width: "100%",
@@ -142,7 +142,7 @@ const LinearGauge = ({ uniqueID }) => {
             alignItems: "center",
             justifyContent: "left",
             backgroundColor: "rgba(20, 20, 20, 0.9)",
-            height: "1.5rem",
+            height: "0rem",
           }}
         >
           {/* <IconButton onClick={handleSettingsClick}>
@@ -174,7 +174,7 @@ const LinearGauge = ({ uniqueID }) => {
           layout={{
             autosize: true,
             responsive: true,
-            margin: { t: 20, b: 10, l: 20, r: 20 },
+            margin: { t: 70, b: 10, l: 20, r: 20 },
             paper_bgcolor: "rgba(20, 20, 20, 0.9)",
             plot_bgcolor: "rgba(20, 20, 20, 0.9)",
             title: {
