@@ -255,7 +255,7 @@ export default function CustomDash() {
               >
                 <Tooltip title="Remove Row" placement="right">
                   <IconButton
-                    color="secondary"
+                    color="primary"
                     onClick={() => handleRemoveRow(rowIndex)}
                     sx={{
                       "&:hover": {
