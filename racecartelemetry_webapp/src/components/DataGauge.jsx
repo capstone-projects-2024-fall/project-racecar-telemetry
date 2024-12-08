@@ -2,16 +2,8 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
-import {
-  fetchUnit,
-  getCurrentConfig,
-} from "@/services/CANConfigurationService";
-
-// import theme from "@/app/theme";
-// import SettingsIcon from "@mui/icons-material/Settings";
-// import IconButton from "@mui/material/IconButton";
-// import { Modal } from "@mui/material";
-// import ComponentEditor from "@/components/ComponentEditor";
+import { fetchUnit, getCurrentConfig } from "@/services/CANConfigurationService";
+import theme from "@/app/theme"; // Import your theme
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -23,11 +15,11 @@ const DataGauge = ({ uniqueID }) => {
   const storedConfig = JSON.parse(localStorage.getItem(`Gauge-${uniqueID}`));
 
   const initialConfig = {
-    canID: storedConfig.canID || "CAN ID",
-    dataChannel: storedConfig.dataChannel || "Data Channel",
-    color: storedConfig.config?.Color || "Red",
-    min: storedConfig.config?.["Min Value"] || 0,
-    max: storedConfig.config?.["Max Value"] || 100,
+    canID: storedConfig?.canID || "CAN ID",
+    dataChannel: storedConfig?.dataChannel || "Data Channel",
+    color: storedConfig?.config?.Color || "Red",
+    min: storedConfig?.config?.["Min Value"] || 0,
+    max: storedConfig?.config?.["Max Value"] || 100,
   };
 
   const [config, setConfig] = useState(initialConfig);
@@ -133,12 +125,11 @@ const DataGauge = ({ uniqueID }) => {
       >
         <div
           style={{
-            
-            fontSize: "1rem",
-            color: "white",
-            fontWeight: "bold",
+            // Title styling using theme
+            fontSize: 24,
+            color: theme.palette.primary.main, // Use theme primary color
             textAlign: "center",
-            lineHeight: 1.2,
+            lineHeight: 1.9,
             marginBottom: "0.3rem",
           }}
         >
@@ -167,7 +158,7 @@ const DataGauge = ({ uniqueID }) => {
                 value: displayedValue,
                 number: {
                   suffix: ` ${unit}`, // Append the unit to the number display
-                  font: { color: "white" },
+                  font: { color: "white" }, // Ensure text color matches theme
                 },
                 gauge: {
                   axis: {
