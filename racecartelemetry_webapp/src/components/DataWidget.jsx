@@ -96,14 +96,14 @@ const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false,
           borderColor: "primary.light",
         }}
       >
-        <IconButton
+        {/* <IconButton
           onClick={handleSettingsClick}
           sx={{
             color: "white",
           }}
         >
           <SettingsIcon />
-        </IconButton>
+        </IconButton> */}
 
         <Box sx={{ textAlign: "left", ml: 1 }}>
           <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
