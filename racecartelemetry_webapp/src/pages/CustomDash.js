@@ -9,6 +9,7 @@ import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import DataGauge from "@components/DataGauge";
 import XYGraph from "@components/XYGraph";
 import ComponentEditor from "@components/ComponentEditor";
+import DataWidgetList from "@/components/DataWidgetList";
 import {
   getCurrentConfig,
   fetchDataChannelsGroupedByCanID,
@@ -179,14 +180,20 @@ export default function CustomDash() {
   };
 
   return (
+     
     <Box
       sx={{
         backgroundColor: "black",
         minHeight: "100vh",
-        padding: "20px",
+        padding: "10px",
         color: "white",
       }}
     >
+      {/* Data Widgets at the Top */}
+      <Box sx={{ marginBottom: "5px" }}>
+        <DataWidgetList />
+      </Box>
+      
       <Button
         variant="contained"
         color="primary"

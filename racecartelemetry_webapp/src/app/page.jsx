@@ -129,7 +129,8 @@ export default function Home() {
 
         {/* Custom Dash Section */}
       </Box>
-        <CustomDash /> {/* Add CustomDash here */}
+
+       
     </ThemeProvider>
   );
 }
