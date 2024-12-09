@@ -48,14 +48,12 @@ const TimeSeriesGraph = ({ uniqueID }) => {
     const fetchAndSetUnit = async () => {
       try {
         const selectedConfig = await getCurrentConfig();
-        console.log("selectedConfig:", selectedConfig);
         const fetchedUnit = await fetchUnit(
           selectedConfig,
           config.canID,
           config.dataChannel
         );
         setUnit(fetchedUnit || "Unknown");
-        console.log(config.dataChannel, " unit: ", fetchedUnit);
       } catch (error) {
         console.error("Error Fetching Unit:", error);
         setUnit("Error");
