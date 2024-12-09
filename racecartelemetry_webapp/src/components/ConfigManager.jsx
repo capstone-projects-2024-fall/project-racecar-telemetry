@@ -111,9 +111,13 @@ const ConfigManager = ({ onConfigSelect }) => {
                         sx={{ marginBottom: 2 }}
                         renderValue={(selected) => selected || "Select a Configuration"}
                     >
-                        {/* <MenuItem value="" disabled>
-                            Select a Configuration
-                        </MenuItem> */}
+
+                        <MenuItem value="" disabled>
+                            <Typography sx={{ color: "black" }}>
+                                Select Config
+                            </Typography>
+                        </MenuItem>
+
                         {Array.isArray(filteredConfigs) && filteredConfigs.length > 0 ? (
                             filteredConfigs.map((config) => (
                                 <MenuItem key={config.id} value={config.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>

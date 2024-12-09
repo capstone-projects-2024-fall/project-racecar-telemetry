@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, IconButton, Modal, Select, MenuItem } from "@mui/material";
-import SettingsIcon from "@mui/icons-material/Settings";
+import { Box, Typography, Modal, Select, MenuItem } from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";
 import theme from "@/app/theme";
-import { ref, onValue } from "firebase/database";
-import { db } from "@firebaseConfig"; // Firebase config file
 import { fetchConfigs, updateCurrentConfig } from "@services/CANConfigurationService";
 
-const Datawidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false, isConnected }) => {
-  const [number, setNumber] = useState(0);
+const DataWidget = ({title, unit}) => {
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [dataName, setDataName] = useState(title);
   const [color, setColor] = useState(`${theme.palette.primary.main}`);
-  const [unitShown, setUnitShown] = useState(unit);
   const [configs, setConfigs] = useState([]);
   const [currentConfig, setCurrentConfig] = useState(null);
   const [loading, setLoading] = useState(true);

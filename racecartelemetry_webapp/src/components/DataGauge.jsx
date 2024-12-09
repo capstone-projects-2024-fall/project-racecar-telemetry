@@ -30,6 +30,7 @@ const DataGauge = ({ uniqueID }) => {
     max: storedConfig.config?.["Max Value"] || 100,
   };
 
+
   const [config, setConfig] = useState(initialConfig);
 
   // State for range calculations

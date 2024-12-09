@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, CircularProgress, Typography, Stack } from "@mui/material";
 import DataWidget from "./DataWidget";
-import telemetryConnectionStatus from "@hooks/telemetryConnectionStatus";
+import useTelemetryConnectionStatus from "@hooks/useTelemetryConnectionStatus";
 import { fetchCANData, getCurrentConfig } from "@services/CANConfigurationService";
 import ConfigWidget from "@components/ConfigWidget";
 
@@ -11,7 +11,7 @@ const DataWidgetList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0); // Track elapsed time in seconds
-  const isConnected = telemetryConnectionStatus(); // Check connection status
+  const isConnected = useTelemetryConnectionStatus(); // Check connection status
 
 
   // Fetch configuration data
