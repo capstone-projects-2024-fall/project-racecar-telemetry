@@ -5,20 +5,15 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Link from "next/link";
 import { green, red } from "@mui/material/colors";
-import telemetryConnectionStatus from "@hooks/telemetryConnectionStatus";
-import { ThemeProvider, CssBaseline, GlobalStyles } from "@mui/material";
+import useTelemetryConnectionStatus from "@hooks/useTelemetryConnectionStatus";
+import { ThemeProvider} from "@mui/material";
 import theme from "@app/theme";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import { useEffect, useState } from "react";
-import { fetchConfigs, updateCurrentConfig } from "@services/CANConfigurationService";
+import { fetchConfigs} from "@services/CANConfigurationService";
 
 const Navbar = () => {
-  const [configs, setConfigs] = useState([]);
-  const [currentConfig, setCurrentConfig] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  const isConnected = telemetryConnectionStatus();
+  const isConnected = useTelemetryConnectionStatus();
   // console.log(isConnected);
 
   useEffect(() => {
@@ -51,15 +46,6 @@ const Navbar = () => {
     fetchAllConfigs();
   }, []);
 
-  const handleConfigChange = async (configName) => {
-    try {
-      setCurrentConfig(configName);
-
-      await updateCurrentConfig(configName);
-    } catch (error) {
-      console.error("Failed to update current configuration:", error);
-    }
-  };
 
   return (
     <ThemeProvider theme={theme}>

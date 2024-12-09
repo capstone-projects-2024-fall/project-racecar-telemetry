@@ -19,10 +19,9 @@ import NavBar from "@components/NavBar";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import XYGraph from "@components/XYGraph";
 import LinearGauge from "@components/LinearGauge";
-import { ThemeProvider, CssBaseline, Box, Typography, Stack } from "@mui/material";
+import { ThemeProvider, CssBaseline, Box} from "@mui/material";
 import theme from "@app/theme";
 import DataGauge from "@components/DataGauge";
-import DataWidget from "@components/DataWidget";
 import DataWidgetList from "@components/DataWidgetList";
 
 function SortableItem({ id, children }) {

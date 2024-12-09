@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Grid, Button, Typography, Modal, Box, useTheme } from "@mui/material";
-import Theme from "@theme";
+import { TextField, Grid, Button, Typography, Modal, Box} from "@mui/material";
 
 const modalStyle = {
   position: "absolute",
@@ -16,7 +15,7 @@ const modalStyle = {
   overflowY: "auto",
 };
 
-export const CANInput = ({ index, row, onRowChange }) => {
+export const CANInput = ({row = { NumOfSignals: 0 }, onRowChange }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [signals, setSignals] = useState([]);
 

@@ -3,9 +3,7 @@ import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
 import { Modal, IconButton } from "@mui/material";
-import SettingsIcon from "@mui/icons-material/Settings";
 import ComponentEditor from "@/components/ComponentEditor";
-import theme from "@/app/theme";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -13,7 +11,8 @@ const DataGauge = ({uniqueID}) => {
   const [metricValue, setMetricValue] = useState(0);
   const [settingsVisible, setSettingsVisible] = useState(false);
 
-  const storedConfig = JSON.parse(localStorage.getItem(`DataGauge-${uniqueID}`));
+  //const storedConfig = JSON.parse(localStorage.getItem(`DataGauge-${uniqueID}`));
+  const storedConfig = null;
 
   const initialConfig = storedConfig
   ? {

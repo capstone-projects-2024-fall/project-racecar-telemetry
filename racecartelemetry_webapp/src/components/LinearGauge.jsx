@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
-import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
 import { Modal } from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";

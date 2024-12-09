@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
 import theme from "@/app/theme";
-import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
 import { Modal } from "@mui/material";
 import ComponentEditor from "@/components/ComponentEditor";
