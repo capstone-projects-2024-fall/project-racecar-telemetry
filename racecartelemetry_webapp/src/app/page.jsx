@@ -651,7 +651,7 @@ export default function Home() {
                   wordWrap: "break-word",
                 }}
               >
-                Click to increase the row of graph's height.
+                Click to increase the row of graph&apos;s height.
               </Typography>
             </Box>
           </Grid2>
@@ -692,7 +692,7 @@ export default function Home() {
                   wordWrap: "break-word",
                 }}
               >
-                Click to decrease the row of graph's height.
+                Click to decrease the row of graph&apos;s height.
               </Typography>
             </Box>
           </Grid2>
