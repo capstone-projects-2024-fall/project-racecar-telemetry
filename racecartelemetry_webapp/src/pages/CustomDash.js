@@ -186,126 +186,210 @@ export default function CustomDash() {
 
   const modalContent = (
     <>
-      {/* Welcome Text */}
-      <Box textAlign="center" mb={4}>
-        <Typography id="instructions-modal-title" variant="h4" gutterBottom>
-          Welcome to the Dashboard
+      {/* Header */}
+      <Box textAlign="center" mb={1} sx={{ mt: 2 }}>
+        <Typography
+          id="instructions-modal-title"
+          variant="h4"
+          gutterBottom
+          sx={{ color: 'white', fontWeight: 'bold', mb: 2 }}
+        >
+          Dashboard: Quick Reference Guide
         </Typography>
         <Box
           sx={{
-            width: '85%', // Consistent width for all breaks
+            width: '85%',
             height: '2px',
-            backgroundColor: '#ccc',
-            margin: '16px auto',
+            backgroundColor: '#cccccc',
+            margin: '0 auto',
           }}
         />
       </Box>
-
-      {/* Steps in Centered Rows */}
-      <Grid2 container direction="column" spacing={6} sx={{ px: 4, textAlign: 'center' }}>
-        {/* Step 1 */}
-        <Grid2 container spacing={4} justifyContent="center" alignItems="center">
-          <Grid2 xs={12} md={5}>
-            <Typography variant="h6" gutterBottom>
-              Step 1: Selecting a Configuration to edit
-            </Typography>
-            <Typography variant="body2">
-              Use the 'Configuration Manager' to choose or create a new configuration.
-              <br />
-              Select the configuration you want to edit
-              <br />
-              Create new configuration by typing in a name and pressing the 'Create' button
-            </Typography>
+  
+      {/* Icon Descriptions Grid */}
+      <Grid2
+        container
+        spacing={4}
+        sx={{
+          justifyContent: 'center', // Centers the entire grid horizontally
+          textAlign: 'center', // Centers text within each column
+          px: 4,
+          backgroundColor: '#121213',
+          borderRadius: 2,
+          padding: 4,
+        }}
+      >
+        {/* Row 1 */}
+        <Grid2 container item xs={12} spacing={4} justifyContent="center">
+          {/* Column 1 */}
+          <Grid2 item xs={12} sm={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+              <Box
+                component="img"
+                src="/images/add-data.png"
+                alt="Add Data Icon"
+                sx={{
+                  width: '50px',
+                  height: '50px',
+                  marginBottom: 1,
+                  borderRadius: '50%',
+                  border: '2px solid #444',
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}
+              >
+                Add Data
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'white', textAlign: 'center' }}>
+                Add a new data set to the dashboard for analysis.
+              </Typography>
+            </Box>
           </Grid2>
-          <Grid2 xs={12} md={5}>
-            <Box
-              component="img"
-              src= ''
-              alt="Select Configuration Image"
-              sx={{
-                width: '100%',
-                maxWidth: '300px',
-                height: 'auto',
-                borderRadius: 2,
-              }}
-            />
+  
+          {/* Column 2 */}
+          <Grid2 item xs={12} sm={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+              <Box
+                component="img"
+                src="/images/filter-data.png"
+                alt="Filter Data Icon"
+                sx={{
+                  width: '50px',
+                  height: '50px',
+                  marginBottom: 1,
+                  borderRadius: '50%',
+                  border: '2px solid #444',
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}
+              >
+                Filter
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'white', textAlign: 'center' }}>
+                Apply filters to refine the data displayed on the graph.
+              </Typography>
+            </Box>
+          </Grid2>
+  
+          {/* Column 3 */}
+          <Grid2 item xs={12} sm={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+              <Box
+                component="img"
+                src="/images/download.png"
+                alt="Download Icon"
+                sx={{
+                  width: '50px',
+                  height: '50px',
+                  marginBottom: 1,
+                  borderRadius: '50%',
+                  border: '2px solid #444',
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}
+              >
+                Download
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'white', textAlign: 'center' }}>
+                Save the graph as an image or export data as a CSV.
+              </Typography>
+            </Box>
           </Grid2>
         </Grid2>
-        <Grid2 xs={12}>
-          <Box
-            sx={{
-              width: '90%', // Consistent width
-              height: '2px',
-              backgroundColor: '#ccc',
-              margin: '32px auto', // Consistent margin
-            }}
-          />
-        </Grid2>
-
-        {/* Step 2 */}
-        <Grid2 container spacing={4} justifyContent="center" alignItems="center">
-          <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
-            <Box
-              component="img"
-              src=""
-              alt="Edit Data Image"
-              sx={{
-                width: '100%',
-                maxWidth: '300px',
-                height: 'auto',
-                borderRadius: 2,
-              }}
-            />
+  
+        {/* Row 2 */}
+        <Grid2 container item xs={12} spacing={4} justifyContent="center">
+          {/* Column 1 */}
+          <Grid2 item xs={12} sm={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+              <Box
+                component="img"
+                src="/images/settings.png"
+                alt="Settings Icon"
+                sx={{
+                  width: '50px',
+                  height: '50px',
+                  marginBottom: 1,
+                  borderRadius: '50%',
+                  border: '2px solid #444',
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}
+              >
+                Settings
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'white', textAlign: 'center' }}>
+                Customize the dashboard and configure preferences.
+              </Typography>
+            </Box>
           </Grid2>
-          <Grid2 xs={12} md={5} order={{ xs: 1, md: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Step 2: Editing Data Assignments
-            </Typography>
-            <Typography variant="body2">
-              Assign your 'CAN Configuration' by editing the fields. 
-              <br />
-              Click the pencil icon to start editing
-            </Typography>
+  
+          {/* Column 2 */}
+          <Grid2 item xs={12} sm={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+              <Box
+                component="img"
+                src="/images/graph.png"
+                alt="Graph Icon"
+                sx={{
+                  width: '50px',
+                  height: '50px',
+                  marginBottom: 1,
+                  borderRadius: '50%',
+                  border: '2px solid #444',
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}
+              >
+                Graphs
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'white', textAlign: 'center' }}>
+                View and analyze graphical representations of your data.
+              </Typography>
+            </Box>
           </Grid2>
-        </Grid2>
-        <Grid2 xs={12}>
-          <Box
-            sx={{
-              width: '90%', // Consistent width
-              height: '2px',
-              backgroundColor: '#ccc',
-              margin: '32px auto',
-            }}
-          />
-        </Grid2>
-
-        {/* Step 3 */}
-        <Grid2 container spacing={4} justifyContent="center" alignItems="center">
-          <Grid2 xs={12} md={5}>
-            <Typography variant="h6" gutterBottom>
-              Step 3: Saving your Configuration
-            </Typography>
-            <Typography variant="body2">
-              Once you happy with your configuration, don't forget to save and head to the dashboard
-            </Typography>
-          </Grid2>
-          <Grid2 xs={12} md={5}>
-            <Box
-              component="img"
-              src="/images/save-configuration.png"
-              alt="Save Configuration"
-              sx={{
-                width: '100%',
-                maxWidth: '300px',
-                height: 'auto',
-                borderRadius: 2,
-              }}
-            />
+  
+          {/* Column 3 */}
+          <Grid2 item xs={12} sm={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+              <Box
+                component="img"
+                src="/images/help.png"
+                alt="Help Icon"
+                sx={{
+                  width: '50px',
+                  height: '50px',
+                  marginBottom: 1,
+                  borderRadius: '50%',
+                  border: '2px solid #444',
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}
+              >
+                Help
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'white', textAlign: 'center' }}>
+                Access quick tips and a walkthrough for using the dashboard.
+              </Typography>
+            </Box>
           </Grid2>
         </Grid2>
       </Grid2>
     </>
   );
+  
 
   return (
     <Box
