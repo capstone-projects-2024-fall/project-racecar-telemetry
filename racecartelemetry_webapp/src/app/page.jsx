@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { CssBaseline, Button, Box, IconButton, Tooltip, ThemeProvider } from "@mui/material";
+import { Grid2, Typography, CssBaseline, Button, Box, IconButton, Tooltip, ThemeProvider } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Crop169Icon from "@mui/icons-material/Crop169";
@@ -14,6 +14,8 @@ import LinearGauge from "@components/LinearGauge";
 import ComponentEditor from "@components/ComponentEditor";
 import { getCurrentConfig, fetchDataChannelsGroupedByCanID, } from "@/services/CANConfigurationService";
 import theme from "./theme";
+import InstructionsModal from '@components/InstructionsModal';
+import HelpButton from '@/components/HelpButton';
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -38,6 +40,18 @@ export default function Home() {
     [defaultGraphs[3], defaultGraphs[4]],
   ];
 
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem('DashboardVisited');
+    if (!hasVisited) {
+      setOpen(true); // Show modal on first visit
+      sessionStorage.setItem('DashboardVisited', 'true');
+    }
+  }, []);
+
+  const handleClose = () => setOpen(false);
+
   useEffect(() => {
     const fetchCanDataChannels = async () => {
       try {
@@ -58,7 +72,6 @@ export default function Home() {
     const isInitialized = localStorage.getItem("dashboardInitialized");
 
     if (!isInitialized) {
-      console.log("init")
       setRows(defaultRows);
       setRowHeights([450, 450]);
 
@@ -66,20 +79,119 @@ export default function Home() {
       localStorage.setItem("dashboardRows", JSON.stringify(defaultRows));
       localStorage.setItem("dashboardRowHeights", JSON.stringify([450, 450]));
       localStorage.setItem("dashboardInitialized", "true");
-      // Save individual graph configurations to local storage
-      defaultGraphs.forEach((graph) =>
-        localStorage.setItem(`${graph.type}-${graph.id}`, JSON.stringify(graph))
+
+      // Manually set each graph configuration in local storage
+      localStorage.setItem(
+        `Gauge-${defaultGraphs[0].id}`,
+        JSON.stringify({
+          canID: "200",
+          dataChannel: "Battery",
+          color: "Green",
+          min: "0",
+          max: "100",
+          config: {
+            canID: "200",
+            dataChannel: "Battery",
+            Color: "Green",
+            "Min Value": "0",
+            "Max Value": "100",
+          },
+          id: defaultGraphs[0].id,
+        })
       );
 
+      localStorage.setItem(
+        `Linear Gauge-${defaultGraphs[1].id}`,
+        JSON.stringify({
+          canID: "200",
+          dataChannel: "Throttle Position",
+          color: "Blue",
+          min: "0",
+          max: "120",
+          config: {
+            canID: "200",
+            dataChannel: "Throttle Position",
+            Color: "Blue",
+            "Min Value": "0",
+            "Max Value": "120",
+          },
+          id: defaultGraphs[1].id,
+        })
+      );
+
+      localStorage.setItem(
+        `Linear Gauge-${defaultGraphs[2].id}`,
+        JSON.stringify({
+          canID: "200",
+          dataChannel: "Brake Pressure",
+          color: "Red",
+          min: "0",
+          max: "100",
+          config: {
+            canID: "200",
+            dataChannel: "Brake Pressure",
+            Color: "Red",
+            "Min Value": "0",
+            "Max Value": "100",
+          },
+          id: defaultGraphs[2].id,
+        })
+      );
+
+      localStorage.setItem(
+        `Time Series Graph-${defaultGraphs[3].id}`,
+        JSON.stringify({
+          canID: "200",
+          dataChannel: "Throttle Position",
+          color: "Orange",
+          config: {
+            canID: "200",
+            dataChannel: "Throttle Position",
+            Color: "Orange",
+            "Y Axis Min Value": "0",
+            "Y Axis Max Value": "100",
+          },
+          id: defaultGraphs[3].id,
+        })
+      );
+
+      localStorage.setItem(
+        `XY Graph-${defaultGraphs[4].id}`,
+        JSON.stringify({
+          xCanID: "200",
+          xChannel: "Throttle Position",
+          yCanID: "200",
+          yChannel: "Brake Pressure",
+          color: "Silver",
+          xMin: "0",
+          xMax: "100",
+          yMin: "0",
+          yMax: "100",
+          type: "XY Graph",
+          config: {
+            xCanID: "200",
+            xChannel: "Throttle Position",
+            yCanID: "200",
+            yChannel: "Brake Pressure",
+            Color: "Silver",
+            "X Axis Min Value": "0",
+            "X Axis Max Value": "100",
+            "Y Axis Min Value": "0",
+            "Y Axis Max Value": "100",
+          },
+          id: defaultGraphs[4].id,
+        })
+      );
     } else {
       // Load existing state from local storage
-      const storedRows = JSON.parse(localStorage.getItem("dashboardRows"));
-      const storedHeights = JSON.parse(localStorage.getItem("dashboardRowHeights"));
+      const storedRows = JSON.parse(localStorage.getItem("dashboardRows")) || [];
+      const storedHeights = JSON.parse(localStorage.getItem("dashboardRowHeights")) || [];
 
       setRows(storedRows);
       setRowHeights(storedHeights);
     }
   }, []);
+
 
   useEffect(() => {
     if (rows.length > 0) {
@@ -198,6 +310,397 @@ export default function Home() {
         return null;
     }
   };
+
+  const modalContent = (
+    <>
+      {/* Header */}
+      <Box textAlign="center" mb={1} sx={{ mt: 2 }}>
+        <Typography
+          id="instructions-modal-title"
+          variant="h4"
+          gutterBottom
+          sx={{ color: 'white', fontWeight: 'bold', mb: 2 }}
+        >
+          Dashboard: Quick Reference Guide
+        </Typography>
+      </Box>
+
+      <Grid2
+        container
+        direction="column"
+        spacing={6}
+        sx={{
+          px: 4,
+          backgroundColor: '#121213',
+          borderRadius: 2,
+          padding: 4,
+        }}
+      >
+        {/* Step 1 */}
+        <Grid2 container spacing={3} justifyContent="center" alignItems="flex-start">
+          <Grid2 xs={12} md={5}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ color: 'white', fontWeight: 'bold', textAlign: 'left' }}
+            >
+              Choose a configuration to be selected !!
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'white', textAlign: 'left' }}>
+              Use the{' '}
+              <Typography component="span" sx={{ color: '#1d9bf0' }}>
+                selected configuration
+              </Typography>{' '}
+              to choose a created configuration that is used to decode the CAN Messages.
+              <br />
+              After you have selected a configuration, the telemetry device must be{' '}
+              <Typography component="span" sx={{ color: '#FF5733' }}>
+                reset!
+              </Typography>{' '}
+            </Typography>
+          </Grid2>
+          <Grid2 xs={12} md={5}>
+            <Box
+              component="img"
+              src="/dashboard-select.png"
+              alt="Select Configuration Image"
+              sx={{
+                width: '100%',
+                maxWidth: '200px',
+                height: 'auto',
+                borderRadius: 2,
+                border: '2px solid #444',
+                display: 'block',
+              }}
+            />
+          </Grid2>
+        </Grid2>
+        <Grid2 xs={12}>
+          <Box
+            sx={{
+              width: '90%',
+              height: '2px',
+              backgroundColor: '#cccccc',
+              margin: '10px auto',
+            }}
+          />
+        </Grid2>
+
+        {/* Step 2 */}
+        <Grid2 container spacing={3} justifyContent="center" alignItems="flex-start">
+          <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
+            <Box
+              component="img"
+              src="/dashboard-add-row.png"
+              alt="Edit Data Image"
+              sx={{
+                width: '100%',
+                maxWidth: '200px',
+                height: 'auto',
+                borderRadius: 2,
+                border: '2px solid #444',
+                display: 'block',
+              }}
+            />
+          </Grid2>
+          <Grid2 xs={12} md={5} order={{ xs: 1, md: 2 }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ color: 'white', fontWeight: 'bold', textAlign: 'left' }}
+            >
+              Optional: Adding More Rows
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'white', textAlign: 'left' }}>
+              You can create new rows by clicking the{' '}
+              <Typography component="span" sx={{ color: '#1d9bf0' }}>
+                add row
+              </Typography>{' '}
+              button.
+              <br />
+              You can choose up to 6 graphs in 1 row.
+            </Typography>
+          </Grid2>
+        </Grid2>
+        <Grid2 xs={12}>
+          <Box
+            sx={{
+              width: '90%',
+              height: '2px',
+              backgroundColor: '#cccccc',
+              margin: '10px auto',
+            }}
+          />
+        </Grid2>
+      </Grid2>
+      {/* Icon Descriptions Grid */}
+      <Grid2
+        container
+        spacing={4}
+        sx={{
+          justifyContent: "center", // Centers the entire grid horizontally
+          textAlign: "center", // Centers text within each column
+          px: 4,
+          backgroundColor: "#121213",
+          borderRadius: 2,
+          padding: 4,
+        }}
+      >
+        {/* Row 1 */}
+        <Grid2 container item xs={12} spacing={4} justifyContent="space-evenly" alignItems="center">
+          {/* Column 1 */}
+          <Grid2 item xs={12} sm={4} sx={{ maxWidth: "200px" }}>
+            <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+              <Box
+                component="img"
+                src="/add-graph.png"
+                alt="Add Data Icon"
+                sx={{
+                  width: "50px",
+                  height: "50px",
+                  marginBottom: 1,
+                  borderRadius: "50%",
+                  border: "2px solid #444",
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Add Graph
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "white",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Click to choose between 4 different graphs to display.
+              </Typography>
+            </Box>
+          </Grid2>
+
+          {/* Column 2 */}
+          <Grid2 item xs={12} sm={4} sx={{ maxWidth: "200px" }}>
+            <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+              <Box
+                component="img"
+                src="/delete-graph.png"
+                alt="Filter Data Icon"
+                sx={{
+                  width: "50px",
+                  height: "50px",
+                  marginBottom: 1,
+                  borderRadius: "50%",
+                  border: "2px solid #444",
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Delete Graph
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "white",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Click the button on the top right of the graph to delete the graph.
+              </Typography>
+            </Box>
+          </Grid2>
+
+          {/* Column 3 */}
+          <Grid2 item xs={12} sm={4} sx={{ maxWidth: "200px" }}>
+            <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+              <Box
+                component="img"
+                src="/add-placeholder.png"
+                alt="Download Icon"
+                sx={{
+                  width: "50px",
+                  height: "50px",
+                  marginBottom: 1,
+                  borderRadius: "50%",
+                  border: "2px solid #444",
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Add Graph Selector
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "white",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Click to add a new graph selector into the row.
+              </Typography>
+            </Box>
+          </Grid2>
+        </Grid2>
+
+        {/* Row 2 */}
+        <Grid2 container item xs={12} spacing={4} justifyContent="space-evenly" alignItems="center">
+          {/* Column 1 */}
+          <Grid2 item xs={12} sm={4} sx={{ maxWidth: "200px" }}>
+            <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+              <Box
+                component="img"
+                src="/delete-row.png"
+                alt="Settings Icon"
+                sx={{
+                  width: "50px",
+                  height: "50px",
+                  marginBottom: 1,
+                  borderRadius: "50%",
+                  border: "2px solid #444",
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Delete Row
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "white",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Click to remove the entire row.
+              </Typography>
+            </Box>
+          </Grid2>
+
+          {/* Column 2 */}
+          <Grid2 item xs={12} sm={4} sx={{ maxWidth: "200px" }}>
+            <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+              <Box
+                component="img"
+                src="/increase-height.png"
+                alt="Graph Icon"
+                sx={{
+                  width: "50px",
+                  height: "50px",
+                  marginBottom: 1,
+                  borderRadius: "50%",
+                  border: "2px solid #444",
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Increase Height
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "white",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Click to increase the row of graph's height.
+              </Typography>
+            </Box>
+          </Grid2>
+
+          {/* Column 3 */}
+          <Grid2 item xs={12} sm={4} sx={{ maxWidth: "200px" }}>
+            <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+              <Box
+                component="img"
+                src="/decrease-height.png"
+                alt="Help Icon"
+                sx={{
+                  width: "50px",
+                  height: "50px",
+                  marginBottom: 1,
+                  borderRadius: "50%",
+                  border: "2px solid #444",
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Decrease Height
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "white",
+                  textAlign: "center",
+                  maxWidth: "200px",
+                  wordWrap: "break-word",
+                }}
+              >
+                Click to decrease the row of graph's height.
+              </Typography>
+            </Box>
+          </Grid2>
+        </Grid2>
+      </Grid2>
+    </>
+  );
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -421,6 +924,18 @@ export default function Home() {
             </Box>
           ))}
         </Box>
+
+        <ThemeProvider theme={theme}>
+
+          <InstructionsModal open={open} onClose={handleClose}>
+            {modalContent}
+          </InstructionsModal>
+
+          {/* Help Button */}
+          <HelpButton onClick={() => setOpen(true)} />
+
+        </ThemeProvider>
+
 
         {/* Component Editor Modal */}
         {editorOpen && (
