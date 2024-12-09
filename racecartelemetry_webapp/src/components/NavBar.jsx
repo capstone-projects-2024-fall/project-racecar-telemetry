@@ -17,7 +17,7 @@ const Navbar = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar position="sticky" sx={{ marginBottom: 5 }}>
+      <AppBar position="sticky" sx={{  }}>
         <Toolbar
           sx={{
             background: "linear-gradient(45deg, #A32036 40%, #010000fa 60%)",
@@ -80,22 +80,6 @@ const Navbar = () => {
               }}
             >
               CAN Configuration
-            </Button>
-          </Link>
-
-          <Link href="/CustomDash">
-            <Button
-              sx={{
-                color: "white",
-                transition:
-                  "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
-                "&:hover": {
-                  transform: "scale(1.1)",
-                  color: "#e61b3d",
-                },
-              }}
-            >
-              Custom Dash
             </Button>
           </Link>
         </Toolbar>

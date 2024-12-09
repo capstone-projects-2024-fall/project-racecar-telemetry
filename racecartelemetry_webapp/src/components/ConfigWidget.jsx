@@ -30,17 +30,14 @@ const DataWidget = ({title, unit}) => {
     const fetchAllConfigs = async () => {
       try {
         const data = await fetchConfigs();
-        console.log("Raw configurations:", data);
 
         const filteredConfigs = data.filter((config) => config.id !== "currentConfig");
-        console.log("Filtered configurations:", filteredConfigs);
 
         setConfigs(filteredConfigs);
 
         const currentConfigData = data.find((config) => config.id === "currentConfig");
         if (currentConfigData && currentConfigData.current) {
           setCurrentConfig(currentConfigData.current);
-          console.log("Fetched current configuration:", currentConfigData.current);
         } else {
           setCurrentConfig(null);
           console.log("No current configuration set");
@@ -102,35 +99,34 @@ const DataWidget = ({title, unit}) => {
           borderColor: "primary.light",
         }}
       >
-        
+
 
         <Box sx={{ textAlign: "left", ml: 1 }}>
           <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
             {dataName}
           </Typography>
-          <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+          <Typography
+            component="div" // Change the underlying element to <div>
+            sx={{ fontSize: "1.5rem", fontWeight: "bold" }}
+          >
             <Select
-                value={currentConfig || ""}
-                onChange={(e) => handleConfigChange(e.target.value)}
-                displayEmpty
-                sx={{
-                    marginLeft: "0px",
-                    backgroundColor: "white",
-                    borderRadius: "4px",
-                    padding: "0 8px",
-                    fontSize: "0.9rem",
-                    color: "black",
-                    fontWeight: "500",
-                    minWidth: "120px",
-                    height: "32px",
-                    }}
-                    disabled={loading}
-                    renderValue={(selected) => {
-                        if (!selected) return "No configuration selected"; // Placeholder when no config is selected
-                        const selectedConfig = configs.find((config) => config.id === selected);
-                        return selectedConfig ? selectedConfig.id : "No configuration selected";
-                    }}>
-                {configs.map((config) => (
+              value={currentConfig || ""}
+              onChange={(e) => handleConfigChange(e.target.value)}
+              displayEmpty
+              sx={{
+                marginLeft: "0px",
+                backgroundColor: "white",
+                borderRadius: "4px",
+                padding: "0 8px",
+                fontSize: "0.9rem",
+                color: "black",
+                fontWeight: "500",
+                minWidth: "120px",
+                height: "32px",
+              }}
+              disabled={loading}
+            >
+              {configs.map((config) => (
                 <MenuItem key={config.id} value={config.id}>
                   {config.id}
                 </MenuItem>
@@ -138,9 +134,10 @@ const DataWidget = ({title, unit}) => {
             </Select>
           </Typography>
         </Box>
+
       </Box>
     </>
   );
 };
 
-export default DataWidget;
+export default Datawidget;

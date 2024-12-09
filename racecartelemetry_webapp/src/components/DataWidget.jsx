@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, IconButton, Modal } from "@mui/material";
-import SettingsIcon from "@mui/icons-material/Settings";
+// import SettingsIcon from "@mui/icons-material/Settings";
 import ComponentEditor from "@/components/ComponentEditor";
 import theme from "@/app/theme";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig"; // Firebase config file
+import { settings } from "firebase/analytics";
 
 const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false, isConnected }) => {
   const [number, setNumber] = useState(0);
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [settingsVisible, setSettingsVisible] = useState();
   const [dataName, setDataName] = useState(title);
   const [color, setColor] = useState(`${theme.palette.primary.main}`);
   const [unitShown, setUnitShown] = useState(unit);
 
   const handleSettingsClick = () => {
-    setSettingsVisible((prevState) => !prevState);
+    setSettingsVisible(true);
   };
 
   const handleSettingsClose = () => {
@@ -72,15 +73,17 @@ const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false,
             justifyContent: "center",
           }}
         >
-          <ComponentEditor
-            config={{
-              fields: [
-                { label: "Color", type: "select", options: ["Blue", "Red", "Green"] },
-              ],
-            }}
-            onCancel={handleSettingsClose}
-            onSave={handleSave}
-          />
+          <Box>
+            <ComponentEditor
+              config={{
+                fields: [
+                  { label: "Color", type: "select", options: ["Blue", "Red", "Green"] },
+                ],
+              }}
+              onCancel={handleSettingsClose}
+              onSave={handleSave}
+            />
+          </Box>
         </Modal>
       )}
       <Box
@@ -96,16 +99,26 @@ const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false,
           borderColor: "primary.light",
         }}
       >
-        <IconButton
+        {/* <IconButton
           onClick={handleSettingsClick}
           sx={{
             color: "white",
           }}
         >
           <SettingsIcon />
-        </IconButton>
+        </IconButton> */}
 
-        <Box sx={{ textAlign: "left", ml: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            ml: 1,
+          }}
+        >
+
           <Typography sx={{ fontSize: "0.75rem", lineHeight: 1 }}>
             {dataName}
           </Typography>

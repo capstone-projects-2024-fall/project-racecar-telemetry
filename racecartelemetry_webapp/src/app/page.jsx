@@ -1,197 +1,431 @@
 "use client";
-import { useState } from "react";
-import React from "react";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useState, useEffect } from "react";
+
+import { CssBaseline, ThemeProvider, Typography, Stack, Button, Box, IconButton, Tooltip } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import Crop169Icon from "@mui/icons-material/Crop169";
+import CropDinIcon from "@mui/icons-material/CropDin";
+
 import NavBar from "@components/NavBar";
+
+import DataWidgetList from "@components/DataWidgetList";
+
+import DataGauge from "@components/DataGauge";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import XYGraph from "@components/XYGraph";
 import LinearGauge from "@components/LinearGauge";
-import { ThemeProvider, CssBaseline, Box} from "@mui/material";
-import theme from "@app/theme";
-import DataGauge from "@components/DataGauge";
-import DataWidgetList from "@components/DataWidgetList";
 
-function SortableItem({ id, children }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+import ComponentEditor from "@components/ComponentEditor";
+import { getCurrentConfig, fetchDataChannelsGroupedByCanID, } from "@/services/CANConfigurationService";
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    padding: "0.3rem",
-    backgroundColor: "transparent",
-    border: "1px solid #9e9e9e",
-    borderRadius: 10,
-    display: "flex",
-    flexDirection: "column",
-    width: "20%",
-    height: "250px",
-    boxSizing: "border-box",
-    overflow: "hidden",
-  };
-
-  return (
-    <div ref={setNodeRef} style={style} {...attributes}>
-      <div
-        {...listeners}
-        style={{
-          cursor: "grab",
-          backgroundColor: "transparent",
-          textAlign: "center",
-          color: "grey",
-          padding: "0.2rem",
-          border: "1px solid #737373",
-          borderRadius: 10,
-          marginBottom: "0.1rem",
-          fontSize: "0.8rem",
-        }}
-      >
-        Drag Handle
-      </div>
-      <div style={{ flex: 1 }}>{children}</div>
-    </div>
-  );
-}
+import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
-  const [layout, setLayout] = useState([
-    {
-      id: "r11", component: <DataGauge /> 
-    },
-    {
-      id: "r12", component: <DataGauge /> 
-    },
-    {
-      id: "r13", component: <LinearGauge /> 
-    },
-    {
-      id: "r14", component: <LinearGauge /> 
-    },
-    {
-      id: "r15", component: <LinearGauge /> 
-    },
-  ]);
+  const [rows, setRows] = useState([]);
+  const [error, setError] = useState([]);
+  const [rowHeights, setRowHeights] = useState([]);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [currentEdit, setCurrentEdit] = useState(null);
+  const [groupedDataChannels, setGroupedDataChannels] = useState({});
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  // Default configuration for initial graphs
+  const defaultGraphs = [
+    { type: "Gauge", id: uuidv4() },
+    { type: "Linear Gauge", id: uuidv4() },
+    { type: "Linear Gauge", id: uuidv4() },
+    { type: "Time Series Graph", id: uuidv4() },
+    { type: "XY Graph", id: uuidv4() },
+  ];
+  const defaultRows = [
+    [defaultGraphs[0], defaultGraphs[1], defaultGraphs[2]],
+    [defaultGraphs[3], defaultGraphs[4]],
+  ];
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
+  useEffect(() => {
+    const fetchCanDataChannels = async () => {
+      try {
+        const currentConfig = await getCurrentConfig();
+        if (currentConfig) {
+          const data = await fetchDataChannelsGroupedByCanID(currentConfig);
+          setGroupedDataChannels(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch CAN data:", err);
+      }
+    };
 
-    if (over && active.id !== over.id) {
-      setLayout((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
+    fetchCanDataChannels();
+  }, []);
 
-        return arrayMove(items, oldIndex, newIndex);
+  useEffect(() => {
+    const isInitialized = localStorage.getItem("dashboardInitialized");
+
+    if (!isInitialized) {
+      console.log("init")
+      setRows(defaultRows);
+      setRowHeights([450, 450]);
+
+      // Save to local storage
+      localStorage.setItem("dashboardRows", JSON.stringify(defaultRows));
+      localStorage.setItem("dashboardRowHeights", JSON.stringify([450, 450]));
+      localStorage.setItem("dashboardInitialized", "true");
+      // Save individual graph configurations to local storage
+      defaultGraphs.forEach((graph) =>
+        localStorage.setItem(`${graph.type}-${graph.id}`, JSON.stringify(graph))
+      );
+
+    } else {
+      // Load existing state from local storage
+      const storedRows = JSON.parse(localStorage.getItem("dashboardRows"));
+      const storedHeights = JSON.parse(localStorage.getItem("dashboardRowHeights"));
+
+      setRows(storedRows);
+      setRowHeights(storedHeights);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (rows.length > 0) {
+      localStorage.setItem("dashboardRows", JSON.stringify(rows));
+      localStorage.setItem("dashboardRowHeights", JSON.stringify(rowHeights));
+    }
+  }, [rows, rowHeights]);
+
+  const handleAddRow = () => {
+    const input = prompt("Enter a number between 1 and 6 for placeholders:");
+    const numPlaceholders = parseInt(input);
+
+    if (isNaN(numPlaceholders) || numPlaceholders < 1 || numPlaceholders > 6) {
+      setError("Invalid input. Please enter a number between 1 and 6.");
+      return;
+    }
+
+    setError("");
+
+    const newPlaceholders = Array(numPlaceholders)
+      .fill(null)
+      .map(() => ({ id: uuidv4(), type: null }));
+
+    setRows([...rows, newPlaceholders]);
+    setRowHeights([...rowHeights, 450]);
+  };
+
+  const adjustRowHeight = (rowIndex, increment) => {
+    const updatedHeights = [...rowHeights];
+    updatedHeights[rowIndex] = Math.max(
+      250,
+      Math.min(550, updatedHeights[rowIndex] + increment)
+    );
+    setRowHeights(updatedHeights);
+  };
+
+  const handleOpenEditor = (rowIndex, placeholderIndex) => {
+    setCurrentEdit({ rowIndex, placeholderIndex });
+    setEditorOpen(true);
+  };
+
+  const handleSaveComponent = (config) => {
+    const { rowIndex, placeholderIndex } = currentEdit;
+
+    const uniqueID = config.id || uuidv4();
+
+    const updatedConfig = {
+      ...config,
+      id: uniqueID,
+    };
+
+    const updatedRows = [...rows];
+    updatedRows[rowIndex] = [...updatedRows[rowIndex]];
+    updatedRows[rowIndex][placeholderIndex] = { ...updatedConfig };
+
+    setRows(updatedRows);
+
+    const graphTypePrefix = config.type;
+    localStorage.setItem(
+      `${graphTypePrefix}-${updatedConfig.id}`,
+      JSON.stringify(updatedConfig)
+    );
+
+    setEditorOpen(false);
+    setCurrentEdit(null);
+  };
+
+  const handleRemovePlaceholder = (rowIndex, placeholderIndex) => {
+    const updatedRows = [...rows];
+
+    const placeholder = updatedRows[rowIndex][placeholderIndex];
+    if (placeholder && placeholder.id) {
+      const graphTypePrefix = placeholder.type;
+      localStorage.removeItem(`${graphTypePrefix}-${placeholder.id}`);
+    }
+
+    updatedRows[rowIndex].splice(placeholderIndex, 1);
+    setRows(updatedRows);
+  };
+
+  const handleRemoveRow = (rowIndex) => {
+    const updatedRows = [...rows];
+    const rowToRemove = updatedRows[rowIndex];
+
+    if (rowToRemove) {
+      rowToRemove.forEach((placeholder) => {
+        if (placeholder && placeholder.id && placeholder.type) {
+          const graphTypePrefix = placeholder.type;
+          localStorage.removeItem(`${graphTypePrefix}-${placeholder.id}`);
+        }
       });
+    }
+
+    updatedRows.splice(rowIndex, 1);
+    setRows(updatedRows);
+
+    const updatedHeights = [...rowHeights];
+    updatedHeights.splice(rowIndex, 1);
+    setRowHeights(updatedHeights);
+  };
+
+  const renderGraph = (config) => {
+    if (!config.type) return null;
+
+    // console.log("select: ", config.type)
+    switch (config.type) {
+      case "Gauge":
+        return <DataGauge uniqueID={config.id} />;
+      case "Linear Gauge":
+        return <LinearGauge uniqueID={config.id} />;
+      case "Time Series Graph":
+        return <TimeSeriesGraph uniqueID={config.id} />;
+      case "XY Graph":
+        return <XYGraph uniqueID={config.id} />;
+      default:
+        return null;
     }
   };
 
-  const handleUpdateComponent = (oldId, newId, config) => {
-    setLayout((prevLayout) =>
-      prevLayout.map((item) =>
-        item.id === oldId
-          ? {
-              id: newId,
-              component: (
-                <DataGauge
-                  canID={config.canID}
-                  dataChannel={config.dataChannel}
-                  color={config.Color}
-                  min={config["Min Value"]}
-                  max={config["Max Value"]}
-                  onSave={(newConfig) => handleUpdateComponent(newId, newConfig.dataChannel, newConfig)}
-                />
-              ),
-            }
-          : item
-      )
-    );
-  };
-
   return (
-    <ThemeProvider theme={theme}>
+    // <ThemeProvider theme={theme}>
+    <>
       <CssBaseline />
       <NavBar />
-      {/* <Typography color="white">
-      testing
-      </Typography> */}
-      
       <Box
         sx={{
+          backgroundColor: "black",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: 2,
+          padding: 0.5,
         }}
       >
-        {/*Data Widgets*/}
-          <DataWidgetList/> 
+        <DataWidgetList />
+      </Box>
 
-        {/* Draggable Row of Components */}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+      <Box
+        sx={{
+          backgroundColor: "black",
+          minHeight: "100vh",
+          padding: "20px",
+          color: "white",
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddRow}
+          sx={{ marginBottom: "10px" }}
         >
-          <SortableContext
-            items={layout.map((item) => item.id)}
-            strategy={verticalListSortingStrategy}
-          >
+          Add Row
+        </Button>
+        {error && <Box sx={{ color: "red", marginBottom: "10px" }}>{error}</Box>}
+        <Box>
+          {rows.map((row, rowIndex) => (
             <Box
+              key={rowIndex}
               sx={{
                 display: "flex",
-                flexDirection: "row",
-                flexWrap: "nowrap", // Keeps items in a single row
-                gap: "1rem",
-                width: "100%",
-                marginBottom: 2,
-                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "20px",
               }}
             >
-              {layout.map((item) => (
-                <SortableItem key={item.id} id={item.id}>
-                  {item.component}
-                </SortableItem>
-              ))}
-            </Box>
-          </SortableContext>
-        </DndContext>
+              {/* Controls on the left */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginRight: "10px",
+                }}
+              >
+                <Box
+                  sx={{
+                    backgroundColor: "rgba(140, 148, 140, 0.13)", // Shared grey background
+                    borderRadius: "8px", // Optional: Add rounded corners
+                    padding: "5px", // Add some spacing around the buttons
+                    display: "flex",
+                    flexDirection: "column", // Stack the buttons vertically
+                    alignItems: "center",
+                  }}
+                >
+                  <Tooltip title="Add Placeholder" placement="right">
+                    <IconButton
+                      color="primary"
+                      onClick={() => {
+                        const updatedRows = [...rows];
+                        updatedRows[rowIndex].push({ id: uuidv4(), type: null });
+                        setRows(updatedRows);
+                      }}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "rgb(40,40,40)",
+                        },
+                      }}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                <Box
+                  sx={{
+                    backgroundColor: "rgba(120, 128, 120, 0.13)", // Shared grey background
+                    borderRadius: "8px", // Optional: Add rounded corners
+                    padding: "5px", // Add some spacing around the buttons
+                    display: "flex",
+                    flexDirection: "column", // Stack the buttons vertically
+                    alignItems: "center",
+                  }}
+                >
+                  <Tooltip title="Remove Row" placement="right">
+                    <IconButton
+                      color="secondary"
+                      onClick={() => handleRemoveRow(rowIndex)}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "rgb(40,40,40)",
+                        },
+                      }}
+                    >
+                      <RemoveIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                <Box
+                  sx={{
+                    backgroundColor: "rgba(120, 128, 120, 0.13)", // Shared grey background
+                    borderRadius: "8px", // Optional: Add rounded corners
+                    padding: "5px", // Add some spacing around the buttons
+                    display: "flex",
+                    flexDirection: "column", // Stack the buttons vertically
+                    alignItems: "center",
+                  }}
+                >
+                  <Tooltip title="Increase Row Height" placement="right">
+                    <IconButton
+                      color="primary"
+                      onClick={() => adjustRowHeight(rowIndex, 50)}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "rgb(40,40,40)",
+                        },
+                      }}
+                    >
+                      <CropDinIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Decrease Row Height" placement="right">
+                    <IconButton
+                      color="primary"
+                      onClick={() => adjustRowHeight(rowIndex, -50)}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "rgb(40,40,40)",
+                        },
+                      }}
+                    >
+                      <Crop169Icon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </Box>
 
-        {/* Side-by-Side Graphs */}
-        <Box
-          sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}
-        >
-          <Box sx={{ width: "50%" }}>
-            <TimeSeriesGraph />
-          </Box>
-          <Box sx={{ width: "50%" }}>
-            <XYGraph
-              canID={"100"}
-              xChannel="Steering"
-              yChannel="Pedal"
-              xMin={0}
-              xMax={100}
-              yMin={0}
-              yMax={100}
-              color={theme.palette.primary.main}
-            />
-          </Box>
+              {/* Placeholders */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexGrow: 1,
+                  gap: "10px",
+                  justifyContent: "space-between",
+                  height: `${rowHeights[rowIndex]}px`, // Dynamically set height
+                  width: "100%",
+                }}
+              >
+                {row.map((placeholder, placeholderIndex) => (
+                  <Box
+                    key={placeholder.id}
+                    sx={{
+                      flex: 1,
+                      height: "100%", // Match row height
+                      border: "2px dashed gray",
+                      position: "relative",
+                    }}
+                  >
+                    {placeholder.type ? (
+                      renderGraph(placeholder)
+                    ) : (
+                      // Render the add button for placeholders
+                      <IconButton
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -50%)",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "rgb(40,40,40)",
+                          },
+                        }}
+                        onClick={() =>
+                          handleOpenEditor(rowIndex, placeholderIndex)
+                        }
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    )}
+                    {/* Remove placeholder/component button */}
+                    <IconButton
+                      sx={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        color: "red",
+                        "&:hover": {
+                          backgroundColor: "rgb(40,40,40)",
+                        },
+                      }}
+                      onClick={() =>
+                        handleRemovePlaceholder(rowIndex, placeholderIndex)
+                      }
+                    >
+                      <RemoveIcon />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          ))}
         </Box>
+
+        {/* Component Editor Modal */}
+        {editorOpen && (
+          <ComponentEditor
+            open={editorOpen}
+            groupedDataChannels={groupedDataChannels} // Pass CAN data
+            onSave={(config) =>
+              handleSaveComponent({ type: config.type, ...config })
+            }
+            onCancel={() => setEditorOpen(false)}
+          />
+        )}
       </Box>
-    </ThemeProvider>
+    </>
   );
 }

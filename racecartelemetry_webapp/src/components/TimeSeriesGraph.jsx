@@ -3,51 +3,92 @@ import dynamic from "next/dynamic";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig";
 import theme from "@/app/theme";
-import IconButton from "@mui/material/IconButton";
-import { Modal } from "@mui/material";
-import ComponentEditor from "@/components/ComponentEditor";
+
+import {
+  fetchUnit,
+  getCurrentConfig,
+} from "@/services/CANConfigurationService";
+// import SettingsIcon from "@mui/icons-material/Settings";
+// import IconButton from "@mui/material/IconButton";
+// import { Modal } from "@mui/material";
+// import ComponentEditor from "@/components/ComponentEditor";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const TimeSeriesGraph = () => {
-  const [unit, setUnit] = useState("(UNIT)");
+const TimeSeriesGraph = ({ uniqueID }) => {
+  const [unit, setUnit] = useState("");
   const [timestamps, setTimestamps] = useState([]);
   const [valsToPlot, setValsToPlot] = useState([]);
 
-  // Config for time series visualization
-  const [config, setConfig] = useState({
-    canID: "CAN ID",
-    dataChannel: "Data Channel",
-    color: "Blue",
-    yMin: 0,
-    yMax: 0,
-    title: "Time Series Data",
-  });
+  const storedConfig = JSON.parse(
+    localStorage.getItem(`Time Series Graph-${uniqueID}`)
+  );
 
-  // State to determine whether or not the settings modal is visible
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  // console.log(`Time Series Graph-${uniqueID}`);
 
-  const handleSettingsClick = () => {
-    setSettingsVisible((prevState) => !prevState);
+  const initialConfig = {
+    canID: storedConfig.canID || "CAN ID",
+    dataChannel: storedConfig.dataChannel || "Data Channel",
+    color: storedConfig.config?.Color || "Red",
+    min: storedConfig.config?.["Y Axis Min Value"] || 0,
+    max: storedConfig.config?.["Y Axis Max Value"] || 100,
   };
 
-  const handleSettingsClose = () => {
-    setSettingsVisible(false);
-  };
+  const [config, setConfig] = useState(initialConfig);
 
-  const handleSave = (formState) => {
-    const updatedConfig = {
-      canID: formState.canID || config.canID,
-      dataChannel: formState.dataChannel || config.dataChannel,
-      color: formState.Color || config.color,
-      yMin: parseFloat(formState["Y Axis Min Value"]) || config.yMin,
-      yMax: parseFloat(formState["Y Axis Max Value"]) || config.yMax,
-      title: formState["Title"] || config.title,
+  useEffect(() => {
+    const updatedStoredConfig = { ...initialConfig, ...storedConfig };
+    localStorage.setItem(
+      `Time Series Graph-${uniqueID}`,
+      JSON.stringify(updatedStoredConfig)
+    );
+  }, [uniqueID, initialConfig]);
+
+  useEffect(() => {
+    const fetchAndSetUnit = async () => {
+      try {
+        const selectedConfig = await getCurrentConfig();
+        console.log("selectedConfig:", selectedConfig);
+        const fetchedUnit = await fetchUnit(
+          selectedConfig,
+          config.canID,
+          config.dataChannel
+        );
+        setUnit(fetchedUnit || "Unknown");
+        console.log(config.dataChannel, " unit: ", fetchedUnit);
+      } catch (error) {
+        console.error("Error Fetching Unit:", error);
+        setUnit("Error");
+      }
     };
-    console.log("Saving timeseries configuration:", updatedConfig);
-    setConfig(updatedConfig);
-    setSettingsVisible(false);
-  };
+
+    fetchAndSetUnit();
+  }, []);
+
+  // // State to determine whether or not the settings modal is visible
+  // const [settingsVisible, setSettingsVisible] = useState(false);
+
+  // const handleSettingsClick = () => {
+  //   setSettingsVisible((prevState) => !prevState);
+  // };
+
+  // const handleSettingsClose = () => {
+  //   setSettingsVisible(false);
+  // };
+
+  // const handleSave = (formState) => {
+  //   const updatedConfig = {
+  //     canID: formState.canID || config.canID,
+  //     dataChannel: formState.dataChannel || config.dataChannel,
+  //     color: formState.Color || config.color,
+  //     yMin: parseFloat(formState["Y Axis Min Value"]) || config.yMin,
+  //     yMax: parseFloat(formState["Y Axis Max Value"]) || config.yMax,
+  //     title: formState["Title"] || config.title,
+  //   };
+  //   console.log("Saving timeseries configuration:", updatedConfig);
+  //   setConfig(updatedConfig);
+  //   setSettingsVisible(false);
+  // };
 
   useEffect(() => {
     if (!config.canID || !config.dataChannel) return;
@@ -56,7 +97,10 @@ const TimeSeriesGraph = () => {
     const unsubscribe = onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
-        if (data[config.dataChannel] !== undefined && data.timestamp !== undefined) {
+        if (
+          data[config.dataChannel] !== undefined &&
+          data.timestamp !== undefined
+        ) {
           setTimestamps((prev) => [...prev, data.timestamp / 1000]); // Convert timestamp to seconds
           setValsToPlot((prev) => [...prev, data[config.dataChannel]]);
         }
@@ -79,7 +123,7 @@ const TimeSeriesGraph = () => {
 
   const layout = {
     title: {
-      text: config.title || "Time Series Data",
+      text: config.dataChannel || "Time Series Data",
       font: {
         size: 24,
         color: theme.palette.primary.main,
@@ -110,7 +154,7 @@ const TimeSeriesGraph = () => {
       zerolinewidth: 2,
       gridcolor: "rgba(255, 255, 255, 0.1)",
       gridwidth: 1,
-      range: [config.yMin, config.yMax],
+      range: [config.min, config.max],
     },
     paper_bgcolor: "rgba(20, 20, 20, 0.9)",
     plot_bgcolor: "rgba(20, 20, 20, 0.9)",
@@ -120,7 +164,7 @@ const TimeSeriesGraph = () => {
 
   return (
     <>
-      {settingsVisible && (
+      {/* {settingsVisible && (
         <Modal
           open={settingsVisible}
           onClose={handleSettingsClose}
@@ -142,14 +186,14 @@ const TimeSeriesGraph = () => {
             onSave={handleSave}
           />
         </Modal>
-      )}
+      )} */}
 
       <div
         style={{
           width: "100%",
           padding: "0",
           borderRadius: "12px",
-          border: `2px solid ${theme.palette.primary.main}`,
+          border: `0px solid ${theme.palette.primary.main}`,
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
           backgroundColor: "rgba(30, 30, 30, 0.9)",
           margin: "0",
@@ -162,16 +206,16 @@ const TimeSeriesGraph = () => {
             alignItems: "center",
             justifyContent: "left",
             backgroundColor: "rgba(20, 20, 20, 0.9)",
-            height: "1.5rem",
+            height: "0rem",
           }}
         >
-          <IconButton onClick={handleSettingsClick}>
-            {/* <SettingsIcon
+          {/* <IconButton onClick={handleSettingsClick}>
+            <SettingsIcon
               style={{
                 color: theme.palette.primary.main,
               }}
-            /> */}
-          </IconButton>
+            />
+          </IconButton> */}
         </div>
 
         <Plot
