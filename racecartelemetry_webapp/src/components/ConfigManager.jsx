@@ -109,11 +109,11 @@ const ConfigManager = ({ onConfigSelect }) => {
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
-                        renderValue={(selected) => selected || "Select Config"}
+                        renderValue={(selected) => selected || "Select a Configuration"}
                     >
-                        <MenuItem value="" disabled>
-                            Select Config
-                        </MenuItem>
+                        {/* <MenuItem value="" disabled>
+                            Select a Configuration
+                        </MenuItem> */}
                         {Array.isArray(filteredConfigs) && filteredConfigs.length > 0 ? (
                             filteredConfigs.map((config) => (
                                 <MenuItem key={config.id} value={config.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -128,14 +128,14 @@ const ConfigManager = ({ onConfigSelect }) => {
                                 </MenuItem>
                             ))
                         ) : (
-                            <MenuItem disabled>No Configs Available</MenuItem>
+                            <MenuItem disabled>No Configurations Available</MenuItem>
                         )}
                     </Select>
                 </Grid>
 
                 <Grid item xs={12}>
                     <TextField
-                        label="New Config Name"
+                        label="New Configuration Name"
                         value={configData.name || ""}
                         onChange={(e) => setConfigData({ ...configData, name: e.target.value })}
                         fullWidth
