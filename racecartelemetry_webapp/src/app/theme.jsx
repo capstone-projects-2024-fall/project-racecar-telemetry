@@ -21,6 +21,11 @@ const theme = createTheme({
     error: {
       main: red.A400,
     },
+    typography: {
+      allVariants: {
+        color: '#000000', // Default for all text
+      },
+    },
   },
 });
 
