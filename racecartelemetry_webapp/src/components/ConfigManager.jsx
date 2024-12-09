@@ -112,7 +112,9 @@ const ConfigManager = ({ onConfigSelect }) => {
                         renderValue={(selected) => selected || "Select Config"}
                     >
                         <MenuItem value="" disabled>
-                            Select Config
+                            <Typography sx={{ color: "black" }}>
+                                Select Config
+                            </Typography>
                         </MenuItem>
                         {Array.isArray(filteredConfigs) && filteredConfigs.length > 0 ? (
                             filteredConfigs.map((config) => (

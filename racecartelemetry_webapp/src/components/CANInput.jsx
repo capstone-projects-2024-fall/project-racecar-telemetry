@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Grid, Button, Typography, Modal, Box, useTheme } from "@mui/material";
-import Theme from "@theme";
+import { TextField, Grid, Button, Typography, Modal, Box} from "@mui/material";
 
 const modalStyle = {
   position: "absolute",
@@ -16,13 +15,13 @@ const modalStyle = {
   overflowY: "auto",
 };
 
-export const CANInput = ({ index, row, onRowChange }) => {
+export const CANInput = ({row = { NumOfSignals: 0 }, onRowChange }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [signals, setSignals] = useState([]);
 
   // Update signals array when the number of signals changes
   useEffect(() => {
-    const numSignals = parseInt(row.NumOfSignals) || 0;
+    const numSignals = parseInt(row?.NumOfSignals || 0);
     setSignals((prev) =>
       Array.from({ length: numSignals }, (_, idx) => prev[idx] || {
         Index: idx + 1,
@@ -34,7 +33,7 @@ export const CANInput = ({ index, row, onRowChange }) => {
         unit: "",
       })
     );
-  }, [row.NumOfSignals]);
+  }, [row?.NumOfSignals]);
 
   const handleInputChange = (field, value) => {
     const updatedRow = { ...row, [field]: value };

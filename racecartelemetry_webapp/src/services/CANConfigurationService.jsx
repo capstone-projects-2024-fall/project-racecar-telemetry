@@ -98,3 +98,49 @@ export const updateCurrentConfig = async (configName) => {
 
   return await response.json();
 };
+
+
+export const fetchDataChannelsGroupedByCanID = async (selectedConfig) => {
+  const response = await fetch(`/api/CANConfigurationAPI?collectionName=canConfigs&docId=${selectedConfig}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch data: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  // console.log("1. Fetched data for selectedConfig:", data);
+
+  const groupedDataChannels = {};
+
+  if (data) {
+    Object.entries(data).forEach(([canID, canData]) => {
+      if (canData?.DataChannels) {
+        groupedDataChannels[canID] = Object.keys(canData.DataChannels); // Map canID to its channels
+      }
+    });
+  } else {
+    console.warn(`No data found for selectedConfig: ${selectedConfig}`);
+  }
+
+  // console.log("Grouped Data Channels by CAN ID:", groupedDataChannels); // Debug
+  return groupedDataChannels;
+};
+
+
+export const getCurrentConfig = async () => {
+  const response = await fetch(`/api/CANConfigurationAPI?collectionName=canConfigs&docId=currentConfig`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch current config: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+
+  return data?.current || null; // Return the current config name
+};
