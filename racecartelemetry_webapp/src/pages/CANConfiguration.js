@@ -173,7 +173,7 @@ export default function CANConfigurationPage() {
               Step 3: Saving your Configuration
             </Typography>
             <Typography variant="body2" sx={{ color: 'white', textAlign: 'left' }}>
-              Once you're happy with your configuration, don't forget to{' '}
+              Once you&apos;re happy with your configuration, don&apos;t forget to{' '}
               <Typography component="span" sx={{ color: '#FF5733' }}>
                 save
               </Typography>{' '}

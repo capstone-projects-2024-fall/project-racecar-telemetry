@@ -25,16 +25,25 @@ const CANDataAssignment = ({ selectedConfig, setIsEditing }) => {
         setLoading(false);
         return;
       }
-
+  
       try {
         setLoading(true);
         const data = await fetchCANData(selectedConfig);
-        // Transform data from object to array, adding a unique id to each row
+  
         const rowsArray = Object.entries(data || {}).map(([canId, rowData], index) => ({
-          id: index, // You might want to use a more robust unique ID generator
+          id: index, // Generate a unique ID
           CanID: canId,
-          ...rowData,
+          NumOfSignals: rowData?.NumOfSignals || 0,
+          Signals: Object.entries(rowData?.DataChannels || {}).map(([key, signalData]) => ({
+            DataChannel: key,
+            startBit: signalData?.startBit || "",
+            bitLength: signalData?.bitLength || "",
+            adder: signalData?.adder || "",
+            multiplier: signalData?.multiplier || "",
+            unit: signalData?.unit || "",
+          })),
         }));
+  
         setRows(rowsArray);
       } catch (error) {
         console.error("Failed to load existing data:", error);
@@ -44,9 +53,10 @@ const CANDataAssignment = ({ selectedConfig, setIsEditing }) => {
         setLoading(false);
       }
     };
-
+  
     loadExistingData();
   }, [selectedConfig]);
+  
 
   // Adds a new empty row; user enters their own CanID
   const handleAddRow = () => {

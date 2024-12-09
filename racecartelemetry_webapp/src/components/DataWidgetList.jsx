@@ -10,8 +10,7 @@ const DataWidgetList = () => {
   const [configData, setConfigData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [elapsedTime, setElapsedTime] = useState(0); // Track elapsed time in seconds
-  const isConnected = useTelemetryConnectionStatus(); // Check connection status
+  const isConnected = useTelemetryConnectionStatus();
 
 
   // Fetch configuration data
@@ -68,14 +67,17 @@ const DataWidgetList = () => {
 
   return (
     <Stack
-      direction="row" 
+      direction="row"
       spacing={2}
       sx={{
-        overflowX: "auto", 
-        padding: 2, 
+        overflowX: "auto",
+        padding: 2,
         width: "100%",
         alignItems: "center",
         justifyContent: "space-in-between",
+        border: "none",
+        outline: "none",
+        boxShadow: "none",
       }}
     >
       <Box>
@@ -83,43 +85,43 @@ const DataWidgetList = () => {
       </Box>
 
       <Box
-      sx={{
-        display: "flex", 
-        gap: 2, 
-        justifyContent: "center", 
-        flexGrow: 1, 
-      }}
+        sx={{
+          display: "flex",
+          gap: 2,
+          justifyContent: "center",
+          flexGrow: 1,
+        }}
       >
         {/*DataWidgets for DataChannels*/}
         {Object.entries(configData).map(([canID, canData]) =>
           Object.entries(canData.DataChannels || {}).map(([channelKey, channelData]) => (
             <DataWidget
               key={`${canID}-${channelKey}`}
-              canID={canID} 
+              canID={canID}
               valueToDisplay={channelKey} //channel key (e.g., "Battery")
               title={channelKey} //channel key as the title
-              unit={channelData.unit || ""} 
+              unit={channelData.unit || ""}
             />
           ))
         )}
       </Box>
 
       <Box
-      sx={{
-        display: "flex",
-        justifyContent: "flex-end", // Ensure the elapsed time widget is on the far right
-      }}
-    >
-      {/* Elapsed Time Widget */}
-      
-      <DataWidget
-        canID="elapsedTime"
-        valueToDisplay="Elapsed Time"
-        title="Elapsed Time"
-        unit="s"
-        isElapsedTime={true}
-        isConnected={isConnected}
-      />
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end", // Ensure the elapsed time widget is on the far right
+        }}
+      >
+        {/* Elapsed Time Widget */}
+
+        <DataWidget
+          canID="elapsedTime"
+          valueToDisplay="Elapsed Time"
+          title="Elapsed Time"
+          unit="s"
+          isElapsedTime={true}
+          isConnected={isConnected}
+        />
       </Box>
     </Stack>
   );

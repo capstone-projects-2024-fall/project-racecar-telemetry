@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, IconButton, Modal } from "@mui/material";
+import { Box, Typography, Modal } from "@mui/material";
 // import SettingsIcon from "@mui/icons-material/Settings";
 import ComponentEditor from "@/components/ComponentEditor";
 import theme from "@/app/theme";
 import { ref, onValue } from "firebase/database";
 import { db } from "@firebaseConfig"; // Firebase config file
-import { settings } from "firebase/analytics";
+
 
 const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false, isConnected }) => {
   const [number, setNumber] = useState(0);
@@ -13,10 +13,6 @@ const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false,
   const [dataName, setDataName] = useState(title);
   const [color, setColor] = useState(`${theme.palette.primary.main}`);
   const [unitShown, setUnitShown] = useState(unit);
-
-  const handleSettingsClick = () => {
-    setSettingsVisible(true);
-  };
 
   const handleSettingsClose = () => {
     setSettingsVisible(false);
@@ -97,16 +93,16 @@ const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false,
           padding: "0.5rem",
           border: "1px solid",
           borderColor: "primary.light",
+          outline: "none", // Remove focus outline
+          "&:focus": {
+            outline: "none",
+          },
+          "&:focus-visible": {
+            outline: "none",
+          },
+          boxShadow: "none",
         }}
       >
-        {/* <IconButton
-          onClick={handleSettingsClick}
-          sx={{
-            color: "white",
-          }}
-        >
-          <SettingsIcon />
-        </IconButton> */}
 
         <Box
           sx={{

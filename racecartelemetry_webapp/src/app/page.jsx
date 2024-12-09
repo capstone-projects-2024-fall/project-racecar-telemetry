@@ -1,23 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
-
-import { CssBaseline, ThemeProvider, Typography, Stack, Button, Box, IconButton, Tooltip } from "@mui/material";
+import { CssBaseline, Button, Box, IconButton, Tooltip, ThemeProvider } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Crop169Icon from "@mui/icons-material/Crop169";
 import CropDinIcon from "@mui/icons-material/CropDin";
-
 import NavBar from "@components/NavBar";
-
 import DataWidgetList from "@components/DataWidgetList";
-
 import DataGauge from "@components/DataGauge";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
 import XYGraph from "@components/XYGraph";
 import LinearGauge from "@components/LinearGauge";
-
 import ComponentEditor from "@components/ComponentEditor";
 import { getCurrentConfig, fetchDataChannelsGroupedByCanID, } from "@/services/CANConfigurationService";
+import theme from "./theme";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -204,25 +200,36 @@ export default function Home() {
   };
 
   return (
-    // <ThemeProvider theme={theme}>
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <NavBar />
       <Box
         sx={{
-          backgroundColor: "black",
+          backgroundColor: "#1F2020",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           padding: 0.5,
+          "&:focus": {
+            outline: "none", // Remove focus outline
+          },
+          "&:focus-visible": {
+            outline: "none", // Prevents focus rings for mouse users
+          },
         }}
       >
-        <DataWidgetList />
+        <DataWidgetList
+          sx={{
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        />
       </Box>
 
       <Box
         sx={{
-          backgroundColor: "black",
+          backgroundColor: "#1F2020",
           minHeight: "100vh",
           padding: "20px",
           color: "white",
@@ -258,7 +265,7 @@ export default function Home() {
               >
                 <Box
                   sx={{
-                    backgroundColor: "rgba(140, 148, 140, 0.13)", // Shared grey background
+                    backgroundColor: "#1F2020", // Shared grey background
                     borderRadius: "8px", // Optional: Add rounded corners
                     padding: "5px", // Add some spacing around the buttons
                     display: "flex",
@@ -286,7 +293,7 @@ export default function Home() {
                 </Box>
                 <Box
                   sx={{
-                    backgroundColor: "rgba(120, 128, 120, 0.13)", // Shared grey background
+                    backgroundColor: "#1F2020", // Shared grey background
                     borderRadius: "8px", // Optional: Add rounded corners
                     padding: "5px", // Add some spacing around the buttons
                     display: "flex",
@@ -296,7 +303,7 @@ export default function Home() {
                 >
                   <Tooltip title="Remove Row" placement="right">
                     <IconButton
-                      color="secondary"
+                      color="primary"
                       onClick={() => handleRemoveRow(rowIndex)}
                       sx={{
                         "&:hover": {
@@ -310,7 +317,7 @@ export default function Home() {
                 </Box>
                 <Box
                   sx={{
-                    backgroundColor: "rgba(120, 128, 120, 0.13)", // Shared grey background
+                    backgroundColor: "#1F2020", // Shared grey background
                     borderRadius: "8px", // Optional: Add rounded corners
                     padding: "5px", // Add some spacing around the buttons
                     display: "flex",
@@ -364,8 +371,9 @@ export default function Home() {
                     sx={{
                       flex: 1,
                       height: "100%", // Match row height
-                      border: "2px dashed gray",
+                      border: "1px solid #A32036",
                       position: "relative",
+                      borderRadius: "10px",
                     }}
                   >
                     {placeholder.type ? (
@@ -426,6 +434,6 @@ export default function Home() {
           />
         )}
       </Box>
-    </>
+    </ThemeProvider>
   );
 }
