@@ -140,22 +140,6 @@ const Navbar = () => {
               CAN Configuration
             </Button>
           </Link>
-
-          <Link href="/CustomDash">
-            <Button
-              sx={{
-                color: "white",
-                transition:
-                  "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
-                "&:hover": {
-                  transform: "scale(1.1)",
-                  color: "#e61b3d",
-                },
-              }}
-            >
-              Custom Dash
-            </Button>
-          </Link>
         </Toolbar>
       </AppBar>
     </ThemeProvider>
