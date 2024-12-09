@@ -82,6 +82,7 @@ const CANDataView = ({ selectedConfig, setIsEditing }) => {
           flexDirection: "column",
           maxWidth: "90%",
           padding: 3,
+          paddingRight: 7,
           borderRadius: 2,
           backgroundColor: "white",
           boxShadow: 3,
@@ -98,6 +99,7 @@ const CANDataView = ({ selectedConfig, setIsEditing }) => {
             position: "absolute",
             top: 8,
             right: 8,
+            ml: 5,
           }}
         >
           <EditIcon />

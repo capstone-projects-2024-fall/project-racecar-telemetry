@@ -16,14 +16,10 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import NavBar from "@components/NavBar";
-import TimeSeriesGraph from "@components/TimeSeriesGraph";
-import XYGraph from "@components/XYGraph";
-import LinearGauge from "@components/LinearGauge";
-import { ThemeProvider, CssBaseline, Box, Typography, Stack } from "@mui/material";
+import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@app/theme";
-import DataGauge from "@components/DataGauge";
-import DataWidget from "@components/DataWidget";
 import DataWidgetList from "@components/DataWidgetList";
+import CustomDash from "@pages/CustomDash"; // Import CustomDash
 
 function SortableItem({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -68,23 +64,7 @@ function SortableItem({ id, children }) {
 }
 
 export default function Home() {
-  const [layout, setLayout] = useState([
-    {
-      id: "r11", component: <DataGauge /> 
-    },
-    {
-      id: "r12", component: <DataGauge /> 
-    },
-    {
-      id: "r13", component: <LinearGauge /> 
-    },
-    {
-      id: "r14", component: <LinearGauge /> 
-    },
-    {
-      id: "r15", component: <LinearGauge /> 
-    },
-  ]);
+  const [layout, setLayout] = useState([]);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -101,36 +81,10 @@ export default function Home() {
     }
   };
 
-  const handleUpdateComponent = (oldId, newId, config) => {
-    setLayout((prevLayout) =>
-      prevLayout.map((item) =>
-        item.id === oldId
-          ? {
-              id: newId,
-              component: (
-                <DataGauge
-                  canID={config.canID}
-                  dataChannel={config.dataChannel}
-                  color={config.Color}
-                  min={config["Min Value"]}
-                  max={config["Max Value"]}
-                  onSave={(newConfig) => handleUpdateComponent(newId, newConfig.dataChannel, newConfig)}
-                />
-              ),
-            }
-          : item
-      )
-    );
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <NavBar />
-      {/* <Typography color="white">
-      testing
-      </Typography> */}
-      
       <Box
         sx={{
           backgroundColor: "black",
@@ -140,8 +94,8 @@ export default function Home() {
           padding: 0.5,
         }}
       >
-        {/*Data Widgets*/}
-          <DataWidgetList/> 
+        {/* Data Widgets */}
+        <DataWidgetList />
 
         {/* Draggable Row of Components */}
         <DndContext
@@ -157,7 +111,7 @@ export default function Home() {
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                flexWrap: "nowrap", // Keeps items in a single row
+                flexWrap: "nowrap",
                 gap: "1rem",
                 width: "100%",
                 marginBottom: 2,
@@ -173,27 +127,10 @@ export default function Home() {
           </SortableContext>
         </DndContext>
 
-        {/* Side-by-Side Graphs */}
-        <Box
-          sx={{ display: "flex", width: "100%", gap: "1rem", marginBottom: 2 }}
-        >
-          <Box sx={{ width: "50%" }}>
-            <TimeSeriesGraph />
-          </Box>
-          <Box sx={{ width: "50%" }}>
-            <XYGraph
-              canID={"100"}
-              xChannel="Steering"
-              yChannel="Pedal"
-              xMin={0}
-              xMax={100}
-              yMin={0}
-              yMax={100}
-              color={theme.palette.primary.main}
-            />
-          </Box>
-        </Box>
+        {/* Custom Dash Section */}
       </Box>
+
+       
     </ThemeProvider>
   );
 }

@@ -171,7 +171,7 @@ const CANDataAssignment = ({ selectedConfig, setIsEditing }) => {
       sx={{
         width: "100%",
         maxWidth: 1300,
-        padding: 3,
+        padding: 4,
         borderRadius: 2,
         backgroundColor: "#f0f0f0",
         boxShadow: 3,
@@ -188,7 +188,7 @@ const CANDataAssignment = ({ selectedConfig, setIsEditing }) => {
           color: "#333",
         }}
       >
-        Configuration: {selectedConfig}
+      {selectedConfig}
       </Typography>
 
       {/* Render each row */}
