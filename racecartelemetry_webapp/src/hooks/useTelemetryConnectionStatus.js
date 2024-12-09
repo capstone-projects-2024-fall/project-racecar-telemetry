@@ -5,7 +5,7 @@ import { ref, onValue } from "firebase/database"
 import { db } from "@firebaseConfig"
 
 const useTelemetryConnectionStatus = () => {
-  const [isConnected, setIsConnected] = useState(null)
+  const [isConnected, setIsConnected] = useState(false)
   const timeoutRef = useRef(null)
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const useTelemetryConnectionStatus = () => {
     const unsubscribe = onValue(connectedRef, (snapshot) => {
       const currentData = snapshot.val()
 
-      if (currentData) {
+      if (currentData?.isConnected === true) {
         setIsConnected(true)
 
         if (timeoutRef.current) {

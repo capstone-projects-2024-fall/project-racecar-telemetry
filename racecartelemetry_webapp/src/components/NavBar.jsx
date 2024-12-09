@@ -8,43 +8,11 @@ import { green, red } from "@mui/material/colors";
 import useTelemetryConnectionStatus from "@hooks/useTelemetryConnectionStatus";
 import { ThemeProvider} from "@mui/material";
 import theme from "@app/theme";
-import { useEffect, useState } from "react";
-import { fetchConfigs} from "@services/CANConfigurationService";
 
 const Navbar = () => {
 
   const isConnected = useTelemetryConnectionStatus();
   // console.log(isConnected);
-
-  useEffect(() => {
-    const fetchAllConfigs = async () => {
-      try {
-        const data = await fetchConfigs();
-        // console.log("Raw configurations:", data);
-
-        const filteredConfigs = data.filter((config) => config.id !== "currentConfig");
-        // console.log("Filtered configurations:", filteredConfigs);
-
-        setConfigs(filteredConfigs);
-
-        const currentConfigData = data.find((config) => config.id === "currentConfig");
-        if (currentConfigData && currentConfigData.current) {
-          setCurrentConfig(currentConfigData.current);
-          // console.log("Fetched current configuration:", currentConfigData.current);
-        } else {
-          setCurrentConfig(null);
-          console.log("No current configuration set");
-        }
-      } catch (error) {
-        console.error("Failed to fetch configurations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-
-    fetchAllConfigs();
-  }, []);
 
 
   return (
@@ -97,19 +65,7 @@ const Navbar = () => {
               Dashboard
             </Button>
           </Link>
-          {/* 
-        <Link href="/ComponentEditor" >
-          <Button  sx={{
-             color: "white",
-             transition: "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
-             "&:hover":{
-                 transform: "scale(1.1)",
-                 color: "#e61b3d",
-             },
-              }}>
-                Component Editor
-              </Button>
-        </Link> */}
+          
 
           <Link href="/CANConfiguration">
             <Button

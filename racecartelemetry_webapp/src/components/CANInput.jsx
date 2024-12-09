@@ -21,7 +21,7 @@ export const CANInput = ({row = { NumOfSignals: 0 }, onRowChange }) => {
 
   // Update signals array when the number of signals changes
   useEffect(() => {
-    const numSignals = parseInt(row.NumOfSignals) || 0;
+    const numSignals = parseInt(row?.NumOfSignals || 0);
     setSignals((prev) =>
       Array.from({ length: numSignals }, (_, idx) => prev[idx] || {
         Index: idx + 1,
@@ -33,7 +33,7 @@ export const CANInput = ({row = { NumOfSignals: 0 }, onRowChange }) => {
         unit: "",
       })
     );
-  }, [row.NumOfSignals]);
+  }, [row?.NumOfSignals]);
 
   const handleInputChange = (field, value) => {
     const updatedRow = { ...row, [field]: value };
