@@ -4,7 +4,7 @@ import ComponentEditor from "@/components/ComponentEditor";
 import theme from "@/app/theme";
 import { fetchConfigs, updateCurrentConfig } from "@services/CANConfigurationService";
 
-const DataWidget = ({title, unit}) => {
+const Datawidget = ({title, unit}) => {
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [dataName, setDataName] = useState(title);
   const [color, setColor] = useState(`${theme.palette.primary.main}`);
