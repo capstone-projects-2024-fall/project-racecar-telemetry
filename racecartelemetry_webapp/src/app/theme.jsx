@@ -4,10 +4,10 @@ import { red } from '@mui/material/colors';
 // Create a theme instance.
 const theme = createTheme({
   palette: {
-    mode: "dark",
+    mode: "light",
     background: {
       default: "#1F2020", // Set your desired background color here
-      paper: "#1F2020", 
+      paper: "white", 
     },
     primary: {
       main: '#A32036',
@@ -24,6 +24,36 @@ const theme = createTheme({
     typography: {
       allVariants: {
         color: '#000000', // Default for all text
+      },
+    },
+  },
+  components: {
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          color: '#000000', // Set menu item text color explicitly
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        select: {
+          color: '#0c0c0c', // Set select text color explicitly
+        },
+      },
+    },
+  },
+  components: {
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          "&:focus": {
+            outline: "none",
+          },
+          "&:focus-visible": {
+            outline: "none",
+          },
+        },
       },
     },
   },

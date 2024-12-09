@@ -97,6 +97,14 @@ const DataWidget = ({ canID, valueToDisplay, title, unit, isElapsedTime = false,
           padding: "0.5rem",
           border: "1px solid",
           borderColor: "primary.light",
+          outline: "none", // Remove focus outline
+          "&:focus": {
+            outline: "none",
+          },
+          "&:focus-visible": {
+            outline: "none",
+          },
+          boxShadow: "none",
         }}
       >
         {/* <IconButton

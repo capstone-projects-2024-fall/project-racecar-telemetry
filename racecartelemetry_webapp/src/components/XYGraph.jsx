@@ -17,15 +17,15 @@ const XYGraph = ({ uniqueID }) => {
   const storedConfig = JSON.parse(localStorage.getItem(`XY Graph-${uniqueID}`));
 
   const initialConfig = {
-    xCanID: storedConfig.xCanID || "CAN ID",
-    xChannel: storedConfig.xChannel || "Data Channel",
-    yCanID: storedConfig.yCanID || "CAN ID",
-    yChannel: storedConfig.yChannel || "Data Channel",
-    color: storedConfig.config?.Color || "Red",
-    xMin: storedConfig.config?.["X Axis Min Value"] || 0,
-    xMax: storedConfig.config?.["X Axis Max Value"] || 100,
-    yMin: storedConfig.config?.["Y Axis Min Value"] || 0,
-    yMax: storedConfig.config?.["Y Axis Max Value"] || 100,
+    xCanID: storedConfig?.xCanID || "CAN ID",
+    xChannel: storedConfig?.xChannel || "Data Channel",
+    yCanID: storedConfig?.yCanID || "CAN ID",
+    yChannel: storedConfig?.yChannel || "Data Channel",
+    color: storedConfig?.config?.Color || "Red",
+    xMin: storedConfig?.config?.["X Axis Min Value"] || 0,
+    xMax: storedConfig?.config?.["X Axis Max Value"] || 100,
+    yMin: storedConfig?.config?.["Y Axis Min Value"] || 0,
+    yMax: storedConfig?.config?.["Y Axis Max Value"] || 100,
   };
 
   const [config, setConfig] = useState(initialConfig);

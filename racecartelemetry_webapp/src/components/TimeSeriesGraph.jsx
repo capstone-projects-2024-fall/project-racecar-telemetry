@@ -27,11 +27,11 @@ const TimeSeriesGraph = ({ uniqueID }) => {
   // console.log(`Time Series Graph-${uniqueID}`);
 
   const initialConfig = {
-    canID: storedConfig.canID || "CAN ID",
-    dataChannel: storedConfig.dataChannel || "Data Channel",
-    color: storedConfig.config?.Color || "Red",
-    min: storedConfig.config?.["Y Axis Min Value"] || 0,
-    max: storedConfig.config?.["Y Axis Max Value"] || 100,
+    canID: storedConfig?.canID || "CAN ID",
+    dataChannel: storedConfig?.dataChannel || "Data Channel",
+    color: storedConfig?.config?.Color || "Red",
+    min: storedConfig?.config?.["Y Axis Min Value"] || 0,
+    max: storedConfig?.config?.["Y Axis Max Value"] || 100,
   };
 
   const [config, setConfig] = useState(initialConfig);

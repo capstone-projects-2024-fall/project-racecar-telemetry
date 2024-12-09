@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Grid, Button, Typography, Modal, Box} from "@mui/material";
+import { TextField, Grid, Button, Typography, Modal, Box } from "@mui/material";
+import { fetchCANData } from "@services/CANConfigurationService"; // Assuming you have this service
 
 const modalStyle = {
   position: "absolute",
@@ -15,15 +16,45 @@ const modalStyle = {
   overflowY: "auto",
 };
 
-export const CANInput = ({row = { NumOfSignals: 0 }, onRowChange }) => {
+export const CANInput = ({ row = { NumOfSignals: 0 }, onRowChange, selectedConfig }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [signals, setSignals] = useState([]);
 
-  // Update signals array when the number of signals changes
+  // Fetch signals for the current CAN ID
+  useEffect(() => {
+    const fetchSignals = async () => {
+      if (selectedConfig && row?.CanID) {
+        try {
+          const configData = await fetchCANData(selectedConfig);
+          const canData = configData[row?.CanID];
+
+          if (canData?.DataChannels) {
+            const fetchedSignals = Object.entries(canData.DataChannels).map(([key, value], idx) => ({
+              Index: idx + 1,
+              DataChannel: key,
+              startBit: value.startBit || "",
+              bitLength: value.bitLength || "",
+              adder: value.adder || "",
+              multiplier: value.multiplier || "",
+              unit: value.unit || "",
+            }));
+            setSignals(fetchedSignals);
+          }
+        } catch (err) {
+          console.error("Error fetching signals:", err);
+        }
+      }
+    };
+
+    fetchSignals();
+  }, [row?.CanID, selectedConfig]);
+
+  // Update signals when the number of signals changes
   useEffect(() => {
     const numSignals = parseInt(row?.NumOfSignals || 0);
+  
     setSignals((prev) =>
-      Array.from({ length: numSignals }, (_, idx) => prev[idx] || {
+      Array.from({ length: numSignals }, (_, idx) => row.Signals?.[idx] || {
         Index: idx + 1,
         DataChannel: "",
         startBit: "",
@@ -33,7 +64,8 @@ export const CANInput = ({row = { NumOfSignals: 0 }, onRowChange }) => {
         unit: "",
       })
     );
-  }, [row?.NumOfSignals]);
+  }, [row?.NumOfSignals, row?.Signals]);
+  
 
   const handleInputChange = (field, value) => {
     const updatedRow = { ...row, [field]: value };
@@ -86,7 +118,7 @@ export const CANInput = ({row = { NumOfSignals: 0 }, onRowChange }) => {
         </Grid>
       </Grid>
 
-      {/* Modal */}
+      {/* Editing Signals Modal */}
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
