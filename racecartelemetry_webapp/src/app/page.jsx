@@ -13,7 +13,6 @@ import XYGraph from "@components/XYGraph";
 import LinearGauge from "@components/LinearGauge";
 import ComponentEditor from "@components/ComponentEditor";
 import { getCurrentConfig, fetchDataChannelsGroupedByCanID, } from "@/services/CANConfigurationService";
-import DataWidget from "@/components/DataWidget";
 import theme from "./theme";
 
 import { v4 as uuidv4 } from "uuid";

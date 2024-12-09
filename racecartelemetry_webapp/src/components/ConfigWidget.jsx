@@ -4,18 +4,13 @@ import ComponentEditor from "@/components/ComponentEditor";
 import theme from "@/app/theme";
 import { fetchConfigs, updateCurrentConfig } from "@services/CANConfigurationService";
 
-const Datawidget = ({title, unit}) => {
+const Datawidget = ({ title, unit }) => {
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [dataName, setDataName] = useState(title);
   const [color, setColor] = useState(`${theme.palette.primary.main}`);
   const [configs, setConfigs] = useState([]);
   const [currentConfig, setCurrentConfig] = useState(null);
   const [loading, setLoading] = useState(true);
-
-
-  const handleSettingsClick = () => {
-    setSettingsVisible((prevState) => !prevState);
-  };
 
   const handleSettingsClose = () => {
     setSettingsVisible(false);

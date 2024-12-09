@@ -53,7 +53,7 @@ export const CANInput = ({ row = { NumOfSignals: 0 }, onRowChange, selectedConfi
   useEffect(() => {
     const numSignals = parseInt(row?.NumOfSignals || 0);
   
-    setSignals((prev) =>
+    setSignals(() =>
       Array.from({ length: numSignals }, (_, idx) => row.Signals?.[idx] || {
         Index: idx + 1,
         DataChannel: "",

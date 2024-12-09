@@ -10,8 +10,7 @@ const DataWidgetList = () => {
   const [configData, setConfigData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [elapsedTime, setElapsedTime] = useState(0); // Track elapsed time in seconds
-  const isConnected = useTelemetryConnectionStatus(); // Check connection status
+  const isConnected = useTelemetryConnectionStatus();
 
 
   // Fetch configuration data
