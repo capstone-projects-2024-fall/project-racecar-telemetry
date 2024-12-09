@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { CssBaseline, Button, Box, IconButton, Tooltip, ThemeProvider } from "@mui/material";
+import { Grid2, Typography, CssBaseline, Button, Box, IconButton, Tooltip, ThemeProvider } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Crop169Icon from "@mui/icons-material/Crop169";
@@ -14,6 +14,8 @@ import LinearGauge from "@components/LinearGauge";
 import ComponentEditor from "@components/ComponentEditor";
 import { getCurrentConfig, fetchDataChannelsGroupedByCanID, } from "@/services/CANConfigurationService";
 import theme from "./theme";
+import InstructionsModal from '@components/InstructionsModal';
+import HelpButton from '@/components/HelpButton';
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -37,6 +39,18 @@ export default function Home() {
     [defaultGraphs[0], defaultGraphs[1], defaultGraphs[2]],
     [defaultGraphs[3], defaultGraphs[4]],
   ];
+
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem('DashboardVisited');
+    if (!hasVisited) {
+      setOpen(true); // Show modal on first visit
+      sessionStorage.setItem('DashboardVisited', 'true');
+    }
+  }, []);
+
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     const fetchCanDataChannels = async () => {
@@ -198,6 +212,129 @@ export default function Home() {
         return null;
     }
   };
+
+  const modalContent = (
+    <>
+      {/* Welcome Text */}
+      <Box textAlign="center" mb={4}>
+        <Typography id="instructions-modal-title" variant="h4" gutterBottom>
+          Welcome to the Dashboard
+        </Typography>
+        <Box
+          sx={{
+            width: '85%', // Consistent width for all breaks
+            height: '2px',
+            backgroundColor: '#ccc',
+            margin: '16px auto',
+          }}
+        />
+      </Box>
+
+      {/* Steps in Centered Rows */}
+      <Grid2 container direction="column" spacing={6} sx={{ px: 4, textAlign: 'center' }}>
+        {/* Step 1 */}
+        <Grid2 container spacing={4} justifyContent="center" alignItems="center">
+          <Grid2 xs={12} md={5}>
+            <Typography variant="h6" gutterBottom>
+              Step 1: Selecting a Configuration to edit
+            </Typography>
+            <Typography variant="body2">
+              Use the 'Configuration Manager' to choose or create a new configuration.
+              <br />
+              Select the configuration you want to edit
+              <br />
+              Create new configuration by typing in a name and pressing the 'Create' button
+            </Typography>
+          </Grid2>
+          <Grid2 xs={12} md={5}>
+            <Box
+              component="img"
+              src=''
+              alt="Select Configuration Image"
+              sx={{
+                width: '100%',
+                maxWidth: '300px',
+                height: 'auto',
+                borderRadius: 2,
+              }}
+            />
+          </Grid2>
+        </Grid2>
+        <Grid2 xs={12}>
+          <Box
+            sx={{
+              width: '90%', // Consistent width
+              height: '2px',
+              backgroundColor: '#ccc',
+              margin: '32px auto', // Consistent margin
+            }}
+          />
+        </Grid2>
+
+        {/* Step 2 */}
+        <Grid2 container spacing={4} justifyContent="center" alignItems="center">
+          <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
+            <Box
+              component="img"
+              src=""
+              alt="Edit Data Image"
+              sx={{
+                width: '100%',
+                maxWidth: '300px',
+                height: 'auto',
+                borderRadius: 2,
+              }}
+            />
+          </Grid2>
+          <Grid2 xs={12} md={5} order={{ xs: 1, md: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Step 2: Editing Data Assignments
+            </Typography>
+            <Typography variant="body2">
+              Assign your 'CAN Configuration' by editing the fields.
+              <br />
+              Click the pencil icon to start editing
+            </Typography>
+          </Grid2>
+        </Grid2>
+        <Grid2 xs={12}>
+          <Box
+            sx={{
+              width: '90%', // Consistent width
+              height: '2px',
+              backgroundColor: '#ccc',
+              margin: '32px auto',
+            }}
+          />
+        </Grid2>
+
+        {/* Step 3 */}
+        <Grid2 container spacing={4} justifyContent="center" alignItems="center">
+          <Grid2 xs={12} md={5}>
+            <Typography variant="h6" gutterBottom>
+              Step 3: Saving your Configuration
+            </Typography>
+            <Typography variant="body2">
+              Once you happy with your configuration, don't forget to save and head to the dashboard
+            </Typography>
+          </Grid2>
+          <Grid2 xs={12} md={5}>
+            <Box
+              component="img"
+              src="/images/save-configuration.png"
+              alt="Save Configuration"
+              sx={{
+                width: '100%',
+                maxWidth: '300px',
+                height: 'auto',
+                borderRadius: 2,
+              }}
+            />
+          </Grid2>
+        </Grid2>
+      </Grid2>
+    </>
+  );
 
   return (
     <ThemeProvider theme={theme}>
@@ -421,6 +558,18 @@ export default function Home() {
             </Box>
           ))}
         </Box>
+
+        <ThemeProvider theme={theme}>
+
+          <InstructionsModal open={open} onClose={handleClose}>
+            {modalContent}
+          </InstructionsModal>
+
+          {/* Help Button */}
+          <HelpButton onClick={() => setOpen(true)} />
+
+        </ThemeProvider>
+
 
         {/* Component Editor Modal */}
         {editorOpen && (
