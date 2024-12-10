@@ -12,7 +12,7 @@ Our Git repository is hosted on **GitHub**, with all team members having Admin p
 
 ### Branching Strategy
 We are following the **Git Flow** branching model, which involves using the following branches:
-- `main` (pprotected): The stable branch that contains production-ready code.
+- `main` (protected): The stable branch that contains production-ready code.
 - `develop`: The primary branch for ongoing development.
 - `feature/feature-name`: Branches for individual features, created from `develop` and merged back into `develop` upon completion.
 - `release/release-name`: Branches for preparing new releases, merged into `main` and `develop` upon completion.

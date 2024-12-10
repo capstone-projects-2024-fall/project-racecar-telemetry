@@ -3,7 +3,7 @@ sidebar_position: 1
 ---
 
 ![system diagram](/img/system_block_diagram.png)  
-**Figure 1.** High level design of the RCT
+**Figure 1.** High level overview of packet transmission process.
 
 The overall design is best understood through following a single piece of data from when a signal is produced by a sensor to when the user sees a number on the webpage. The data must be translated through various forms over multiple devices and the cloud before it reaches the user. 
 
@@ -17,7 +17,7 @@ This example will show how Throttle Position would be transmitted from the car t
         - Team chooses how often the message will be transmitted. For this example, they choose 10 Hz.
         - Every CAN message has 64 bits available to transmit data, and the team can determine how the message will be sent by specifying start bit, bit length, multiplier, and adder. The team chooses the following options:
             - Start bit: 0
-            - Bit length: 16
+            - Bit length: 8
             - Adder: 0
             - Multiplier: 1
         - These settings result in the CAN message below. In reality, more of the 64 bits can be utilized. 
@@ -29,22 +29,22 @@ This example will show how Throttle Position would be transmitted from the car t
 | 13.45436      | 0x230     | 8         | 32 00 00 00 00 00 00 00 |
 
 
-3. **CAN transceiver** - In the telemetry device, the CAN transceiver is wired to the CAN bus. It converts the differential voltage signal into frames of **serial data** containing the CAN messages.
-4. **Microcontroller** - Telemetry device also contains a microcontroller which:
-    - Receives all of the CAN bus messages coming through the transceiver
+3. **Feather M4** - In the telemetry device, the CAN transceiver is wired to the CAN bus. It converts the differential voltage signal into frames of **serial data** containing the CAN messages. This data is then sent to the ESP32 using I2C.
+4. **ESP32** - Telemetry device also contains a microcontroller which:
+    - Receives all of the CAN bus messages coming through the Feather M4
     - Filters CAN messages by looking for CAN IDs between 0x200-0x300.
-    - Gathers data from 0.5 second intervals into **JSON objects**.
+    - Translates CAN packets to readable data.
+    - Gathers data from 1 second intervals into **JSON objects**.
     - Connects to Mobile Hotspot for internet access. Uploads JSON objects to Firebase cloud database.
 5. **Mobile hotspot** - Hotspot enables Telemetry device to connect to internet.
 6. **Firebase Realtime Database** - Receives and stores JSON data from ESP32.
 7. **Firebase hosting** - Hosts the TFR telemetry website.
 8. **Telemetry webapp** - Retreives JSON data from firebase.
-    - Since the Firebase JSON data is only timestamps, CAN IDs, and the message, the webpage needs the user to specify how the data was transmitted from the ECU so that it can translate the CAN messages into meaningful data.
     - The CAN Configuration page allows the user to enter the following information so that the webapp can 'decode' CAN messages (this example is for Throttle Position):
         - Data Channel (String): "Throttle Position"
         - CAN ID (Hex number): 0x230
-        - Message Length (bits): 16
-        - Message offset (bits): 0
+        - Bit length: 16
+        - Start bit: 0
         - Adder (int): 0
         - Multiplier (int): 1
         - Unit (String): "%"
