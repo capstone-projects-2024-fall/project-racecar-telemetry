@@ -1,56 +1,323 @@
 openapi: 3.0.0
 info:
-  title: Firebase ESP32 Data Ingestion API
-  description: API for sending ESP32 data to Firebase Realtime Database.
+  title: Restful API for interacting with Firebase Database
   version: 1.0.0
-servers:
-  - url: https://{project_id}.firebaseio.com
-    description: Firebase Realtime Database server
-    variables:
-      project_id:
-        default: your_project_id
-        description: The Firebase project ID
-
+  description: API for managing CAN configurations and retrieving telemetry data using Firebase Realtime Database.
+tags:
+  - name: CANConfigurationAPI
+    description: API for managing CAN configurations
+  - name: RealtimeDatabase
+    description: API for interacting with Firebase Realtime Database
+  - name: ESP32
+    description: API interactions handled by the ESP32 with Firebase
 paths:
-  /{race-car-telemetry}/{RawCANData}.json:
+  /CANConfigurationAPI:
     post:
-      summary: Send data to Firebase
-      description: Sends data from the ESP32 to the specified collection in Firebase Realtime Database.
-      parameters:
-        - name: race-car-telemetry
-          in: path
-          required: true
-          description: The Firebase project ID
-          schema:
-            type: string
-        - name: RawCANData
-          in: path
-          required: true
-          description: The name of the Firebase collection
-          schema:
-            type: string
+      tags:
+        - CANConfigurationAPI
+      summary: Add or update a CAN configuration
       requestBody:
-        description: JSON object containing the data sent from ESP32
         required: true
         content:
           application/json:
             schema:
               type: object
-              example:
-                timestamp: 0.053055
-                can_id: 100
-                length: 8
-                data: 00 00 00 00 00 00 00 00
+              properties:
+                collectionName:
+                  type: string
+                  description: Name of the collection to which the document will be added (e.g., "canConfigs").
+                docId:
+                  type: string
+                  description: Document ID for the configuration (e.g., "Ari").
+                data:
+                  type: object
+                  description: The configuration data to save or update.
+                  properties:
+                    DataChannels:
+                      type: object
+                      description: Channels of data for the CAN configuration.
+                      properties:
+                        Battery:
+                          type: object
+                          description: Configuration for battery data.
+                          properties:
+                            adder:
+                              type: string
+                              description: Value to add to the raw data.
+                            bitLength:
+                              type: string
+                              description: Number of bits in the data.
+                            multiplier:
+                              type: string
+                              description: Value to multiply the raw data by.
+                            startBit:
+                              type: string
+                              description: Starting bit position for the data.
+                            unit:
+                              type: string
+                              description: Unit of measurement for the data (e.g., "V").
+                        Throttle:
+                          type: object
+                          description: Configuration for throttle data.
+                          properties:
+                            adder:
+                              type: string
+                              description: Value to add to the raw data.
+                            bitLength:
+                              type: string
+                              description: Number of bits in the data.
+                            multiplier:
+                              type: string
+                              description: Value to multiply the raw data by.
+                            startBit:
+                              type: string
+                              description: Starting bit position for the data.
+                            unit:
+                              type: string
+                              description: Unit of measurement for the data (e.g., "%").
+              required:
+                - collectionName
+                - docId
+                - data
+            example:
+              collectionName: canConfigs
+              docId: Ari
+              data:
+                DataChannels:
+                  Battery:
+                    adder: "0"
+                    bitLength: "16"
+                    multiplier: "100"
+                    startBit: "8"
+                    unit: "V"
+                  Throttle:
+                    adder: "0"
+                    bitLength: "8"
+                    multiplier: "1"
+                    startBit: "0"
+                    unit: "%"
       responses:
         '200':
-          description: Successful data ingestion
+          description: Configuration added or updated successfully.
+        '400':
+          description: Missing required fields in the request body.
+        '500':
+          description: Server error, failed to add or update the configuration.
+    get:
+      tags:
+        - CANConfigurationAPI
+      summary: Retrieve CAN configuration data
+      parameters:
+        - in: query
+          name: collectionName
+          required: true
+          schema:
+            type: string
+            description: Name of the collection (e.g., "canConfigs").
+        - in: query
+          name: docId
+          required: false
+          schema:
+            type: string
+            description: Document ID of the configuration to retrieve (e.g., "Ari").
+      responses:
+        '200':
+          description: Successfully retrieved configuration data.
           content:
             application/json:
               schema:
                 type: object
-                example:
-                  success: true
+                properties:
+                  docId:
+                    type: string
+                    description: Document ID of the configuration.
+                  DataChannels:
+                    type: object
+                    description: Channels of data for the CAN configuration.
+                    properties:
+                      Battery:
+                        type: object
+                        description: Configuration for battery data.
+                        properties:
+                          adder:
+                            type: string
+                            description: Value to add to the raw data.
+                          bitLength:
+                            type: string
+                            description: Number of bits in the data.
+                          multiplier:
+                            type: string
+                            description: Value to multiply the raw data by.
+                          startBit:
+                            type: string
+                            description: Starting bit position for the data.
+                          unit:
+                            type: string
+                            description: Unit of measurement for the data (e.g., "V").
+                      Throttle:
+                        type: object
+                        description: Configuration for throttle data.
+                        properties:
+                          adder:
+                            type: string
+                            description: Value to add to the raw data.
+                          bitLength:
+                            type: string
+                            description: Number of bits in the data.
+                          multiplier:
+                            type: string
+                            description: Value to multiply the raw data by.
+                          startBit:
+                            type: string
+                            description: Starting bit position for the data.
+                          unit:
+                            type: string
+                            description: Unit of measurement for the data (e.g., "%").
+              examples:
+                ExampleConfig:
+                  value:
+                    docId: "Ari"
+                    DataChannels:
+                      Battery:
+                        adder: "0"
+                        bitLength: "16"
+                        multiplier: "100"
+                        startBit: "8"
+                        unit: "V"
+                      Throttle:
+                        adder: "0"
+                        bitLength: "8"
+                        multiplier: "1"
+                        startBit: "0"
+                        unit: "%"
         '400':
-          description: Bad request, invalid input
+          description: Missing required parameters (e.g., collectionName).
+        '404':
+          description: Configuration document not found.
         '500':
-          description: Server error
+          description: Failed to retrieve configuration data.
+  /RealtimeDatabase/data/{canID}:
+    get:
+      tags:
+        - RealtimeDatabase
+      summary: Retrieve telemetry data for a specific CAN ID
+      parameters:
+        - in: path
+          name: canID
+          required: true
+          schema:
+            type: string
+            description: The CAN ID of the telemetry data.
+      responses:
+        '200':
+          description: Successfully retrieved telemetry data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: number
+                    description: Timestamp of the data.
+                  additionalProperties:
+                    type: number
+                    description: User-defined telemetry fields.
+              examples:
+                ExampleConfig1:
+                  value:
+                    Battery: 11.64
+                    Throttle: 1
+                    timestamp: 20.904
+        '404':
+          description: Data not found for the specified CAN ID.
+        '500':
+          description: Failed to retrieve data.
+  /ESP32/config:
+    get:
+      tags:
+        - ESP32
+      summary: Fetch the current configuration for the ESP32
+      responses:
+        '200':
+          description: Successfully retrieved current configuration.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentConfig:
+                    type: string
+                    description: The name of the current configuration.
+              example:
+                currentConfig: "raceCarConfig1"
+        '500':
+          description: Failed to fetch the current configuration.
+  /ESP32/config/data:
+    get:
+      tags:
+        - ESP32
+      summary: Fetch the full configuration for the current configuration
+      responses:
+        '200':
+          description: Successfully retrieved full configuration.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The full configuration object.
+                additionalProperties: {}
+              example:
+                canConfigs:
+                  100:
+                    Pedal:
+                      startBit: 0
+                      bitLength: 8
+                      multiplier: 1.0
+                      adder: 0
+                      unit: "%"
+                  200:
+                    Steering:
+                      startBit: 8
+                      bitLength: 16
+                      multiplier: 0.1
+                      adder: 0
+                      unit: "°"
+        '500':
+          description: Failed to fetch the full configuration.
+  /ESP32/data/{canID}:
+    put:
+      tags:
+        - ESP32
+      summary: Send decoded CAN data to Firebase Realtime Database
+      parameters:
+        - in: path
+          name: canID
+          required: true
+          schema:
+            type: string
+            description: The CAN ID of the telemetry data being sent.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timestamp:
+                  type: number
+                  description: Timestamp of the data in seconds.
+                data:
+                  type: object
+                  additionalProperties:
+                    type: number
+                  description: Decoded CAN telemetry data.
+            example:
+              timestamp: 1234567890
+              data:
+                Pedal: 224
+                Steering: 13056
+      responses:
+        '200':
+          description: Successfully sent data to Firebase Realtime Database.
+        '500':
+          description: Failed to send data to Firebase Realtime Database.
