@@ -2,8 +2,9 @@
 sidebar_position: 1
 ---
 # Unit tests
-For each method, one or more test cases.
 
-A test case consists of input parameter values and expected results.
+### Unit Test Guidelines
+- Important components are tested to ensure proper functionality and rendering
+- Components have associated tests that check whether the correct elements, components, and UI elements are rendered based on the expected input and states.
+- Utilizing mock API calls, state management, and child components to control the input and observe how the component behaves under various conditions.
 
-All external classes should be stubbed using mock objects.
