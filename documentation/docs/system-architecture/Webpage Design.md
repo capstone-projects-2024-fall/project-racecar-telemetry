@@ -1,146 +1,288 @@
 ---
 sidebar_position: 1
 ---
-## Front-End Figma Design
 
-Login Page:
-![login](/img/Login_Page.png) 
 
-Dashboard (Connected):
-![dashboardConnected](/img/Dashboard_Connected.png)
+### Dashboard Quick Reference Guide
+![dashboardQuickstart](/img/dashboard_quickstart.png)
 
-Dashboard (Not Connected):
-![dashboardConnected](/img/Dashboard_NotConnected.png)
 
-Component Editor:
-![dashboardConnected](/img/ComponentEditor.png)
+### Dashboard
+![dashboard](/img/dashboard.png)
 
-Data Assignment Window:
-![dashboardConnected](/img/DataAssignment.png)
+
+### CAN Configuration Quick Reference Guide
+![CANQuickstart](/img/CAN_quickstart.png)
+
+### CAN Configuration
+![CANConfig](/img/config_manager.png)
+
+### Component Editor
+![componentEditor](/img/component_editor.png)
+
 
 ## Front-End UML Class Diagram
-This diagram shows the different components which will make up the Dashboard of the web app. The main Page component consists of GraphEditor, NavBar, DataGauge, TimeSeriesGraph, GGDiagram, LinearGauge, and DataWidget, which are all ways that our website displays data. The CANConfiguration page, along with its related components, ConfigManager, CANDataAssignment, and CANInput manage CAN customization.
+This diagram shows the different components which make up the front-end of the web app. The app is seperated into two segments, page (the dashboard) and CANConfiguration. The page component consists of the different types of graphs which are used to show data, the componentEditor which is used to edit and create the graphs, the navbar for navigation, and the instructionModal for the quick start guides. The CANConfiguration component consists of the components used to create, modify, update, and delete CAN Configurations.
 
 
 ```mermaid
 classDiagram
 App *-- Page
-Page *-- GraphEditor
 Page *-- NavBar
 Page *-- DataGauge
 Page *-- TimeSeriesGraph
-Page *-- GGDiagram
+Page *-- XYGraph
 Page *-- LinearGauge
 Page *-- DataWidget
+Page *-- InstructionsModal
 App *-- CANConfiguration
 CANConfiguration *-- ConfigManager
 CANConfiguration *-- CANDataAssignment
+CANConfiguration *-- CANDataView
+DataGauge -- ComponentEditor
+TimeSeriesGraph -- ComponentEditor
+XYGraph -- ComponentEditor
+LinearGauge -- ComponentEditor
+DataWidget -- ComponentEditor
+
+
+
+InstructionsModal: +Boolean open
+InstructionsModal: +onClose()
+InstructionsModal: +Object children
+
+
 
 
 
 CANDataAssignment *-- CANInput
 
+DataGauge: +Number uniqueID
+DataGauge:+Number metricValue
+DataGauge:+String unit
+DataGauge:+Object storedConfig
+DataGauge:+Object initialConfig
+DataGauge:+Object config
+DataGauge:+Aray range
 
-DataGauge: +String canID
-DataGauge: +String metricKey
-DataGauge: +String title
-DataGauge: +Number maxPrimaryRange
-DataGauge: +Number maxSecondaryRange
-DataGauge: +String primaryUnit
-DataGauge: +String secondaryUnit
-DataGauge: +Number metricValue
-DataGauge: +Boolean isSecondaryUnit = false
-DataGauge: +useEffect()void
-DataGauge: +convertToFahrenheit(number)number
-DataGauge: +convertToMPH(number)number
-DataGauge: +toggleUnit()void
-DataGauge: +setMetricValue(String)void
-DataGauge: +setIsSecondaryUnit(Bool)void
+DataGauge:+useEffect()void
+DataGauge:+fetchAndSetUnit()void
+DataGauge:+onValue()void
+DataGauge: +Array data
+DataGauge: +Array layout
+DataGauge: +setUnit(string)void
+DataGauge: +setmetricValue(Number)void
+DataGauge: +setConfig(Object)void
 
-TimeSeriesGraph: +String canID
-TimeSeriesGraph: +String yAxis
-TimeSeriesGraph: +String title
+TimeSeriesGraph: +Number uniqueID
+TimeSeriesGraph: +String unit
 TimeSeriesGraph: +Array timestamps
-TimeSeriesGraph: +Array axisToPlot
-TimeSeriesGraph: +useEffect()void
-TimeSeriesGraph: +Array data
-TimeSeriesGraph: +Object layout
-TimeSeriesGraph: +setTimestamps(Array)void
-TimeSeriesGraph: +setAxisToPlot(Array)void
+TimeSeriesGraph: +Array valsToPlot
+TimeSeriesGraph: +Object config
+TimeSeriesGraph: +Object initialConfig
+TimeSeriesGraph: +Object storedConfig
 
-LinearGauge: +String canID
-LinearGauge: +String valueToShow
-LinearGauge: +String title
-LinearGauge: +String value
+TimeSeriesGraph: +fetchAndSetUnit()void
+TimeSeriesGraph: +useEffect()void
+TimeSeriesGraph: +setTimestamps(Array)void
+TimeSeriesGraph: +setValsToPlot(Array)void
+TimeSeriesGraph: +setUnit(String)void
+TimeSeriesGraph: +setConfig(Object)void
+
+TimeSeriesGraph: +Array data
+TimeSeriesGraph: +Array layout
+
+
+LinearGauge: +String uniqueID
+LinearGauge: +Object config
+LinearGauge: +Object initialConfig
+LinearGauge: +Object storedConfig
+LinearGauge: +Number value
+LinearGauge: +Array range
+
+LinearGauge: +String unit
 LinearGauge: +useEffect()void
 LinearGauge: +Array data 
 LinearGauge: +Object latout
 LinearGauge: +setValue(String)void
+LinearGauge: +setUnit(String)void
+LinearGauge: +setConfig(Object)void
+LinearGauge: +setRange(Array)void
+LinearGauge: +fetchAndSetUnit()void
+
+
+
 
 DataWidget: +String canID
 DataWidget: +String valueToDisplay
 DataWidget: +Int number
+DataWidget: +String title
+DataWidget: +String unit
+DataWidget: +Boolean isElapsed
+DataWidget: +String dataName
+DataWidget: +String color
+DataWidget: +String unitShown
+DataWidget: +setNumber(Int)void
+DataWidget: +setDataName(String)void
+DataWidget: +setColor(String)void
+DataWidget: +setUnitShown(String)void
+DataWidget: +handleSettingsClose()void
+DataWidget: +handleSave(object)void
+
+
+
 DataWidget: +String text
 DataWidget: +useEffect()void
-DataWidget: +setNumber()void
-DataWidget: +setText()void
 
 
+XYGraph: +Number uniqueID
+XYGraph: +String xUnit
+XYGraph: +String yUnit
+XYGraph: +Array lateral
+XYGraph: +Array longitudinal
+XYGraph: +String lineColor
+XYGraph: +String xDataName
+XYGraph: +String yDataName
+XYGraph: +Array xRange
+XYGraph: +Array yRange
 
-
-
-GGDiagram: +String canID
-GGDiagram: +String title
-GGDiagram: +Array lateral
-GGDiagram: +Array longitudinal
-GGDiagram: +useEffect()void
-GGDiagram: +Array data
-GGDiagram: +Object Layout
-GGDiagram: +setLat(Array)void
-GGDiagram: +setLong(Array)void
+XYGraph: +useEffect()void
+XYGraph: +Array data
+XYGraph: +Object Layout
+XYGraph: +setLat(Array)void
+XYGraph: +setLong(Array)void
+XYGraph: +Object config
+XYGraph: +Object initialConfig
+XYGraph: +Object storedConfig
+XYGraph: +fetchAndSetUnit()void
+XYGraph: +setConfig(Object)void
+XYGraph: +setXUnit(String)void
+XYGraph: +setYUnit(String)void
+XYGraph: +setLat(String)void
+XYGraph: +setLong(String)void
+XYGraph: +setLineColor(String)void
+XYGraph: +setXDataName(String)void
+XYGraph: +setYDataName(String)void
+XYGraph: +setXRange(Array)void
+XYGraph: +setYRange(Array)void
 
 
 NavBar: +Bool isConnected
 
-Page: +Object attributes
-Page: +Object listeners
-Page: +Object transform
-Page: +Object transistion
-Page: +Object style
-Page: +State layout
+Page:+Array rows
+Page:+Array error
+Page:+Array rowHeights
+Page:+Boolean editorOpen
+Page:+Object currentEdit
+Page:+Object groupedDataChannels
+Page:+Boolean open
+Page:+Array defaultGraphs
+Page:+Array defaultRows
 
-Page: +setNodeRef()void
-Page: +setLayout()void
-Page: +useSensors()void
-Page: +handleDragEnd(event)void
-
-
-
-GraphEditor: +int DataChannel
-GraphEditor: +String DataLabel
-GraphEditor: +String DisplayType
-GraphEditor: +int UnitOfMeasure
-GraphEditor: +String Color
-GraphEditor: +int Max
-GraphEditor: +int Min
+Page:+useEffect()void
+Page:+handleClose()void
+Page:+handleAddRow()void
+Page:+adjustRowHeight(Number, Number)void
+Page:+handleOpenEditor(Number, Number)void
+Page:+handleSaveComponent(Object)void
+Page:+handleRemovePlaceholder(Number, Number)void
+Page:+handleRemoveRow(Number)void
+Page:+renderGraph(Object)ReactNode
 
 
-GraphEditor: +setDataChannel(int)void
-GraphEditor: +setDataLabel(String)void
-GraphEditor: +setDisplayType(String)void
-GraphEditor: +setUnitOfMeasure(int)void
-GraphEditor: +setColor(String)void
-GraphEditor: +setMax(int)void
-GraphEditor: +setMin(int)void
+
+
+ComponentEditor: +Object componentConfigs
+ComponentEditor: +String componentType
+ComponentEditor: +Object formState
+ComponentEditor: +Object errors
+ComponentEditor: +String selectedCanID
+ComponentEditor: +Array dataChannels
+ComponentEditor: +Array xDataChannels
+ComponentEditor: +Array yDataChannels
+
+ComponentEditor: +setComponentType(String)void
+ComponentEditor: +setFormState(Object)void
+ComponentEditor: +setErrors(Object)void
+ComponentEditor: +setSelectedCanID(String)void
+ComponentEditor: +setDataChannels(Array)void
+ComponentEditor: +setxDataChannels(Array)void
+ComponentEditor: +setyDataChannels(Array)void
+ComponentEditor: +useEffect()void
+ComponentEditor: +handleTypeChange(String)void
+ComponentEditor: +handleChange(Object)void
+ComponentEditor: +handleCanIDChange(String, String)void
+ComponentEditor: +handleSubmit()void
+
+
+
+
+
+
+
+
+
+
 
 CANDataAssignment: +Array rows
 CANDataAssignment: +setRows(Array)void
+CANDataAssignment: +Boolean loading
+CANDataAssignment: +String error
+CANDataAssignment: +Object notification
+
+CANDataAssignment: +setLoading(Boolean)void
+CANDataAssignment: +setError(String)void
+CANDataAssignment: +setNotification(Object)void
+CANDataAssignment: +loadExistingData()void
+CANDataAssignment: +fetchCANDATA(Object)void
+CANDataAssignment: +handleAddRow()void
+CANDataAssignment: +handleRowChange(String, Object)void
+CANDataAssignment: +handleDeleteRow(String)void
+CANDataAssignment: +showNotification(String, String)void
+CANDataAssignment: +handleSubmit()void
+
+CANDataView: +configData(String)
+CANDataView: +setConfigData(String)void
+CANDataView: +modalOpen(Boolean)
+CANDataView: +setModalOpen(Boolean)void
+CANDataView: +selectedCanId(String)
+CANDataView: +setSelectedCanId(String)void
+CANDataView: +signals(Array)
+CANDataView: +setSignals(Array)void
+CANDataView: +useEffect()void
+CANDataView: +handleViewClick(String, Array)void
+
+
+
+
+
+
+
+
+
+
+
+
 CANDataAssignment: +handleAddRow(Array)void
 CANDataAssignment: +handleRowChange(int, Object)void
 CANDataAssignment: +handleSubmit()void
 CANDataAssignment: +handleCancel()void
 
-CANInput: +Int index
+CANInput: +Boolean modalOpen
+CANInput: +setModalOpen(boolean)void
+CANInput: +Array signals
+CANInput: +setSignals(array)void
+CANInput: +useEffect()void
+CANInput: +fetchSignals()void
+CANInput: +handleInputChange(String, String)void
+CANInput: +handleModalSubmit()void
+CANInput: +handleSignalChange(String, String, String)void
+
+
+
+
+
+
 CANInput: +Object row
 CANInput: +onRowChange(Object)void
 CANInput: +handleInputChange(String, Int)void
@@ -152,14 +294,29 @@ ConfigManager: +setSelectedConfig(array)void
 ConfigManager: +Object configData
 ConfigManager: +setConfigData(Object)void
 ConfigManager: +String errorMessage
+ConfigManager: +Object filteredConfigs
+
 ConfigManager: +setErrorMessage(String)void
+
+
 ConfigManager: +fetchConfigs(String)Object
 ConfigManager: +useEffect()void
-ConfigManager: +selectConfig()void
-ConfigManager: +createConfig()void
+ConfigManager: +selectConfig(Number)void
+ConfigManager: +handleCreateConfig()void
+ConfigManager: +handleDeleteConfig(Number)void
+
 
 CANConfiguration: +String selectedConfig
+CANConfiguration: +Boolean isEditing
+
 CANConfiguration: +setSelectedConfig(String)void
+CANConfiguration: +setIsEditing(Boolean)void
+CANConfiguration: +useEffect()void
+CANConfiguration: +handleClose()void
+
+
+
+
 ```
 
 <!--

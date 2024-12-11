@@ -1,0 +1,35 @@
+name: CI Pipeline - Compilation Check
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow on pushes to the 'main' branch
+  pull_request:
+    branches:
+      - main # Trigger the workflow on pull requests targeting 'main'
+
+jobs:
+  compile-check:
+    name: Check Compilation
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up the environment (Node.js example, adjust as needed)
+      - name: Set Up Node.js Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: |
+          npm install
+
+      # Step 4: Build/Compile the project
+      - name: Run Build
+        run: |
+          npm run build
