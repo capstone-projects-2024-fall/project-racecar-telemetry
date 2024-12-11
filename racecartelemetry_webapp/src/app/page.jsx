@@ -9,6 +9,7 @@ import NavBar from "@components/NavBar";
 import DataWidgetList from "@components/DataWidgetList";
 import DataGauge from "@components/DataGauge";
 import TimeSeriesGraph from "@components/TimeSeriesGraph";
+<<<<<<< HEAD
 import XYGraph from "@components/XYGraph";
 import LinearGauge from "@components/LinearGauge";
 import ComponentEditor from "@components/ComponentEditor";
@@ -18,6 +19,12 @@ import InstructionsModal from '@components/InstructionsModal';
 import HelpButton from '@/components/HelpButton';
 
 import { v4 as uuidv4 } from "uuid";
+=======
+import TestData from "@components/testData";
+import CANDataLiveReading from "@components/CANDataLiveReading";
+import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
+import theme from "@app/theme";
+>>>>>>> 4561e7a (used DataDisplay in component that reads live data so that it reads live data)
 
 export default function Home() {
   const [rows, setRows] = useState([]);
@@ -704,6 +711,7 @@ export default function Home() {
 
   return (
     <ThemeProvider theme={theme}>
+<<<<<<< HEAD
       <CssBaseline />
       <NavBar />
       <Box
@@ -949,6 +957,15 @@ export default function Home() {
           />
         )}
       </Box>
+=======
+      <div className="flex flex-col justify-center">
+        <NavBar/>
+        {/* <DataDisplay data={telemetryData} /> 
+        {/* <TimeSeriesGraph /> */}
+        {/* <TestData/> */}
+        <CANDataLiveReading canID={'001'}/> 
+      </div>
+>>>>>>> 4561e7a (used DataDisplay in component that reads live data so that it reads live data)
     </ThemeProvider>
   );
 }

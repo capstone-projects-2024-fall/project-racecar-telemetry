@@ -11,7 +11,10 @@ const theme = createTheme({
     },
     primary: {
       main: '#A32036',
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4561e7a (used DataDisplay in component that reads live data so that it reads live data)
     },
     secondary: {
       main: '#1F2020',

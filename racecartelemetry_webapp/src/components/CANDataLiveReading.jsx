@@ -28,9 +28,17 @@ const CANDataLiveReading = ({ canID }) => {  // Accept canID as a prop
 
   const telemetryData = canData
     ? [
+<<<<<<< HEAD
         { label: "can id", value: canID || 'N/A' },
         { label: "data", value: canData.Data|| 'N/A' },
         { label: "time", value: canData.Time || 'N/A'}
+=======
+        { label: "Longitude", value: canData.X || 'N/A' },
+        { label: "Latitude", value: canData.Y || 'N/A' },
+        { label: "Vertical", value: canData.Z || 'N/A' },
+        { label: "Timestamp", value: canData.Time || 'N/A' },
+        { label: "Temperature", value: canData.Temp || 'N/A' },
+>>>>>>> 4561e7a (used DataDisplay in component that reads live data so that it reads live data)
       ]
     : [];
 
