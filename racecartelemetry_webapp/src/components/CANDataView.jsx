@@ -53,18 +53,18 @@ const CANDataView = ({ selectedConfig, setIsEditing }) => {
   const configArray =
     configData && typeof configData === "object"
       ? Object.entries(configData).map(([canId, itemData]) => {
-          const signals =
-            itemData.DataChannels &&
+        const signals =
+          itemData.DataChannels &&
             typeof itemData.DataChannels === "object"
-              ? Object.entries(itemData.DataChannels).map(
-                  ([key, signalData]) => ({
-                    ...signalData,
-                    id: key,
-                  })
-                )
-              : [];
-          return { canId, NumOfSignals: signals.length, signals };
-        })
+            ? Object.entries(itemData.DataChannels).map(
+              ([key, signalData]) => ({
+                ...signalData,
+                id: key,
+              })
+            )
+            : [];
+        return { canId, NumOfSignals: signals.length, signals };
+      })
       : [];
 
   const handleViewClick = (canId, signalsData) => {
@@ -205,32 +205,32 @@ const CANDataView = ({ selectedConfig, setIsEditing }) => {
                     border: "1px solid #ccc",
                     borderRadius: 1,
                   }}
+                  data-testid={`signal-${index}`}
                 >
-                  <Typography variant="body2">
+                  <Typography variant="body2" data-testid={`data-channel-${signal.id}`}>
                     <strong>Data Channel:</strong> {signal.id}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" data-testid={`start-bit-${signal.id}`}>
                     <strong>Start Bit:</strong> {signal.startBit}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" data-testid={`bit-length-${signal.id}`}>
                     <strong>Bit Length:</strong> {signal.bitLength}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" data-testid={`adder-${signal.id}`}>
                     <strong>Adder:</strong> {signal.adder}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" data-testid={`multiplier-${signal.id}`}>
                     <strong>Multiplier:</strong> {signal.multiplier}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" data-testid={`unit-${signal.id}`}>
                     <strong>Unit:</strong> {signal.unit}
                   </Typography>
                 </Box>
               ))
             ) : (
-              <Typography variant="body2">
-                No signals available for this CanID.
-              </Typography>
+              <Typography variant="body2">No signals available for this CanID.</Typography>
             )}
+
             <Button
               variant="contained"
               color="secondary"

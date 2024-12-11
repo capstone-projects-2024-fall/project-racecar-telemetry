@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["node"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -33,6 +34,11 @@
     },
     "forceConsistentCasingInFileNames": true
   },
+  "plugins": [
+      {
+        "name": "next"
+      }
+    ],
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -41,5 +47,5 @@
     "src/app/layout.jsx",
     "src/app/page.jsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }
