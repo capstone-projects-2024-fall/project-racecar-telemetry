@@ -1,0 +1,347 @@
+<html><head><meta charset="utf-8"/><title>Test Suite Report</title><style type="text/css">html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+body {
+  padding: 2rem 1rem;
+  font-size: 0.85rem;
+}
+.jesthtml-content {
+  margin: 0 auto;
+  max-width: 70rem;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+#title {
+  margin: 0;
+  flex-grow: 1;
+}
+#logo {
+  height: 4rem;
+}
+#timestamp {
+  color: #777;
+  margin-top: 0.5rem;
+}
+
+/** SUMMARY */
+#summary {
+  color: #333;
+  margin: 2rem 0;
+  display: flex;
+  font-family: monospace;
+  font-size: 1rem;
+}
+#summary > div {
+  margin-right: 2rem;
+  background: #eee;
+  padding: 1rem;
+  min-width: 15rem;
+}
+#summary > div:last-child {
+  margin-right: 0;
+}
+@media only screen and (max-width: 720px) {
+  #summary {
+    flex-direction: column;
+  }
+  #summary > div {
+    margin-right: 0;
+    margin-top: 2rem;
+  }
+  #summary > div:first-child {
+    margin-top: 0;
+  }
+}
+
+.summary-total {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.summary-passed {
+  color: #4f8a10;
+  border-left: 0.4rem solid #4f8a10;
+  padding-left: 0.5rem;
+}
+.summary-failed,
+.summary-obsolete-snapshots {
+  color: #d8000c;
+  border-left: 0.4rem solid #d8000c;
+  padding-left: 0.5rem;
+}
+.summary-pending {
+  color: #9f6000;
+  border-left: 0.4rem solid #9f6000;
+  padding-left: 0.5rem;
+}
+.summary-empty {
+  color: #999;
+  border-left: 0.4rem solid #999;
+}
+
+.test-result {
+  padding: 1rem;
+  margin-bottom: 0.25rem;
+}
+.test-result:last-child {
+  border: 0;
+}
+.test-result.passed {
+  background-color: #dff2bf;
+  color: #4f8a10;
+}
+.test-result.failed {
+  background-color: #ffbaba;
+  color: #d8000c;
+}
+.test-result.pending {
+  background-color: #ffdf61;
+  color: #9f6000;
+}
+
+.test-info {
+  display: flex;
+  justify-content: space-between;
+}
+.test-suitename {
+  width: 20%;
+  text-align: left;
+  font-weight: bold;
+  word-break: break-word;
+}
+.test-title {
+  width: 40%;
+  text-align: left;
+  font-style: italic;
+}
+.test-status {
+  width: 20%;
+  text-align: right;
+}
+.test-duration {
+  width: 10%;
+  text-align: right;
+  font-size: 0.75rem;
+}
+
+.failureMessages {
+  padding: 0 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed #d8000c;
+}
+.failureMessages.suiteFailure {
+  border-top: none;
+}
+.failureMsg {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+.suite-container {
+  margin-bottom: 2rem;
+}
+.suite-container > input[type="checkbox"] {
+  position: absolute;
+  left: -100vw;
+}
+.suite-container label {
+  display: block;
+}
+.suite-container .suite-tests {
+  overflow-y: hidden;
+  height: 0;
+}
+.suite-container > input[type="checkbox"]:checked ~ .suite-tests {
+  height: auto;
+  overflow: visible;
+}
+.suite-info {
+  padding: 1rem;
+  background-color: #eee;
+  color: #777;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.suite-info:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+.suite-info .suite-path {
+  word-break: break-all;
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 1rem;
+}
+.suite-info .suite-time {
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.75rem;
+}
+.suite-info .suite-time.warn {
+  background-color: #d8000c;
+  color: #fff;
+}
+.suite-info:before {
+  content: "\2303";
+  display: inline-block;
+  margin-right: 0.5rem;
+  transform: rotate(0deg);
+}
+.suite-container > input[type="checkbox"]:checked ~ label .suite-info:before {
+  transform: rotate(180deg);
+}
+
+/* CONSOLE LOGS */
+.suite-consolelog {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: #efefef;
+}
+.suite-consolelog-header {
+  font-weight: bold;
+}
+.suite-consolelog-item {
+  padding: 0.5rem;
+}
+.suite-consolelog-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-consolelog-item-origin {
+  color: #777;
+  font-weight: bold;
+}
+.suite-consolelog-item-message {
+  color: #000;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+
+/* OBSOLETE SNAPSHOTS */
+.suite-obsolete-snapshots {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: #ffbaba;
+  color: #d8000c;
+}
+.suite-obsolete-snapshots-header {
+  font-weight: bold;
+}
+.suite-obsolete-snapshots-item {
+  padding: 0.5rem;
+}
+.suite-obsolete-snapshots-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-obsolete-snapshots-item-message {
+  color: #000;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+</style></head><body><div class="jesthtml-content"><header><h1 id="title">Test Suite Report</h1></header><div id="metadata-container"><div id="timestamp">Started: 2024-12-10 22:06:53</div><div id="summary"><div id="suite-summary"><div class="summary-total">Suites (5)</div><div class="summary-passed ">5 passed</div><div class="summary-failed  summary-empty">0 failed</div><div class="summary-pending  summary-empty">0 pending</div></div><div id="test-summary"><div class="summary-total">Tests (14)</div><div class="summary-passed ">14 passed</div><div class="summary-failed  summary-empty">0 failed</div><div class="summary-pending  summary-empty">0 pending</div></div></div></div><div id="suite-1" class="suite-container"><input id="collapsible-0" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-0"><div class="suite-info"><div class="suite-path">C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\__tests__\Navbar.test.jsx</div><div class="suite-time">3.201s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename"> </div><div class="test-title">Navbar renders successfully</div><div class="test-status">passed</div><div class="test-duration">0.06s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename"> </div><div class="test-title">Displays 'Checking connection...' when isConnected is null</div><div class="test-status">passed</div><div class="test-duration">0.013s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename"> </div><div class="test-title">Displays 'Telemetry Connected' when isConnected is true</div><div class="test-status">passed</div><div class="test-duration">0.008s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename"> </div><div class="test-title">Displays 'Telemetry Disconnected' when isConnected is false</div><div class="test-status">passed</div><div class="test-duration">0.007s</div></div></div></div></div><div id="suite-2" class="suite-container"><input id="collapsible-1" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-1"><div class="suite-info"><div class="suite-path">C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\__tests__\CANDataView.test.jsx</div><div class="suite-time">3.304s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">CANDataView Component</div><div class="test-title">renders correctly with a valid selectedConfig</div><div class="test-status">passed</div><div class="test-duration">0.072s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">CANDataView Component</div><div class="test-title">displays fetched data correctly in modal</div><div class="test-status">passed</div><div class="test-duration">0.131s</div></div></div></div><div class="suite-consolelog"><div class="suite-consolelog-header">Console Log</div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at printWarning (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:86:30)
+    at error (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:60:7)
+    at warnIfUpdatesNotWrappedWithActDEV (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:27628:9)
+    at scheduleUpdateOnFiber (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:25547:5)
+    at dispatchSetState (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:16708:7)
+    at setConfigData (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\components\CANDataView.jsx:41:11)
+    at tryCatch (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:45:16)
+    at Generator.&lt;anonymous&gt; (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:133:17)
+    at Generator.next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:74:21)
+    at asyncGeneratorStep (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</pre><pre class="suite-consolelog-item-message">Warning: An update to CANDataView inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() =&gt; {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at selectedConfig (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\components\CANDataView.jsx:30:24)</pre></div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at log (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\components\CANDataView.jsx:42:19)
+    at tryCatch (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:45:16)
+    at Generator.&lt;anonymous&gt; (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:133:17)
+    at Generator.next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:74:21)
+    at asyncGeneratorStep (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</pre><pre class="suite-consolelog-item-message">undefined</pre></div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at log (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\components\CANDataView.jsx:42:19)
+    at tryCatch (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:45:16)
+    at Generator.&lt;anonymous&gt; (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:133:17)
+    at Generator.next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:74:21)
+    at asyncGeneratorStep (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</pre><pre class="suite-consolelog-item-message">{
+  '250': {
+    DataChannels: { throttle: [Object], coolant: [Object], battery: [Object] }
+  }
+}</pre></div></div></div><div id="suite-3" class="suite-container"><input id="collapsible-2" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-2"><div class="suite-info"><div class="suite-path">C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\__tests__\ConfigManager.test.jsx</div><div class="suite-time">3.431s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">ConfigManager Component</div><div class="test-title">renders component and displays 'Select a Configuration' when no config is selected</div><div class="test-status">passed</div><div class="test-duration">0.174s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ConfigManager Component</div><div class="test-title">selects a configuration and triggers onConfigSelect callback</div><div class="test-status">passed</div><div class="test-duration">0.157s</div></div></div></div><div class="suite-consolelog"><div class="suite-consolelog-header">Console Log</div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at printWarning (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:86:30)
+    at error (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:60:7)
+    at warnIfUpdatesNotWrappedWithActDEV (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:27628:9)
+    at scheduleUpdateOnFiber (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:25547:5)
+    at dispatchSetState (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\react-dom\cjs\react-dom.development.js:16708:7)
+    at setConfigs (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\components\ConfigManager.jsx:18:17)
+    at tryCatch (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:45:16)
+    at Generator.&lt;anonymous&gt; (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:133:17)
+    at Generator.next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:74:21)
+    at asyncGeneratorStep (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</pre><pre class="suite-consolelog-item-message">Warning: An update to ConfigManager inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() =&gt; {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at onConfigSelect (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\components\ConfigManager.jsx:8:26)</pre></div></div></div><div id="suite-4" class="suite-container"><input id="collapsible-3" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-3"><div class="suite-info"><div class="suite-path">C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\__tests__\CANDataAssignment.test.jsx</div><div class="suite-time">3.716s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">CANDataAssignment Component</div><div class="test-title">renders a message when no configuration is selected</div><div class="test-status">passed</div><div class="test-duration">0.026s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">CANDataAssignment Component</div><div class="test-title">renders a loading message while fetching data</div><div class="test-status">passed</div><div class="test-duration">0.006s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">CANDataAssignment Component</div><div class="test-title">displays error when data fetching fails</div><div class="test-status">passed</div><div class="test-duration">0.033s</div></div></div></div><div class="suite-consolelog"><div class="suite-consolelog-header">Console Log</div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at error (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\components\CANDataAssignment.jsx:49:17)
+    at tryCatch (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:45:16)
+    at Generator.&lt;anonymous&gt; (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:133:17)
+    at Generator.throw (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:74:21)
+    at asyncGeneratorStep (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _throw (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:20:9)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</pre><pre class="suite-consolelog-item-message">Failed to load existing data: Error: Failed to fetch data
+    at _callee$ (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\__tests__\CANDataAssignment.test.jsx:33:40)
+    at tryCatch (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:45:16)
+    at Generator.&lt;anonymous&gt; (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:133:17)
+    at Generator.next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\regeneratorRuntime.js:74:21)
+    at asyncGeneratorStep (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+    at _next (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+    at C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
+    at new Promise (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
+    at Promise.then.completed (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-circus\build\utils.js:333:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-circus\build\utils.js:259:10)
+    at _callCircusTest (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-circus\build\run.js:277:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-circus\build\run.js:209:3)
+    at _runTestsForDescribeBlock (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-circus\build\run.js:97:9)
+    at _runTestsForDescribeBlock (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-circus\build\run.js:91:9)
+    at run (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-circus\build\run.js:31:3)
+    at runAndTransformResultsToJestFormat (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:135:21)
+    at jestAdapter (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:92:19)
+    at runTestInternal (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-runner\build\runTest.js:411:16)
+    at runTest (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-runner\build\runTest.js:499:34)
+    at Object.worker (C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\node_modules\jest-runner\build\testWorker.js:133:12)</pre></div></div></div><div id="suite-5" class="suite-container"><input id="collapsible-4" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-4"><div class="suite-info"><div class="suite-path">C:\Users\cooln\capstone_2024\project-racecar-telemetry\racecartelemetry_webapp\src\__tests__\CANInput.test.jsx</div><div class="suite-time">3.822s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">CANInput Component</div><div class="test-title">renders CANID and # of Signals input fields</div><div class="test-status">passed</div><div class="test-duration">0.07s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">CANInput Component</div><div class="test-title">calls onRowChange when CANID changes</div><div class="test-status">passed</div><div class="test-duration">0.02s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">CANInput Component</div><div class="test-title">opens and closes the modal</div><div class="test-status">passed</div><div class="test-duration">0.08s</div></div></div></div></div></div></body></html>
