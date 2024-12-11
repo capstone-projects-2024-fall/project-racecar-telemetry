@@ -25,12 +25,20 @@ jobs:
         with:
           node-version: 16
 
-      # Step 3: Install dependencies
+      # Step 3: Navigate into the web app directory
+      - name: Navigate to racecartelemetry_webapp
+        working-directory: ./racecartelemetry_webapp
+        run: |
+          echo "Navigating to racecartelemetry_webapp"
+
+      # Step 4: Install dependencies
       - name: Install Dependencies
+        working-directory: ./racecartelemetry_webapp
         run: npm install
 
-      # Step 4: Build/Compile the project
+      # Step 5: Build the project (simulate production build)
       - name: Build Website
+        working-directory: ./racecartelemetry_webapp
         run: npm run build
 
   # Job 2: Check if Arduino sketches compile
@@ -49,16 +57,19 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
           arduino-cli config init
 
-      # Step 3: Install Arduino core and libraries
-      - name: Install Arduino Cores and Libraries
+      # Step 3: Install Arduino cores
+      - name: Install Arduino Cores
         run: |
           arduino-cli core update-index
-          arduino-cli core install arduino:avr # Install AVR core for Arduino boards
+          arduino-cli core install adafruit:samd # Install core for Adafruit Feather M4 CAN
+          arduino-cli core install esp32:esp32   # Install core for ESP32 boards
 
       # Step 4: Compile all `.ino` files
       - name: Compile Arduino Sketches
         run: |
           for sketch in $(find . -name "*.ino"); do
-            echo "Compiling $sketch..."
-            arduino-cli compile --fqbn arduino:avr:uno $sketch
+            echo "Compiling $sketch for Adafruit Feather M4 CAN..."
+            arduino-cli compile --fqbn adafruit:samd:adafruit_feather_m4_can $sketch
+            echo "Compiling $sketch for ESP32..."
+            arduino-cli compile --fqbn esp32:esp32:esp32 $sketch
           done
