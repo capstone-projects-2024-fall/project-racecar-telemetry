@@ -1,6 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import CANDataAssignment from "../components/CANDataAssignment";
 import { fetchCANData, saveCANData, deleteConfigRow } from "@services/CANConfigurationService";
+import '@testing-library/jest-dom';
+
 
 // Mock services
 jest.mock("@services/CANConfigurationService", () => ({
