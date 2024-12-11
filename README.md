@@ -57,7 +57,7 @@ Knowledge Requirements
 
 The system will be bench tested using simulated vehicle serial communication. This is how the final product will be presented.
 
-Resources: 
+Useful links:
 
 Braune, Nils. Telemetry Unit for a Formula Student Race Car. 2014.
 
