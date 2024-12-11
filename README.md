@@ -44,7 +44,7 @@ System architecture (see system diagram for details):
 
 ## Background
 
-The background will contain a more detailed description of the product and a comparison to existing similar projects/products. A literature search should be conducted and the results listed. Proper citation of sources is required. If there are similar open-source products, you should state whether existing source will be used and to what extent. If there are similar closed-source/proprietary products, you should state how the proposed product will be similar and different.
+Commercially available wireless motorsport telemetry exists (for example, MoTeC T2 or Bosch Telemetry System FM 40), but the price tag makes it inaccessible to many FSAE teams. This project’s custom framework and relatively low cost make it ideal for implementation in a student-run racing team. This project architecture is based heavily on the systems outlined in articles by other university teams, including the Swiss Federal Institute of Technology Zurich and California Polytechnic Institute. Additionally, documentation for ESP32 server-side events was consulted. 
 
 ## Required Resources
 
@@ -56,6 +56,18 @@ Knowledge Requirements
 - For additional background, members of the Capstone team can contact other FSAE teams who have successfully implemented telemetry systems.
 
 The system will be bench tested using simulated vehicle serial communication. This is how the final product will be presented.
+
+Resources: 
+
+Braune, Nils. Telemetry Unit for a Formula Student Race Car. 2014.
+
+Rounds, Matt. Formula SAE Telemetry System. 
+
+Random Nerd Tutorials. ESP32 Web Server using Server-Sent Events (Update Sensor Readings Automatically). 
+
+Rua Copeto, David. Automotive data acquisition system - FST. 2009.
+
+Yi Tan, Frank. Development of Electric Formula SAE Real-time Telemetry Software. 
 
 ## Collaborators
 
