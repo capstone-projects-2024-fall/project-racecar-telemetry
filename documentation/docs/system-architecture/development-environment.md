@@ -2,22 +2,7 @@
 sidebar_position: 4
 ---
 
-# Development Environment  
-
-## Software Requirements  
-### IDE     
-- Visual Studio Code  
-- Github Codespaces  
-- Arduino IDE    
-### Programming Languages & Libraries    
-- Next.js/Node.js:      Main frameworks for developing the web application.  
-- Firebase SDK:         For data storage and real-time database connectivity.  
-- Chart.js or Recharts: For creating graphs and charts.  
-- Socket.io:            For handling real-time data streaming if needed.
-### Database
-Firebase: for storing telemetry data. 
-### Testing    
-Postman: API testing.    
+# Development Environment    
 
 ## Tasks and Effort Map
 
@@ -55,7 +40,7 @@ Postman: API testing.
 ### Programming Languages & Libraries    
 - Next.js/Node.js:      Main frameworks for developing the web application.  
 - Firebase SDK:         For data storage and real-time database connectivity.  
-- Chart.js or Recharts: For creating graphs and charts.  
+- Plotly.js: For creating graphs and charts.  
 - Socket.io:            For handling real-time data streaming if needed.
 
 ### Dependencies
