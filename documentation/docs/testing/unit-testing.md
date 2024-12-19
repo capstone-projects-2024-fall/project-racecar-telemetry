@@ -9,4 +9,4 @@ sidebar_position: 1
 - Utilizing mock API calls, state management, and child components to control the input and observe how the component behaves under various conditions.
 
 ### Unit Test Results and Insights
-![system diagram](/img/Test_Suite_Report.pdf)
+![Unit Test Results](/img/Test_Suite_Report.pdf)
